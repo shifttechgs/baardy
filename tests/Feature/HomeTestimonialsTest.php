@@ -1,0 +1,95 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+
+/**
+ * Testimonials are published only when real: a quote reaches the page only
+ * when it is marked `consented`, and the section is absent while none is.
+ */
+class HomeTestimonialsTest extends TestCase
+{
+    public function test_placeholder_quotes_stay_off_the_page_outside_the_demo_preview(): void
+    {
+        config()->set('marketing.testimonials_preview', false);
+
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('id="testimonials"', $content);
+
+        foreach (config('marketing.testimonials') as $testimonial) {
+            $this->assertFalse($testimonial['consented'], 'A placeholder testimonial is marked as consented.');
+            $this->assertStringNotContainsString(e($testimonial['quote']), $content);
+        }
+    }
+
+    public function test_the_demo_preview_labels_its_quotes_as_samples(): void
+    {
+        config()->set('marketing.testimonials_preview', true);
+
+        $content = preg_replace('/\s+/', ' ', $this->get('/')->assertOk()->getContent());
+
+        $this->assertStringContainsString('id="testimonials"', $content);
+        foreach (config('marketing.testimonials') as $testimonial) {
+            $this->assertStringContainsString(e($testimonial['quote']), $content);
+            $this->assertSame('Sample quote', $testimonial['role'], 'A placeholder must be marked as a sample.');
+        }
+
+        $this->assertSame(
+            count(config('marketing.testimonials')),
+            preg_match_all('/<figure(?![^>]*aria-hidden)[^>]*>.*?Sample quote.*?<\/figure>/s', $content),
+            'Each quote should be exposed to assistive technology exactly once, labelled "Sample quote".'
+        );
+    }
+
+    /**
+     * Social proof sits straight after the loans, before the reasons and the
+     * process, so a reader meets it while still deciding.
+     */
+    public function test_it_comes_straight_after_the_loans(): void
+    {
+        config()->set('marketing.testimonials_preview', true);
+
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $products = strpos($content, 'id="products"');
+        $testimonials = strpos($content, 'id="testimonials"');
+        $whyUs = strpos($content, 'id="why-us"');
+
+        $this->assertNotFalse($testimonials);
+        $this->assertGreaterThan($products, $testimonials);
+        $this->assertLessThan($whyUs, $testimonials);
+    }
+
+    public function test_only_consented_quotes_are_published(): void
+    {
+        config()->set('marketing.testimonials_preview', true);
+
+        config()->set('marketing.testimonials', [
+            [
+                'quote' => 'They wrote the full cost down before I signed.',
+                'name' => 'Tendai M.',
+                'role' => 'Market trader, Harare',
+                'initials' => 'TM',
+                'consented' => true,
+            ],
+            [
+                'quote' => 'A quote nobody agreed to share.',
+                'name' => 'Not Consented',
+                'role' => 'Somewhere',
+                'initials' => 'NC',
+                'consented' => false,
+            ],
+        ]);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('id="testimonials"', false)
+            ->assertSee('They wrote the full cost down before I signed.')
+            ->assertSee('Tendai M.')
+            ->assertDontSee('A quote nobody agreed to share.')
+            ->assertDontSee('Not Consented')
+            ->assertDontSee('Sample quote');
+    }
+}
