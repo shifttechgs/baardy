@@ -1,0 +1,1014 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/* -------------------------------------------------------------------------
+   Geist — self-hosted variable fonts.
+   Self-hosted rather than CDN-delivered: no third-party request from a page
+   that will later collect financial information, and no render-blocking
+   external dependency. Vite fingerprints and emits these at build time.
+   ------------------------------------------------------------------------- */
+
+@font-face {
+    font-family: 'Geist';
+    src: url('../../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2') format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* -------------------------------------------------------------------------
+   Design tokens.
+
+   Every colour, radius, shadow and type step used anywhere in the interface
+   is declared here. Components reference tokens only — never raw hex values.
+   Rebranding is a matter of editing this block.
+   ------------------------------------------------------------------------- */
+
+@theme {
+    /* --- Typeface ------------------------------------------------------- */
+    /* Geist Sans only. The `geist` package also ships Geist Mono if a future
+       screen needs it (account numbers, references) -- add the @font-face and
+       a --font-mono token at that point rather than shipping it unused. */
+    --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+    /* Used for exactly one thing: the italic accent word in the hero headline.
+       A serif set against the sans is the whole effect, so it must not creep
+       into body copy. Georgia is a system face, so it costs no request; swap in
+       a display serif here if the brand ever buys one. */
+    --font-serif: ui-serif, Georgia, 'Times New Roman', serif;
+
+    /* --- Colour --------------------------------------------------------- */
+    /* Palette is derived from the supplied logo, sampled directly from the
+       artwork: wordmark #5E2681, mark gradient through #652482 and #253F93,
+       centre disc #F16A26. The neutrals below carry a matching violet cast so
+       that greys sit with the purple instead of fighting it. */
+
+    /* Surfaces */
+    --color-paper: #ffffff;
+    --color-mist: #f6f4f8;
+
+    /* Text */
+    --color-ink: #151019;
+    --color-ink-soft: #413b4a;
+    --color-muted: #676070;
+
+    /* Structure */
+    --color-line: #e7e4ec;
+    --color-line-strong: #d3cedb;
+
+    /* Brand accent — the logo's wordmark purple, the system's one strong colour */
+    --color-accent: #5e2681;
+    --color-accent-strong: #4a1d68;
+    --color-accent-tint: #f5f0f9;
+
+    /* The logo's orange. A highlight, not a second accent: it appears on the
+       single figure the eye should land on first, and nowhere else. */
+    --color-highlight: #f16a26;
+    --color-highlight-tint: #fef2ea;
+
+    /* Form errors only. Not the highlight orange: that fails contrast for
+       small text on white, and an error should never look like a brand
+       accent. #b42318 is 6.5:1 on paper. */
+    --color-danger: #b42318;
+
+    /* Inverted surfaces (the page's dark foot) */
+    --color-ink-line: #2e2637;
+    --color-ink-muted: #a79fb3;
+
+    /* --- Radius --------------------------------------------------------- */
+    /* Near-square by decision. The scale is kept -- xs badges & dots, sm
+       controls, md cards & panels, lg feature panels -- so call sites keep
+       their meaning and the whole system can be re-softened from these four
+       lines. 2px rather than 0 because a true square corner shows the
+       antialiasing seam where a border meets a fill. */
+    --radius-xs: 2px;
+    --radius-sm: 2px;
+    --radius-md: 2px;
+    --radius-lg: 2px;
+
+    /* --- Elevation ------------------------------------------------------ */
+    /* Structure is carried by borders, not elevation. --shadow-panel is kept
+       defined but is no longer applied to anything: cards are flat, and a
+       drop shadow under a square-cornered card reads as a mistake rather than
+       as depth. */
+    --shadow-bar: 0 1px 0 0 rgb(14 21 18 / 0.06);
+    --shadow-panel: 0 1px 2px rgb(14 21 18 / 0.04), 0 12px 32px -12px rgb(14 21 18 / 0.10);
+
+    /* --- Type scale ----------------------------------------------------- */
+    --text-micro: 0.8125rem;
+    --text-micro--line-height: 1.4;
+    --text-small: 0.875rem;
+    --text-small--line-height: 1.55;
+    --text-body: 1rem;
+    --text-body--line-height: 1.65;
+    --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+    --text-lead--line-height: 1.6;
+    --text-h3: clamp(1.1875rem, 1.08rem + 0.5vw, 1.4375rem);
+    --text-h3--line-height: 1.3;
+    --text-h2: clamp(1.75rem, 1.3rem + 2vw, 2.75rem);
+    --text-h2--line-height: 1.12;
+    --text-display: clamp(2.375rem, 1.45rem + 3.9vw, 4.25rem);
+    --text-display--line-height: 1.02;
+
+    /* --- Layout --------------------------------------------------------- */
+    --container-content: 1200px;
+
+    /* The same measure on large desktop displays (2xl, 1536px and up), where
+       1200px left a third of the screen as empty margin. */
+    --container-content-wide: 1600px;
+}
+
+/* -------------------------------------------------------------------------
+   Base layer
+   ------------------------------------------------------------------------- */
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+    }
+
+    /* `clip` rather than `hidden` — it contains stray overflow without
+       breaking the sticky header. */
+    body {
+        overflow-x: clip;
+        background-color: var(--color-paper);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        font-size: var(--text-body);
+        line-height: var(--text-body--line-height);
+        letter-spacing: -0.005em;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    h1, h2, h3, h4 {
+        text-wrap: balance;
+    }
+
+    /* A single, consistent focus treatment across every interactive element. */
+    :focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 3px;
+        border-radius: var(--radius-xs);
+    }
+
+    ::selection {
+        background-color: var(--color-accent);
+        color: var(--color-paper);
+    }
+
+    /* Keeps Alpine-controlled panels hidden until Alpine initialises. */
+    [x-cloak] {
+        display: none !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+/* -------------------------------------------------------------------------
+   Utilities
+   ------------------------------------------------------------------------- */
+
+/* Financial figures align in columns and never reflow as they change. */
+@utility figure-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1, 'cv01' 1;
+    letter-spacing: -0.02em;
+}
+
+/* Optical alignment for large display type set flush left. */
+@utility optical-left {
+    margin-left: -0.05em;
+}
+
+/* Currency symbols are set smaller and lighter than the figure they qualify,
+   which is how financial documents typeset them: the number is the
+   information, the symbol is the unit. Opacity rather than a colour token, so
+   it works unchanged on paper and on the dark foot of the page. */
+@utility currency {
+    font-size: 0.66em;
+    letter-spacing: 0;
+    margin-inline-end: 0.14em;
+    opacity: 0.55;
+}
+
+/* -------------------------------------------------------------------------
+   The one orchestrated motion moment: the hero settles on load.
+   Nothing else on the page animates on scroll.
+   ------------------------------------------------------------------------- */
+
+@layer components {
+    /* ---------------------------------------------------------------------
+       Range input.
+
+       Native range inputs cannot be styled with utilities alone -- the track
+       and thumb are shadow-DOM pseudo-elements -- so this is the one control
+       that needs real CSS. It still uses the design tokens.
+       --------------------------------------------------------------------- */
+    .range {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 24px;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .range::-webkit-slider-runnable-track {
+        height: 3px;
+        border-radius: 999px;
+        background: var(--color-line-strong);
+    }
+
+    .range::-moz-range-track {
+        height: 3px;
+        border-radius: 999px;
+        background: var(--color-line-strong);
+    }
+
+    .range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        margin-top: -8.5px;
+        height: 20px;
+        width: 20px;
+        border: 5px solid var(--color-accent);
+        border-radius: 999px;
+        background: var(--color-paper);
+        transition: border-width 0.15s ease;
+    }
+
+    .range::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border: 5px solid var(--color-accent);
+        border-radius: 999px;
+        background: var(--color-paper);
+        transition: border-width 0.15s ease;
+    }
+
+    .range:hover::-webkit-slider-thumb,
+    .range:active::-webkit-slider-thumb {
+        border-width: 7px;
+    }
+
+    .range:hover::-moz-range-thumb,
+    .range:active::-moz-range-thumb {
+        border-width: 7px;
+    }
+
+    @keyframes rise {
+        from {
+            opacity: 0;
+            transform: translateY(14px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .rise {
+        animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* -----------------------------------------------------------------------
+       Hero entrance.
+
+       Choreographed to land inside two seconds, in reading order:
+
+         0ms     photograph settles from a slow push-in (runs longest, so the
+                 frame keeps breathing while the copy arrives)
+         100ms   navigation drops in
+         250ms   headline, word by word, rising out of a mask
+         ~700ms  lead, then the actions
+         ~900ms  credential cards slide in from the right, figure counts up
+         ~1.15s  the scroll cue
+
+       Every step uses the same ease-out-expo curve as `.rise`, so the whole
+       sequence reads as one motion rather than several.
+    ----------------------------------------------------------------------- */
+    @keyframes hero-settle {
+        from {
+            opacity: 0;
+            transform: scale(1.14);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes hero-word {
+        from {
+            transform: translateY(108%);
+        }
+        to {
+            transform: none;
+        }
+    }
+
+    @keyframes hero-drop {
+        from {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes hero-slide {
+        from {
+            opacity: 0;
+            transform: translateX(28px);
+            filter: blur(6px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+            filter: none;
+        }
+    }
+
+
+
+    /* The scroll cue's arrow drops through its ring, fades, and re-enters
+       from the top: a loop that says "down" without ever stopping still. */
+    @keyframes hero-scroll {
+        0% {
+            opacity: 0;
+            transform: translateY(-9px);
+        }
+        30%, 55% {
+            opacity: 1;
+            transform: none;
+        }
+        85%, 100% {
+            opacity: 0;
+            transform: translateY(9px);
+        }
+    }
+
+    .hero-scroll {
+        animation: hero-scroll 1.9s cubic-bezier(0.65, 0, 0.35, 1) 1.6s infinite backwards;
+    }
+
+    /* ---------------------------------------------------------------------
+       Hero photographs.
+
+       Crossfade: the incoming slide fades up and settles from a slight
+       zoom; the outgoing one fades under it. Long and soft on purpose --
+       a hard cut between borrowers reads as a carousel, a slow dissolve
+       reads as film.
+
+       Drift: every photograph moves continuously, whether or not it is
+       showing, so nothing ever snaps when a slide becomes active. The
+       direction alternates per slide through --drift-x.
+
+       Stretch: at lg a slide can be set wider than the hero and anchored
+       left, which pushes a centred subject right, clear of the copy.
+    --------------------------------------------------------------------- */
+    @keyframes hero-drift {
+        from {
+            transform: translate3d(0, 0, 0) scale(1.04);
+        }
+        to {
+            transform: translate3d(var(--drift-x, 2%), -1.5%, 0) scale(1.12);
+        }
+    }
+
+    .hero-photo {
+        opacity: 0;
+        transform: scale(1.06);
+        transition:
+            opacity 1.8s cubic-bezier(0.65, 0, 0.35, 1),
+            transform 2.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-photo.is-active {
+        opacity: 1;
+        transform: none;
+    }
+
+    .hero-photo-img {
+        animation: hero-drift 18s ease-in-out infinite alternate;
+    }
+
+    @media (min-width: 64rem) {
+        .hero-photo-img {
+            width: calc(100% * var(--stretch, 1));
+        }
+    }
+
+    .hero-settle {
+        animation: hero-settle 2.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* FILL MODE IS `backwards`, NOT `both`, on these two. A finished
+       animation that keeps filling its opacity/filter makes the element a
+       backdrop root, and every backdrop-filter inside it then blurs an empty
+       layer instead of the photograph -- the frosted nav pill and the figure
+       card silently turn into plain translucent boxes. */
+    .hero-drop {
+        animation: hero-drop 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+    }
+
+    .hero-slide {
+        animation: hero-slide 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    /* Each word is its own mask. The padding and matching negative margin
+       give descenders and the italic overhang room inside the clip without
+       moving the baseline. */
+    .hero-word {
+        display: inline-block;
+        overflow: hidden;
+        vertical-align: top;
+        padding: 0 0.06em 0.12em 0;
+        margin: 0 -0.06em -0.12em 0;
+    }
+
+    .hero-word > span {
+        display: inline-block;
+        animation: hero-word 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+        /* Starts early and staggers tightly: the headline is the page's
+           largest paint, so every millisecond here is LCP on a phone. */
+        animation-delay: calc(120ms + var(--w, 0) * 45ms);
+    }
+
+
+    /* -----------------------------------------------------------------------
+       Scroll-triggered reveal.
+
+       `.rise` is the on-load entrance for the hero. This is its counterpart
+       further down the page: a block stays held back until it enters the
+       viewport, then settles. Driven by an IntersectionObserver in
+       resources/js/app.js, which adds `.is-revealed` once and then stops
+       watching -- nothing re-animates on the way back up.
+
+       A block with [data-reveal-stagger] eases its direct children in one
+       after another; the observer numbers them by setting --i.
+
+       NO-JS SAFETY. These rules start at opacity 0, so if the script does not
+       run the content would be invisible. app.js sets `data-reveal-ready` on
+       <html> as its first act, and every rule below is scoped to it -- so
+       without JS nothing is ever hidden in the first place.
+    ----------------------------------------------------------------------- */
+    [data-reveal-ready] [data-reveal] {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+            opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: opacity, transform;
+    }
+
+    [data-reveal-ready] [data-reveal].is-revealed {
+        opacity: 1;
+        transform: none;
+    }
+
+    [data-reveal-ready] [data-reveal-stagger] > * {
+        opacity: 0;
+        transform: translateY(18px);
+        transition:
+            opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: calc(70ms * var(--i, 0));
+    }
+
+    [data-reveal-ready] [data-reveal-stagger].is-revealed > * {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* ---------------------------------------------------------------------
+       Standing section (sections/home/trust).
+
+       The photograph unmasks upward and settles from a slight zoom; the
+       glass card rises in once it has landed; the figures blur in, one
+       after another. Each rule restates the whole `transition` because the
+       generic reveal rules above set the shorthand at the same specificity.
+    --------------------------------------------------------------------- */
+    [data-reveal-ready] .reveal-media {
+        opacity: 1;
+        transform: none;
+        clip-path: inset(22% 0 0 0 round 0.75rem);
+        transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    [data-reveal-ready] .reveal-media.is-revealed {
+        clip-path: inset(0 0 0 0 round 0.75rem);
+    }
+
+    [data-reveal-ready] .reveal-media .reveal-media-img {
+        transform: scale(1.14);
+        transition: transform 2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    [data-reveal-ready] .reveal-media.is-revealed .reveal-media-img {
+        transform: none;
+    }
+
+    [data-reveal-ready] .reveal-media .reveal-card {
+        opacity: 0;
+        transform: translateY(24px);
+        transition:
+            opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.7s,
+            transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.7s;
+    }
+
+    [data-reveal-ready] .reveal-media.is-revealed .reveal-card {
+        opacity: 1;
+        transform: none;
+    }
+
+    [data-reveal-ready] .reveal-blur[data-reveal-stagger] > * {
+        filter: blur(14px);
+        transition:
+            opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+            filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: calc(140ms * var(--i, 0));
+    }
+
+    [data-reveal-ready] .reveal-blur[data-reveal-stagger].is-revealed > * {
+        filter: none;
+    }
+
+    /* -----------------------------------------------------------------------
+       Staggered children, animation variant.
+
+       Same effect as [data-reveal-stagger], but driven by the `rise` keyframes
+       instead of a transition. Use it when the children own a `transition` of
+       their own -- the stagger rule above sets the `transition` SHORTHAND at a
+       higher specificity than a Tailwind `transition-[...]` utility, so it
+       silently replaces it. That is what would happen to the product
+       accordion, whose panels animate their own width.
+
+       Animations and transitions are separate properties, so this leaves the
+       children's own transitions untouched.
+    ----------------------------------------------------------------------- */
+    [data-reveal-ready] [data-reveal-cards] > * {
+        opacity: 0;
+    }
+
+    [data-reveal-ready] [data-reveal-cards].is-revealed > * {
+        animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+        animation-delay: calc(90ms * var(--i, 0));
+    }
+
+    /* -----------------------------------------------------------------------
+       Staggered children, "pop" variant.
+
+       Livelier than [data-reveal-cards]: the child scales in from 0.94 as
+       well as rising, so the group reads as landing rather than fading.
+       Tighter per-child delay (60ms vs 90ms) keeps a six-card grid feeling
+       like one continuous arrival instead of a slow roll-call.
+
+       FILL MODE IS `backwards`, NOT `both`. A finished animation that fills
+       forwards keeps overriding `transform`, which silently kills any
+       hover:-translate-y on the child. `backwards` covers the stagger delay,
+       then hands the property back -- which is why the revealed rule sets
+       `opacity: 1` itself rather than relying on the animation to hold it.
+
+       Photographs inside a revealed child ([data-reveal-photo]) settle from
+       a slight zoom as the tile lands, on the same delay. Same fill-mode
+       reasoning: the tile's hover zoom has to work once it has finished.
+    ----------------------------------------------------------------------- */
+    @keyframes card-pop {
+        from {
+            opacity: 0;
+            transform: translateY(18px) scale(0.94);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    @keyframes photo-settle {
+        from {
+            transform: scale(1.18);
+        }
+        to {
+            transform: scale(1);
+        }
+    }
+
+    [data-reveal-ready] [data-reveal-pop] > * {
+        opacity: 0;
+    }
+
+    [data-reveal-ready] [data-reveal-pop].is-revealed > * {
+        opacity: 1;
+        animation: card-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        animation-delay: calc(60ms * var(--i, 0));
+    }
+
+    [data-reveal-ready] [data-reveal-pop].is-revealed [data-reveal-photo] {
+        animation: photo-settle 1.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        animation-delay: calc(60ms * var(--i, 0));
+    }
+
+    /* -----------------------------------------------------------------------
+       Process steps.
+
+       Opening is driven per frame by the `processRail` component in app.js,
+       which writes `grid-template-rows` and `opacity` inline from the scroll
+       position. Only the structure lives here, because only the structure is
+       constant.
+
+       A row sized in `fr` is the animatable form of `height: auto`: the child
+       needs `overflow: hidden` for the row to clip it, and at `0fr` the step is
+       closed without anyone having to know how tall its copy is.
+
+       Deliberately NOT scoped to [data-reveal-ready]. With no JavaScript no
+       inline rows are ever written, the row sizes to its content, and every
+       step simply reads open -- which is the correct fallback.
+    ----------------------------------------------------------------------- */
+    [data-step-detail] {
+        display: grid;
+    }
+
+    [data-step-detail] > * {
+        overflow: hidden;
+    }
+
+    /* -----------------------------------------------------------------------
+       Word-by-word statement reveal.
+
+       The words of a [data-word-reveal] block light as the block travels up
+       the viewport, so the sentence is read at the pace it is scrolled. Held
+       at 0.25 rather than 0 so the line is always legible as a shape -- and,
+       because the dim state is only ever applied once the script has split the
+       words, the sentence is fully lit if the script never runs.
+    ----------------------------------------------------------------------- */
+    .wr-word {
+        display: inline-block;
+        opacity: 0.25;
+        transition: opacity 0.35s ease;
+    }
+
+    .wr-word.is-lit {
+        opacity: 1;
+    }
+
+    /* -----------------------------------------------------------------------
+       Long-form article body (/insights/{slug}).
+
+       Hand-set rather than a typography plugin: it is a handful of elements,
+       and it uses the page's own type scale and colours. Measure is set by
+       the container (max-w-2xl, roughly 70 characters).
+    ----------------------------------------------------------------------- */
+    .article-body {
+        font-size: var(--text-lead);
+        line-height: 1.75;
+        color: var(--color-ink-soft);
+    }
+
+    .article-body > * + * {
+        margin-top: 1.4em;
+    }
+
+    .article-body h2 {
+        margin-top: 2.4em;
+        font-size: var(--text-h3);
+        line-height: var(--text-h3--line-height);
+        font-weight: 500;
+        letter-spacing: -0.015em;
+        color: var(--color-ink);
+    }
+
+    .article-body h2 + * {
+        margin-top: 0.8em;
+    }
+
+    .article-body strong {
+        font-weight: 500;
+        color: var(--color-ink);
+    }
+
+    .article-body ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6em;
+        padding-left: 1.25em;
+        list-style: disc;
+    }
+
+    .article-body li::marker {
+        color: var(--color-accent);
+    }
+
+    /* The first paragraph is the standfirst: a touch larger and darker. */
+    .article-body > p:first-child {
+        font-size: 1.15em;
+        color: var(--color-ink);
+    }
+
+    /* -----------------------------------------------------------------------
+       Accordion (x-ui.accordion-item).
+
+       The panel's height animates through ::details-content, the pseudo
+       element that wraps everything after <summary>. `interpolate-size`
+       is what allows a transition to `auto`, and `content-visibility ...
+       allow-discrete` keeps the content rendered for the length of the
+       closing transition instead of vanishing on the first frame.
+
+       Pure progressive enhancement: a browser that does not know
+       ::details-content ignores these rules and opens the row instantly.
+    ----------------------------------------------------------------------- */
+    .accordion {
+        interpolate-size: allow-keywords;
+    }
+
+    .accordion::details-content {
+        block-size: 0;
+        overflow-y: clip;
+        transition:
+            block-size 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+            content-visibility 0.55s allow-discrete;
+    }
+
+    .accordion[open]::details-content {
+        block-size: auto;
+    }
+
+    @keyframes answer-in {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .accordion[open] .accordion-answer {
+        animation: answer-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+    }
+
+    /* -----------------------------------------------------------------------
+       Paper stack ("How it works", the `paperStack` component in app.js).
+
+       .paper-stage   leans toward the pointer through --lean-x / --lean-y
+                      (-1..1), written by the component on fine pointers.
+       .paper-sheet   one document. Its transform and z-index come from the
+                      component; --sheet-lift (0..1) deepens the shadow as it
+                      comes forward, so the front sheet reads as picked up.
+       .paper-grain   a faint fibre texture: SVG turbulence, multiplied, so
+                      the sheets read as paper rather than flat white boxes.
+       .stamp-in      the "Approved" stamp landing: dropped from above, a
+                      quick overshoot, and the ink settles.
+    ----------------------------------------------------------------------- */
+    .paper-stage {
+        transform: perspective(1200px) rotateY(calc(var(--lean-x, 0) * 4deg)) rotateX(calc(var(--lean-y, 0) * -3deg));
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .paper-sheet {
+        transition:
+            transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow:
+            0 1px 0 var(--color-line),
+            0 calc(10px + 26px * var(--sheet-lift, 0)) calc(18px + 30px * var(--sheet-lift, 0)) calc(-14px - 6px * var(--sheet-lift, 0))
+                rgb(21 16 25 / calc(0.18 + 0.26 * var(--sheet-lift, 0)));
+    }
+
+    .paper-grain {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.4 0 0 0 0.09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    @keyframes stamp-in {
+        0% {
+            opacity: 0;
+            transform: rotate(-22deg) scale(1.9);
+        }
+        55% {
+            opacity: 0.95;
+            transform: rotate(-7deg) scale(0.92);
+        }
+        75% {
+            transform: rotate(-10deg) scale(1.04);
+        }
+        100% {
+            opacity: 0.88;
+            transform: rotate(-9deg) scale(1);
+        }
+    }
+
+    .stamp-in {
+        animation: stamp-in 0.55s cubic-bezier(0.2, 0.8, 0.25, 1) 0.45s both;
+    }
+
+    /* -----------------------------------------------------------------------
+       Header menu panels (components/layout/navbar).
+
+       A panel is shown the moment its menu opens (plain x-show, no Alpine
+       transition, so nothing waits on an animation frame) and fades up as it
+       arrives, while the pill's height animates to fit it.
+    ----------------------------------------------------------------------- */
+    @keyframes menu-in {
+        from {
+            opacity: 0;
+            transform: translateY(-6px);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .menu-panel {
+        animation: menu-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+    }
+
+    /* -----------------------------------------------------------------------
+       The hero's loan offer, written in and signed.
+
+       .offer-ink     each "in writing" is revealed left to right like a pen
+                      stroke, one line after another (--i orders them), once
+                      the card has slid in (~0.95s + 1s).
+       .offer-tick    a small tick draws itself after each line.
+       .offer-sign    the signature: an anonymous flourish that stays unwritten
+                      until the reader hovers or focuses the primary call to
+                      action (.hero-cta), then draws itself across the line --
+                      "only when you're ready" -- and un-writes when they
+                      leave. :has() lets the button, elsewhere in the hero,
+                      drive it.
+
+       Reduced motion: the site-wide rule collapses every duration, so the
+       lines and ticks simply appear, and the signature appears on hover.
+    ----------------------------------------------------------------------- */
+    @keyframes offer-ink {
+        from {
+            clip-path: inset(0 100% 0 0);
+        }
+        to {
+            clip-path: inset(0 0 0 0);
+        }
+    }
+
+    @keyframes offer-tick {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    .offer-ink {
+        animation: offer-ink 0.7s cubic-bezier(0.45, 0, 0.2, 1) both;
+        animation-delay: calc(2s + var(--i, 0) * 0.55s);
+    }
+
+    .offer-tick {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        animation: offer-tick 0.35s ease-out forwards;
+        animation-delay: calc(2.6s + var(--i, 0) * 0.55s);
+    }
+
+    .offer-sign {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        transition: stroke-dashoffset 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .hero:has(.hero-cta:hover) .offer-sign,
+    .hero:has(.hero-cta:focus-visible) .offer-sign {
+        stroke-dashoffset: 0;
+        transition-duration: 1.4s;
+    }
+
+    .offer-sign-note {
+        transition: opacity 0.4s ease-out;
+    }
+
+    .hero:has(.hero-cta:hover) .offer-sign-note,
+    .hero:has(.hero-cta:focus-visible) .offer-sign-note {
+        opacity: 0;
+    }
+
+    /* -----------------------------------------------------------------------
+       The closing call to action's application slip (.cta-slip).
+
+       At rest it tilts a little from xl, where it sits beside the text.
+       Once the card is revealed it lands: it rises from below, turned the
+       other way, and settles into that tilt a beat after the card itself,
+       like a sheet set down on a desk. Scoped to [data-reveal-ready] like
+       every reveal, so without the script it simply sits at rest; the
+       site-wide reduced-motion rule makes the landing instant.
+    ----------------------------------------------------------------------- */
+    .cta-slip {
+        --slip-rest: rotate(0deg);
+        transform: var(--slip-rest);
+        transition:
+            transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.25s,
+            opacity 0.7s ease-out 0.25s;
+    }
+
+    @media (min-width: 80rem) {
+        .cta-slip {
+            --slip-rest: rotate(-1.2deg);
+        }
+    }
+
+    [data-reveal-ready] [data-reveal]:not(.is-revealed) .cta-slip {
+        opacity: 0;
+        transform: translateY(3.5rem) rotate(4deg);
+    }
+
+    /* -----------------------------------------------------------------------
+       Testimonials marquee.
+
+       The track holds the card list twice, back to back, sized to its own
+       content (`w-max` in the view). Animating it exactly -50% of that width
+       walks through the first copy and stops precisely where the second one
+       is visually identical to the first -- so the loop point is invisible.
+       Raise the duration to slow the crawl down, lower it to speed it up;
+       nothing else needs to change.
+
+       Paused on `:hover` and `:focus-within` rather than left running, so a
+       reader who stops to read a card is not fighting the scroll. The
+       site-wide prefers-reduced-motion rule above already collapses this to
+       a single near-instant frame, so no separate override is needed here.
+    ----------------------------------------------------------------------- */
+    @keyframes marquee {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    .marquee-track {
+        animation: marquee 44s linear infinite;
+        will-change: transform;
+    }
+
+    /* `--marquee-duration` sets the speed from the view, so a longer track
+       can keep the same pace. */
+    .marquee-track {
+        animation-duration: var(--marquee-duration, 44s);
+    }
+
+    .marquee:hover .marquee-track,
+    .marquee-track:hover,
+    .marquee-track:focus-within {
+        animation-play-state: paused;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .rise,
+        .hero-settle,
+        .hero-drop,
+        .hero-slide,
+        .hero-word > span,
+        .hero-scroll,
+        .hero-photo-img {
+            animation: none;
+            opacity: 1;
+            transform: none;
+            filter: none;
+        }
+
+        [data-reveal-ready] [data-reveal],
+        [data-reveal-ready] [data-reveal-stagger] > *,
+        [data-reveal-ready] [data-reveal-cards] > *,
+        [data-reveal-ready] [data-reveal-pop] > *,
+        [data-reveal-ready] .reveal-media,
+        [data-reveal-ready] .reveal-media .reveal-media-img,
+        [data-reveal-ready] .reveal-media .reveal-card {
+            opacity: 1 !important;
+            transform: none !important;
+            transition: none !important;
+            animation: none !important;
+            clip-path: none !important;
+            filter: none !important;
+        }
+
+        .wr-word {
+            opacity: 1 !important;
+        }
+    }
+}
