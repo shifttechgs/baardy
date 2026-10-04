@@ -36,8 +36,8 @@
 <details
     name="{{ $group }}"
     @if ($open) open @endif
-    class="accordion group rounded-xl bg-mist px-5 transition-[background-color,box-shadow] duration-300
-           [&:not([open]):hover]:bg-line/60 open:bg-paper open:shadow-[0_22px_48px_-26px_rgb(21_16_25/0.3)] sm:px-7"
+    class="accordion group rounded-xl bg-paper px-5 transition-[background-color,box-shadow] duration-300
+           [&:not([open]):hover]:bg-paper/60 open:shadow-[0_22px_48px_-26px_rgb(21_16_25/0.3)] sm:px-7"
 >
     <summary
         class="grid cursor-pointer list-none grid-cols-[1fr_auto] items-center gap-x-4 py-5 text-left
@@ -59,7 +59,7 @@
              the plus becomes a minus in one continuous movement. --}}
         <span
             aria-hidden="true"
-            class="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-paper text-ink
+            class="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-mist text-ink
                    transition-[background-color,color,transform] duration-300 ease-out
                    group-hover:text-accent group-open:rotate-180 group-open:bg-accent group-open:text-paper"
         >
@@ -69,7 +69,7 @@
     </summary>
 
     <div class="accordion-answer grid pb-6 sm:grid-cols-[2.25rem_1fr] sm:gap-x-5 sm:pb-7">
-        <div class="max-w-2xl pr-12 text-body text-ink-soft sm:col-start-2">
+        <div class="max-w-2xl pr-1 text-body text-ink-soft sm:col-start-2 sm:pr-12">
             {{ $slot }}
         </div>
     </div>

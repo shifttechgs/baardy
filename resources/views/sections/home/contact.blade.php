@@ -4,7 +4,7 @@
     Direct channels (WhatsApp, phone) on the left, an enquiry form on the
     right -- after the FAQ, so a reader whose question was not answered lands
     straight on a way to ask it. This section owns the #contact anchor, so
-    every "Start an application" button on the site arrives at a real form
+    every "Visit a branch" button on the site arrives at a real form
     rather than at the closing call-to-action panel.
 
     The actual application happens in a branch (see "How it works"); this
@@ -28,6 +28,12 @@
     // taken; anything else is ignored.
     $chosenInterest = old('interest', in_array(request()->query('interest'), $interests, true) ? request()->query('interest') : null);
     $chosenBranch = old('branch', in_array(request()->query('branch'), array_column($branches, 'name'), true) ? request()->query('branch') : $branches[0]['name']);
+
+    // Arriving from a promotion's call to action (?promo=CODE): its tracking
+    // code rides along in a hidden field, so the enquiry email says which
+    // promotion brought it in. Only codes of real promotions are kept.
+    $promoCode = old('promo', request()->query('promo'));
+    $promoCode = is_string($promoCode) && \App\Models\Promotion::where('tracking_code', $promoCode)->exists() ? $promoCode : null;
 
     $whatsapp = collect($branches)
         ->pluck('phones')
@@ -101,6 +107,7 @@
                 x-data="{
                     sending: false,
                     sent: {{ Js::from(session('enquiry_sent')) }},
+                    reference: {{ Js::from(session('enquiry_reference')) }},
                     errors: {},
                     async submit(event) {
                         this.sending = true;
@@ -116,6 +123,7 @@
 
                             if (response.ok) {
                                 this.sent = data.message;
+                                this.reference = data.reference ?? null;
                                 event.target.reset();
                             } else if (response.status === 422) {
                                 this.errors = data.errors ?? {};
@@ -157,7 +165,13 @@
                         <p class="max-w-md text-lead text-muted" x-text="sent"></p>
                     </div>
 
-                    <button type="button" x-on:click="sent = null" class="text-small font-medium text-accent underline-offset-4 hover:underline">
+                    <p x-show="reference" class="flex flex-wrap items-center gap-3 text-small text-muted">
+                        Your reference
+                        <span class="figure-nums rounded-full bg-accent-tint px-3 py-1 font-medium tracking-[0.04em] text-accent" x-text="reference"></span>
+                        <span>Quote it if you call us.</span>
+                    </p>
+
+                    <button type="button" x-on:click="sent = null; reference = null" class="text-small font-medium text-accent underline-offset-4 hover:underline">
                         Send another enquiry
                     </button>
                 </div>
@@ -171,6 +185,10 @@
                     novalidate
                 >
                     @csrf
+
+                    @if ($promoCode)
+                        <input type="hidden" name="promo" value="{{ $promoCode }}">
+                    @endif
 
                     <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                         <h3 data-word-reveal class="text-[1.5rem] leading-tight font-normal tracking-[-0.02em] text-ink">Send us an enquiry</h3>

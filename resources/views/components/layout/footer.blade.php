@@ -28,11 +28,11 @@
             <div class="flex flex-col gap-5 lg:col-span-4">
                 <x-ui.logo tone="inverse" />
 
-                <p class="max-w-xs text-small text-ink-muted">
+                <p class="max-w-sm text-body text-ink-muted">
                     {{ config('company.description') }}
                 </p>
 
-                <ul class="flex flex-col gap-3 text-small">
+                <ul class="flex flex-col gap-3 text-body">
                     <li>
                         <a
                             href="tel:{{ preg_replace('/\s+/', '', config('company.contact.phone')) }}"
@@ -41,7 +41,7 @@
                             <x-ui.icon name="phone" class="text-ink-muted" />
                             {{ config('company.contact.phone') }}
                         </a>
-                        <span class="ml-[1.9em] block text-micro text-ink-muted">
+                        <span class="ml-[1.9em] block text-small text-ink-muted">
                             {{ config('company.contact.phone_label') }}
                         </span>
                     </li>
@@ -68,7 +68,7 @@
                     <nav aria-labelledby="footer-{{ Str::slug($heading) }}">
                         <h2
                             id="footer-{{ Str::slug($heading) }}"
-                            class="text-small font-medium text-paper"
+                            class="text-body font-medium text-paper"
                         >
                             {{ $heading }}
                         </h2>
@@ -78,7 +78,7 @@
                                 <li>
                                     <a
                                         href="{{ $link['href'] }}"
-                                        class="rounded-xs text-small text-ink-muted transition-colors hover:text-paper"
+                                        class="rounded-xs text-body text-ink-muted transition-colors hover:text-paper"
                                     >
                                         {{ $link['label'] }}
                                     </a>
@@ -108,9 +108,10 @@
             See docs/COMPANY.md, "Compliance".
         --}}
         <div class="border-t border-ink-line py-8">
-            <div class="flex flex-col gap-4 text-micro text-ink-muted sm:flex-row sm:items-center sm:justify-between">
-                <p>
-                    &copy; {{ now()->year }} {{ config('company.legal_name') }}. All rights reserved.
+            <div class="flex flex-col gap-4 text-small text-ink-muted sm:flex-row sm:items-center sm:justify-between">
+                <p class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <span>&copy; {{ now()->year }} {{ config('company.legal_name') }}. All rights reserved.</span>
+                    <a href="{{ route('filament.admin.auth.login') }}" class="underline-offset-4 transition-colors hover:text-paper hover:underline">Staff login</a>
                 </p>
 
                 <div class="flex items-center gap-5">

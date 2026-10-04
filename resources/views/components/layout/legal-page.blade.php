@@ -26,28 +26,19 @@
         ->first(fn (array $phone): bool => str_contains($phone['label'], 'WhatsApp'));
 @endphp
 
-<x-ui.section :rule="false" class="pt-10 sm:pt-14 lg:pt-16">
-    <x-ui.container>
-        <nav aria-label="Breadcrumb" class="rise text-small text-muted">
-            <a href="{{ route('home') }}" class="transition-colors hover:text-accent">Home</a>
-            <span aria-hidden="true" class="mx-2">/</span>
-            <span class="text-ink">{{ $title }}</span>
-        </nav>
+<x-layout.page-header
+    eyebrow="Legal"
+    :title="$title"
+    :lead="$summary"
+>
+    <p class="rise figure-nums mt-8 text-small text-muted [animation-delay:300ms]">
+        {{ config('company.legal_name') }} &middot; Last updated <time datetime="{{ $updated }}">{{ \Illuminate\Support\Carbon::parse($updated)->format('j F Y') }}</time>
+    </p>
+</x-layout.page-header>
 
-        <div class="mt-10 grid gap-12 lg:mt-16 lg:grid-cols-12">
-            <header class="flex flex-col gap-5 lg:col-span-8">
-                <p class="rise text-body text-muted [animation-delay:60ms]">{{ config('company.legal_name') }}</p>
-                <h1 class="rise text-[length:clamp(2.25rem,1.4rem+3vw,3.75rem)] leading-[1.05] font-light tracking-[-0.035em] text-ink [animation-delay:120ms]">
-                    {{ $title }}
-                </h1>
-                <p class="rise max-w-2xl text-lead text-muted [animation-delay:180ms]">{{ $summary }}</p>
-                <p class="rise figure-nums text-small text-muted [animation-delay:220ms]">
-                    Last updated <time datetime="{{ $updated }}">{{ \Illuminate\Support\Carbon::parse($updated)->format('j F Y') }}</time>
-                </p>
-            </header>
-        </div>
-
-        <div class="mt-14 grid gap-12 border-t border-line pt-12 lg:mt-16 lg:grid-cols-12 lg:gap-x-16">
+<x-ui.section :rule="false" class="pt-0! pb-20! sm:pb-24! lg:pb-32!">
+    <x-ui.container wide>
+        <div class="grid gap-12 border-t border-line pt-12 lg:grid-cols-12 lg:gap-x-16">
             <div class="article-body lg:col-span-8">
                 {{ $slot }}
             </div>
@@ -100,7 +91,7 @@
                             </li>
                         @endif
                         <li>
-                            <a href="{{ route('home') }}#contact" class="inline-flex items-center gap-2 text-ink-soft transition-colors hover:text-accent">
+                            <a href="{{ route('contact') }}#contact" class="inline-flex items-center gap-2 text-ink-soft transition-colors hover:text-accent">
                                 <x-ui.icon name="arrow-right" class="text-accent" />
                                 Send us a message
                             </a>

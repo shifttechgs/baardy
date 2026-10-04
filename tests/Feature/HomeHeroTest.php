@@ -36,16 +36,21 @@ class HomeHeroTest extends TestCase
     }
 
     /**
-     * One photograph, not a slideshow: nothing rotates and there is no slide
-     * control to operate.
+     * One still photograph at full resolution (the client asked for no
+     * slideshow): a single <img> in the hero, the widest candidate offered,
+     * no slide control and no slideshow component.
      */
-    public function test_it_shows_one_photograph_without_a_slide_control(): void
+    public function test_it_shows_one_static_high_resolution_photograph(): void
     {
         $content = $this->get('/')->assertOk()->getContent();
 
-        $hero = substr($content, 0, strpos($content, 'id="trust"'));
+        $hero = substr($content, strpos($content, '<section aria-labelledby="hero-heading"'));
+        $hero = substr($hero, 0, strpos($hero, '</section>'));
+        $widest = array_key_last(config('marketing.hero.slides')[0]['sources']);
 
-        $this->assertSame(1, substr_count($hero, 'hero-photo-img'));
+        $this->assertSame(1, substr_count($hero, '<img'));
+        $this->assertStringContainsString(basename($widest), $hero);
+        $this->assertStringNotContainsString('heroSlides', $hero);
         $this->assertStringNotContainsString('Pause the photographs', $hero);
         $this->assertStringNotContainsString('Show photograph', $hero);
     }
@@ -55,14 +60,15 @@ class HomeHeroTest extends TestCase
      * counted from the year of first listing. Nothing in the hero may carry an
      * invented rating, customer count or savings figure.
      */
-    public function test_it_backs_the_hero_with_a_verifiable_figure(): void
+    public function test_the_hero_makes_its_one_claim_licensed_and_established(): void
     {
-        $years = now()->year - config('marketing.hero.credentials.years.since');
+        $content = $this->get('/')->assertOk()->getContent();
+        $hero = substr($content, strpos($content, '<section aria-labelledby="hero-heading"'));
+        $hero = substr($hero, 0, strpos($hero, '</section>'));
 
-        $this->get('/')
-            ->assertOk()
-            ->assertSee('data-count-to="'.$years.'"', false)
-            ->assertSee(config('marketing.hero.credentials.years.label'));
+        $this->assertStringContainsString('Licensed Microfinance', $hero);
+        $this->assertStringContainsString('Est. 2015', $hero);
+        $this->assertStringNotContainsString('years licensed and lending', $hero);
     }
 
     /**
@@ -81,42 +87,41 @@ class HomeHeroTest extends TestCase
     }
 
     /**
-     * The loan offer writes itself in, and signs only while the reader is
-     * on the primary call to action: the section, the button and the
-     * signature carry the hooks app.css reads.
+     * The hero is deliberately bare (after trova-travel): no loan-offer card,
+     * no signature flourish. The primary button keeps its hook.
      */
-    public function test_the_loan_offer_is_wired_to_write_in_and_sign(): void
+    public function test_the_hero_carries_no_offer_card(): void
     {
         $content = $this->get('/')->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression('/<section[^>]+class="hero /', $content);
         $this->assertStringContainsString('hero-cta', $content);
-        $this->assertSame(3, substr_count($content, 'class="offer-ink"'));
-        $this->assertSame(3, substr_count($content, 'class="offer-tick"'));
-        $this->assertSame(1, substr_count($content, 'class="offer-sign"'));
+        $this->assertStringNotContainsString('class="offer-ink"', $content);
+        $this->assertStringNotContainsString('Your signature', $content);
     }
 
-    public function test_it_offers_both_calls_to_action(): void
+    public function test_it_has_one_call_to_action(): void
     {
-        $this->get('/')
-            ->assertOk()
-            ->assertSee(config('company.cta.primary.label'))
-            ->assertSee(config('company.cta.secondary.label'));
+        $hero = $this->get('/')->assertOk()->getContent();
+        $hero = substr($hero, strpos($hero, '<section aria-labelledby="hero-heading"'));
+        $hero = substr($hero, 0, strpos($hero, '</section>'));
+
+        $this->assertStringContainsString(config('company.cta.primary.label'), $hero);
+        $this->assertStringNotContainsString(config('company.cta.secondary.label'), $hero);
     }
 
     /**
-     * What is on offer, then who it is for, then the ask directly under the
-     * promise, then the credentials -- a two-second read, top to bottom.
+     * The licence line, then the promise, then the ask, then who it is for.
      */
     public function test_it_orders_the_hero_for_a_two_second_read(): void
     {
         $this->get('/')
             ->assertOk()
             ->assertSeeInOrder([
+                'Licensed Microfinance',
                 config('marketing.hero.heading')[0],
-                'reviewed by a person',
                 config('company.cta.primary.label'),
-                'Licensed by the Reserve Bank of Zimbabwe',
+                'reviewed by a person',
             ], false);
     }
 
@@ -132,5 +137,30 @@ class HomeHeroTest extends TestCase
                 '<span class="sr-only">'.e(implode(' ', config('marketing.hero.heading'))).'</span>',
                 false
             );
+    }
+
+    /**
+     * The headline and actions must sit inside the hero's own wrapper. A stray
+     * closing tag after the slide loop once pushed them outside it, leaving a
+     * bare photograph.
+     */
+    public function test_the_headline_is_inside_the_hero_wrapper(): void
+    {
+        $doc = new \DOMDocument;
+        @$doc->loadHTML($this->get('/')->assertOk()->getContent());
+        $xpath = new \DOMXPath($doc);
+
+        $this->assertSame(1, $xpath->query('//section[contains(@class,"hero")]//*[@id="hero-heading"]')->length);
+        $this->assertSame(1, $xpath->query('//section[contains(@class,"hero")]//div[contains(concat(" ", normalize-space(@class), " "), " bg-ink ")][.//*[@id="hero-heading"]]')->length);
+    }
+
+    /**
+     * The client wants a headline of six words at most.
+     */
+    public function test_the_headline_is_six_words_at_most(): void
+    {
+        $words = str_word_count(implode(' ', config('marketing.hero.heading')));
+
+        $this->assertLessThanOrEqual(6, $words);
     }
 }

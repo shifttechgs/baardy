@@ -27,6 +27,28 @@ return [
     'name' => 'Baardy',
     'legal_name' => 'Baardy Micro Capital (Pvt) Ltd',
 
+    /*
+    | Company profile, in the client's own words (final "BMC Website Design"
+    | document). Shown in the homepage About section.
+    */
+    'profile' => [
+        'intro' => 'Baardy Micro Capital (Pvt) Limited is a proudly Zimbabwean-owned and duly registered '
+            .'Microfinance Institution, established in 2015. We are committed to promoting financial inclusion, '
+            .'economic empowerment and sustainable development by providing accessible, convenient and '
+            .'responsible financial solutions to individuals, entrepreneurs and small businesses across both '
+            .'the public and private sectors in Zimbabwe.',
+        'belief' => 'We believe that access to appropriate financial services can play an important role in '
+            .'reducing poverty, strengthening livelihoods, creating employment, supporting entrepreneurship and '
+            .'promoting sustainable economic development. Through our lending solutions, we help customers '
+            .'access the capital they need to start and grow businesses, meet essential financial obligations '
+            .'and pursue opportunities that improve their livelihoods and economic well-being.',
+        // Target market, per the client.
+        'serves' => [
+            ['title' => 'Government employees', 'body' => 'Public Service Commission employees, pensioners and non-pensioners.'],
+            ['title' => 'SMEs', 'body' => 'Small and medium-sized businesses that need capital to start, run and grow.'],
+        ],
+    ],
+
     // One sentence describing what the company does. Used in meta tags.
     'description' => 'Salary-based, educational, agricultural, SME and women-empowerment '
         .'loans from a licensed Zimbabwean microfinance institution, with a decision made '
@@ -88,6 +110,13 @@ return [
     ],
 
     /*
+    | Where job applications (with the CV attached) are delivered.
+    */
+    'careers' => [
+        'to' => env('CAREERS_TO', 'vacancies@baardymicrocapital.com'),   // CONFIRMED by the client
+    ],
+
+    /*
     |--------------------------------------------------------------------------
     | Branches
     |--------------------------------------------------------------------------
@@ -107,29 +136,23 @@ return [
         [
             'name' => 'Harare',
             'role' => 'Head office',
+            // What Google Maps is asked to find: the building and street, without
+            // the floor and office (which send it to a different building).
+            'map_query' => 'Construction House, 110 Leopold Takawira Street, Harare, Zimbabwe',
             // VERIFIED against the RBZ register (2015 and 2018 editions).
             'address' => [
-                'Office 400, 4th Floor, Construction House',
-                '108–110 Leopold Takawira Street',
+                '4th Floor, Office 400, Construction House',
+                '110 Leopold Takawira Street',
                 'Harare, Zimbabwe',
             ],
             /*
-            | The first number is CONFIRMED BY THE CLIENT, and it matches the
-            | RBZ 2018 register (0772 550 189) -- an independent corroboration
-            | eight years apart.
-            |
-            | The remaining three numbers come from the client-supplied "BMC
-            | Website Profile" (received 2026-09-25), which prints them in
-            | full. The RBZ register's own second number, 777254, was
-            | previously withheld here because that register printed it
-            | incomplete; the client's own profile now gives the complete
-            | landline (0242-777254) and two mobile numbers, so all three are
-            | published. This document does not mention +263 772 550 189 at
-            | all -- confirm with the client which number(s) should be
-            | primary before launch.
+            | Numbers exactly as listed in the client's final "BMC Website
+            | Design" document. It does not list +263 772 550 189 (the
+            | `contact.phone` shown in the footer, contact and FAQ); confirm
+            | with the client whether that number should stay or be replaced.
             */
+            // Per the client's "BMC Website Design" document (final).
             'phones' => [
-                ['label' => 'Cell', 'tel' => '+263772550189', 'display' => '+263 772 550 189'],
                 ['label' => 'Tel', 'tel' => '+263242777254', 'display' => '0242-777254'],
                 ['label' => 'Call', 'tel' => '+263787417155', 'display' => '+263 787 417 155'],
                 ['label' => 'Call/WhatsApp', 'tel' => '+263715351004', 'display' => '+263 715 351 004'],
@@ -138,19 +161,16 @@ return [
         [
             'name' => 'Bulawayo',
             'role' => 'Branch',
-            /*
-            | Supplied by the client as a photograph of printed material. The
-            | building name was read from a soft image and should be confirmed:
-            | "Mership House" is the most likely reading, but the print is not
-            | sharp enough to rule out a variant spelling.
-            */
+            'map_query' => 'Mership House, Corner 9th Avenue & J. Nkomo Street, Bulawayo, Zimbabwe',
+            // CONFIRMED by the client's "BMC Website Design" document (final),
+            // which spells the building "Mership House".
             'address' => [
                 '3rd Floor, Mership House',
-                'Cnr 9th Avenue and J. Nkomo Street',
+                'Corner 9th Avenue & J. Nkomo Street',
                 'Bulawayo, Zimbabwe',
             ],
             'phones' => [
-                ['label' => 'Tel', 'tel' => '+263292883657', 'display' => '(0)29 2883 657'],
+                ['label' => 'Tel', 'tel' => '+263292883657', 'display' => '0292-883657'],
                 ['label' => 'Cell', 'tel' => '+263775399113', 'display' => '+263 775 399 113'],
                 ['label' => 'Cell', 'tel' => '+263715351013', 'display' => '+263 715 351 013'],
             ],
@@ -200,8 +220,8 @@ return [
     | Primary navigation.
     |
     | An item with `menu` opens a panel that grows out of the header (see
-    | components/layout/navbar): `loans` lists marketing.products, `insights`
-    | the newest articles, `about` (labelled Company) the cards in nav_about
+    | components/layout/navbar): `loans` lists marketing.products,
+    | `about` (labelled Company) the cards in nav_about
     | below. `href` is
     | where the item goes without JavaScript, and on the mobile panel's
     | section heading.
@@ -209,8 +229,8 @@ return [
     'nav' => [
         ['label' => 'Loans', 'href' => '/#products', 'menu' => 'loans'],
         ['label' => 'Company', 'href' => '/#trust', 'menu' => 'about'],
-        ['label' => 'Insights', 'href' => '/insights', 'menu' => 'insights'],
-        ['label' => 'FAQs', 'href' => '/#faq'],
+        ['label' => 'Partners', 'href' => '/partners'],
+        ['label' => 'Careers', 'href' => '/careers'],
     ],
 
     /*
@@ -221,15 +241,18 @@ return [
     | once the client supplies its history, mission and leadership.
     */
     'nav_about' => [
-        ['label' => 'Who we are', 'description' => 'A licensed microfinance institution on the Reserve Bank of Zimbabwe register since 2015, in Harare and Bulawayo.', 'href' => '/#trust'],
+        ['label' => 'Who we are', 'description' => 'A licensed microfinance institution on the Reserve Bank of Zimbabwe register since 2015, in Harare and Bulawayo.', 'href' => '/about'],
         ['label' => 'Why borrow from us', 'description' => 'Repayments that follow your cash, free advisory, and your information kept private.', 'href' => '/#why-us'],
         ['label' => 'How it works', 'description' => 'Three steps from a branch visit to funds, on paper at every step.', 'href' => '/#how-it-works'],
         ['label' => 'Responsible lending', 'description' => 'How we lend, and what to do if repaying becomes hard.', 'href' => '/responsible-lending'],
-        ['label' => 'Get in touch', 'description' => 'Talk to a person, by phone or WhatsApp, or send us a message.', 'href' => '/#contact'],
+        ['label' => 'Get in touch', 'description' => 'Talk to a person, by phone or WhatsApp, or send us a message.', 'href' => '/contact'],
     ],
 
     'cta' => [
-        'primary' => ['label' => 'Start an application', 'href' => '/#contact'],
+        // Applications are made in person at a branch, so the call to action invites
+        // people in rather than offering an online application. It lands on /contact:
+        // the offices, the map and an enquiry form that gets a call back.
+        'primary' => ['label' => 'Visit a branch', 'href' => '/contact'],
         'secondary' => ['label' => 'See how it works', 'href' => '/#how-it-works'],
     ],
 
@@ -244,16 +267,22 @@ return [
             ['label' => 'Educational loans', 'href' => '/#products'],
             ['label' => 'Agricultural loans', 'href' => '/#products'],
             ['label' => 'Women empowerment loans', 'href' => '/#products'],
+            ['label' => 'Youth empowerment loans', 'href' => '/#products'],
             ['label' => 'SME bridging finance', 'href' => '/#products'],
         ],
         'Company' => [
+            ['label' => 'About us', 'href' => '/about'],
             ['label' => 'Why borrow from us', 'href' => '/#why-us'],
             ['label' => 'How it works', 'href' => '/#how-it-works'],
             ['label' => 'Insights', 'href' => '/insights'],
+            ['label' => 'Promotions', 'href' => '/promotions'],
+            ['label' => 'Partners', 'href' => '/partners'],
+            ['label' => 'Careers', 'href' => '/careers'],
         ],
         'Support' => [
             ['label' => 'FAQs', 'href' => '/#faq'],
-            ['label' => 'Contact us', 'href' => '/#contact'],
+            ['label' => 'Visit a branch', 'href' => '/contact#visit'],
+            ['label' => 'Contact us', 'href' => '/contact'],
             ['label' => 'Struggling to repay?', 'href' => '/responsible-lending#struggling-to-repay'],
             ['label' => 'Make a complaint', 'href' => '/complaints'],
         ],

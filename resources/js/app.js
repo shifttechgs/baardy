@@ -266,6 +266,52 @@ function scrollTrack(count) {
     };
 }
 
+/**
+ * The loans stack: each sticky card is covered by the next as the page scrolls
+ * down, and settles back (smaller, darker) in proportion to how much of it is
+ * covered. Cards stack with CSS alone, so with reduced motion this does
+ * nothing and they simply overlap.
+ */
+Alpine.data('productStack', () => ({
+    init() {
+        if (reducedMotion.matches) {
+            return;
+        }
+
+        const cards = [...this.$el.querySelectorAll('[data-stack-card]')];
+        let queued = false;
+
+        const update = () => {
+            queued = false;
+
+            cards.forEach((card, index) => {
+                const next = cards[index + 1];
+                let covered = 0;
+
+                if (next && getComputedStyle(card).position === 'sticky') {
+                    const stickyTop = parseFloat(getComputedStyle(card).top) || 0;
+                    const distance = next.getBoundingClientRect().top - stickyTop;
+                    covered = Math.min(Math.max(1 - distance / card.offsetHeight, 0), 1);
+                }
+
+                card.style.transform = covered ? `scale(${(1 - covered * 0.05).toFixed(4)})` : '';
+                card.querySelector('[data-stack-shade]').style.opacity = (covered * 0.55).toFixed(3);
+            });
+        };
+
+        const request = () => {
+            if (!queued) {
+                queued = true;
+                window.requestAnimationFrame(update);
+            }
+        };
+
+        window.addEventListener('scroll', request, { passive: true });
+        window.addEventListener('resize', request, { passive: true });
+        update();
+    },
+}));
+
 /** The four facilities, as horizontally expanding panels. */
 Alpine.data('productRail', (count) => ({
     ...scrollTrack(count),
@@ -459,13 +505,14 @@ Alpine.data('siteHeader', (overlay) => ({
     y: window.scrollY,
     lastY: window.scrollY,
     compact: false,
+    stuck: window.scrollY > 24,
     menu: null,
     open: false,
     height: 0,
     timer: null,
 
     get overPhoto() {
-        return this.overlay && this.y < 8 && !this.menu && !this.open;
+        return this.overlay && this.y < 24 && !this.menu && !this.open;
     },
 
     /**
@@ -485,6 +532,7 @@ Alpine.data('siteHeader', (overlay) => ({
 
     onScroll() {
         this.y = window.scrollY;
+        this.stuck = this.y > 24;
         const delta = this.y - this.lastY;
 
         if (Math.abs(delta) > 4) {
@@ -546,6 +594,34 @@ Alpine.data('siteHeader', (overlay) => ({
             this.toggleMobile();
             this.$refs.toggle.focus();
         }
+    },
+}));
+
+/**
+ * "Message the Harare branch": on the homepage, choose that branch in the
+ * enquiry form and carry the reader down to it, with the cursor in the name
+ * field. Anywhere else the link works as a plain link to the homepage form
+ * (the form reads ?branch= itself).
+ */
+Alpine.data('branchLink', (branch) => ({
+    go(event) {
+        const form = document.querySelector('#contact form');
+
+        if (!form) {
+            return;
+        }
+
+        event.preventDefault();
+
+        const radio = form.querySelector(`[name="branch"][value="${CSS.escape(branch)}"]`);
+
+        if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        document.getElementById('contact').scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' });
+        setTimeout(() => form.querySelector('[name="name"]')?.focus({ preventScroll: true }), reducedMotion.matches ? 0 : 700);
     },
 }));
 
@@ -853,7 +929,7 @@ function initReveal() {
 
     // Blocks settle just before their top edge arrives, so the motion finishes
     // as they reach reading position rather than after.
-    revealOnce(blocks, { rootMargin: '0px 0px -12% 0px', threshold: 0.1 });
+    revealOnce(blocks, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
 
     /*
      * Steps wait considerably longer -- until their top crosses roughly the

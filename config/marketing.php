@@ -27,24 +27,25 @@ return [
     */
     'hero' => [
         /*
-        | Two short statements, one per line: what the borrower gets (terms
-        | they can read) and who stands behind it (people they can reach).
+        | Two short statements, one per line: what the borrower gets (clear
+        | terms) and who stands behind it (people). Five words, matching the
+        | reference hero (and six at most, per the client).
         | True of every product and every borrower, and it makes no speed
         | claim -- the old "Working capital in days, not weeks" spoke to SME
         | borrowers only and put an unconfirmed turnaround in the largest type
         | on the site. The second line is set a step quieter than the first.
         */
         'heading' => [
-            'Loans you can read.',
-            'People you can reach.',
+            'Loans made clear.',
+            'People first.',
         ],
 
         /*
-        | One sentence: who it is for, and the two things that make the offer
-        | different. Anything longer is not read before the visitor scrolls.
+        | One short line: the two things that make the offer different. The loan
+        | types are carried by the chips beside it, so they are not repeated here.
+        | Anything longer is not read before the visitor scrolls.
         */
-        'lead' => 'Salary, school-fee, farming and small-business loans across Zimbabwe, '
-            .'each one reviewed by a person, with every cost in writing before you sign.',
+        'lead' => 'Every loan is reviewed by a person, with every cost in writing.',
 
         /*
         | The three objections a borrower raises first, answered before the
@@ -187,6 +188,16 @@ return [
                 'flip' => false,
                 'stretch' => 0,
             ],
+            [
+                'label' => 'SME loans',
+                'alt' => 'Young traders gathered at a phone-case stall',
+                'sources' => [
+                    'images/hero/sme-1030.webp' => 1030,
+                ],
+                'position' => '50% 40%',
+                'flip' => false,
+                'stretch' => 0,
+            ],
         ],
     ],
 
@@ -246,7 +257,7 @@ return [
     | Products ------------------------------------------------------------
     |
     | Names, summaries and `best_for` are drawn from the client-supplied
-    | "BMC Website Profile" (received 2026-09-25) and describe the five
+    | "BMC Website Profile" (received 2026-09-25) and describe the
     | lending products the company actually offers.
     |
     | `min`/`max`/`term` are NOT in that document and remain illustrative
@@ -255,6 +266,9 @@ return [
     |
     | `image` is the photograph behind each panel of the products rail; all
     | from Unsplash (free for commercial use, Unsplash License).
+    |
+    | Youth Empowerment Loans was added later, from the client's final
+    | "BMC Website Design" document, with no terms supplied.
     |
     | The profile lists a sixth item, Financial Advisory Services, which is
     | not a loan and has no amount or term -- it is surfaced instead as a
@@ -301,6 +315,22 @@ return [
             'max' => 75000,
             'term' => '3 to 24 months',
             'best_for' => 'Women entrepreneurs and women-led businesses',
+        ],
+        [
+            // Added from the client's final "BMC Website Design" document, which
+            // names the product and supplies the photograph but no copy or
+            // terms. The summary restates the company profile's aims (young
+            // entrepreneurs, livelihoods); `min`/`max`/`term` are PLACEHOLDERS
+            // like every range here -- and no age limit is stated, as none
+            // has been given. Replace all of it with the client's real terms.
+            'name' => 'Youth Empowerment Loans',
+            'image' => ['src' => 'images/products/youth-1600.webp', 'alt' => 'Young traders gathered at a phone-case stall', 'position' => '50% 40%'],
+            'summary' => 'Financial support to help young people start and grow a business, '
+                .'build their livelihoods and create opportunity for themselves and others.',
+            'min' => 1000,
+            'max' => 50000,
+            'term' => '3 to 12 months',
+            'best_for' => 'Young entrepreneurs starting or growing a business',
         ],
         [
             'name' => 'SME Bridging Finance',
@@ -396,7 +426,7 @@ return [
     'why_us' => [
         'heading' => 'Made around the way you earn and repay',
         'lead' => 'Loans shaped around real lives, with support that does not stop at the payout.',
-        'action' => ['label' => 'Start an application', 'href' => '/#contact'],
+        'action' => ['label' => 'Visit a branch', 'href' => '/contact'],
         'tiles' => [
             'schedule' => [
                 'benefit' => 2,
@@ -587,6 +617,51 @@ return [
         ],
     ],
 
+    /*
+    | Customer stories -----------------------------------------------------
+    |
+    | Short, genuine accounts of a customer's experience, shown under the
+    | testimonials. SAME RULE AS TESTIMONIALS: an entry is published only when
+    | `consented` is true, and the section renders nothing while none is.
+    | Never invent one. With `testimonials_preview` on, the samples below show
+    | under a visible "Sample story" label (for a demo only).
+    |
+    |   title      a short line over the story (optional)
+    |   photo      the photograph behind the quote (optional): for a real story,
+    |              the customer's own, with their consent; without one the story
+    |              is a light card. The samples borrow a loan photograph.
+    |   story      what happened, in the customer's own words (2-3 sentences)
+    |   name       as they agreed to be named (e.g. "Tendai M.")
+    |   role       trade and town
+    |   loan       which loan, matching a name in `products` (optional)
+    |   consented  true only with written consent on file
+    */
+    'customer_stories' => [
+        [
+            'title' => 'Clear from the first visit',
+            'photo' => 'images/products/sme-1600.webp',
+            'story' => 'I came in not knowing which loan suited a market stall. The officer went through the options and put the total I would repay in writing.',
+            'name' => 'Market trader',
+            'role' => 'Sample story',
+            'loan' => 'SME Bridging Finance',
+            'consented' => false,
+        ],
+        [
+            'title' => 'Repayments that follow the harvest',
+            'story' => 'Repayments were planned around when my crops are sold, so I was not stretched in the months before harvest.',
+            'name' => 'Smallholder farmer',
+            'role' => 'Sample story',
+            'loan' => 'Agricultural Loans',
+            'consented' => false,
+        ],
+        [
+            'story' => 'Someone called me back and explained everything before I signed. I knew what I was agreeing to.',
+            'name' => 'Salaried employee',
+            'role' => 'Sample story',
+            'loan' => 'Salary-Based Loans',
+            'consented' => false,
+        ],
+    ],
     'testimonials' => [
         [
             'quote' => 'I needed stock before the holiday rush. They told me exactly what to bring '
@@ -683,6 +758,7 @@ return [
             'Educational Loan',
             'Agricultural Loan',
             'Women Empowerment Loan',
+            'Youth Empowerment Loan',
             'SME Bridging Finance',
         ],
     ],

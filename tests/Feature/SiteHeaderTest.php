@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 
 /**
- * The header is one floating pill: menus grow out of it, it condenses on
+ * The header is a flat bar: menus grow down out of it, it slides away on
  * scroll, and every menu item still works as a plain link without script.
  */
 class SiteHeaderTest extends TestCase
@@ -45,8 +45,8 @@ class SiteHeaderTest extends TestCase
 
         $this->assertMatchesRegularExpression('/<header[^>]*data-over-photo/', $home);
         $this->assertDoesNotMatchRegularExpression('/<header[^>]*data-over-photo(?!=)/', $insights);
-        $this->assertStringContainsString('class="h-22 sm:h-26 lg:h-28"', $insights);
-        $this->assertStringNotContainsString('class="h-22 sm:h-26 lg:h-28"', $home);
+        $this->assertStringContainsString('class="h-22"', $insights);
+        $this->assertStringNotContainsString('class="h-22"', $home);
     }
 
     public function test_the_mobile_menu_is_wired(): void

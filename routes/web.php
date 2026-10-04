@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\InsightController;
+use App\Http\Controllers\JobApplicationCvController;
+use App\Http\Controllers\PromotionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +34,25 @@ Route::view('/privacy', 'pages.legal.privacy')->name('legal.privacy');
 Route::view('/terms', 'pages.legal.terms')->name('legal.terms');
 Route::view('/responsible-lending', 'pages.legal.responsible-lending')->name('legal.responsible-lending');
 Route::view('/complaints', 'pages.legal.complaints')->name('legal.complaints');
+
+Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
+Route::get('/promotions/{promotion:slug}', [PromotionController::class, 'show'])->name('promotions.show');
+
+Route::view('/about', 'pages.about')->name('about');
+
+Route::view('/contact', 'pages.contact')->name('contact');
+
+Route::view('/partners', 'pages.partners')->name('partners');
+
+Route::get('/careers', [CareerController::class, 'index'])->name('careers');
+Route::post('/careers/apply', [CareerController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('careers.apply');
+
+// A CV for staff to read in the browser (PDF) or download (anything else).
+// Admin users only; see JobApplicationCvController.
+Route::get('/staff/applications/{application}/cv', [JobApplicationCvController::class, 'show'])
+    ->name('applications.cv');
 
 Route::get('/insights', [InsightController::class, 'index'])->name('insights.index');
 Route::get('/insights/{slug}', [InsightController::class, 'show'])

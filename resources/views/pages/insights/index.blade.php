@@ -23,27 +23,16 @@
 @endphp
 
 @section('content')
-    <x-ui.section :rule="false" class="pt-10 sm:pt-14 lg:pt-16">
+    <x-layout.page-header
+        eyebrow="Insights"
+        title="Advice from across the counter"
+        lead="Short, practical guides on budgeting, borrowing and seasonal finance. The same advice our team gives at the branch."
+    />
+
+    <x-ui.section :rule="false" class="pt-0! pb-16! sm:pb-20! lg:pb-28!">
         <x-ui.container wide x-data="{ category: 'All' }">
-            <nav aria-label="Breadcrumb" class="rise text-small text-muted">
-                <a href="{{ route('home') }}" class="transition-colors hover:text-accent">Home</a>
-                <span aria-hidden="true" class="mx-2">/</span>
-                <span class="text-ink">Insights</span>
-            </nav>
-
-            <div class="mt-10 flex max-w-3xl flex-col gap-6 lg:mt-16">
-                <p class="rise text-body text-muted [animation-delay:60ms]">Baardy Insights</p>
-                <h1 class="rise text-[length:clamp(2.25rem,1.4rem+3vw,4rem)] leading-[1.05] font-light tracking-[-0.035em] text-ink [animation-delay:120ms]">
-                    Advice from across the counter
-                </h1>
-                <p class="rise max-w-2xl text-lead text-muted [animation-delay:180ms]">
-                    Short, practical guides on budgeting, borrowing and seasonal finance. The same
-                    advice our team gives at the branch.
-                </p>
-            </div>
-
             {{-- Category pills --}}
-            <div role="group" aria-label="Filter by topic" class="rise mt-14 flex flex-wrap gap-2 [animation-delay:240ms] lg:mt-20">
+            <div role="group" aria-label="Filter by topic" class="rise flex flex-wrap gap-2 [animation-delay:240ms]">
                 @foreach (collect(['All'])->concat($categories) as $category)
                     <button
                         type="button"
