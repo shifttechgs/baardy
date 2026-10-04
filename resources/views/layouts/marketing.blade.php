@@ -74,5 +74,7 @@
     </main>
 
     <x-layout.footer />
+
+    <x-layout.whatsapp-button />
 </body>
 </html>

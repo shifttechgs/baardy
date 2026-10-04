@@ -15,7 +15,7 @@ use Illuminate\Validation\Rule;
 class StoreEnquiryRequest extends FormRequest
 {
     /**
-     * Everything a visitor can say they are interested in: the five lending
+     * Everything a visitor can say they are interested in: the lending
      * products in config/marketing.php, plus the advisory service and a
      * catch-all. The form renders this list and validation accepts only it,
      * so the two can never drift apart.
@@ -55,6 +55,8 @@ class StoreEnquiryRequest extends FormRequest
             'interest' => ['required', Rule::in(self::interests())],
             'branch' => ['required', Rule::in(self::branches())],
             'message' => ['nullable', 'string', 'max:2000'],
+            // The tracking code of the promotion that brought the visitor in.
+            'promo' => ['nullable', 'string', 'max:40', Rule::exists('promotions', 'tracking_code')],
             'website' => ['nullable', 'string'],
         ];
     }

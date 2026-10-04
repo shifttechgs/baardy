@@ -35,7 +35,7 @@ class HomeWhyUsTest extends TestCase
         $content = $this->get('/')->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression(
-            '/href="\/#contact"[^>]*>\s*Apply with this schedule/',
+            '/href="\/contact"[^>]*>\s*Ask about this schedule/',
             $content
         );
     }

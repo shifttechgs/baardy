@@ -15,7 +15,7 @@ class HomeApplicationSlipTest extends TestCase
         $content = $this->get('/')->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression(
-            '/<form\s+method="GET"\s+action="'.preg_quote(route('home').'#contact', '/').'"\s+x-data="applicationSlip\(/',
+            '/<form\s+method="GET"\s+action="'.preg_quote(route('contact').'#contact', '/').'"\s+x-data="applicationSlip\(/',
             $content
         );
     }
@@ -29,7 +29,7 @@ class HomeApplicationSlipTest extends TestCase
 
     public function test_the_enquiry_form_preselects_the_answers_it_is_sent(): void
     {
-        $content = $this->get('/?interest=SME%20Bridging%20Finance&branch=Bulawayo')->assertOk()->getContent();
+        $content = $this->get('/contact?interest=SME%20Bridging%20Finance&branch=Bulawayo')->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression('/<option value="SME Bridging Finance"\s+selected/', $content);
         $this->assertMatchesRegularExpression('/name="branch"\s+value="Bulawayo"\s+class="sr-only"\s+checked/', $content);
@@ -37,7 +37,7 @@ class HomeApplicationSlipTest extends TestCase
 
     public function test_the_enquiry_form_ignores_answers_it_does_not_offer(): void
     {
-        $content = $this->get('/?interest=Bogus&branch=Mars')->assertOk()->getContent();
+        $content = $this->get('/contact?interest=Bogus&branch=Mars')->assertOk()->getContent();
 
         $this->assertStringNotContainsString('value="Bogus"', $content);
         $this->assertMatchesRegularExpression('/<option value="" disabled\s+selected>Choose one/', $content);

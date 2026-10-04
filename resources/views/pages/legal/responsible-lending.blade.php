@@ -17,7 +17,12 @@
     <x-layout.legal-page
         title="Responsible lending"
         summary="A loan should help, not hurt. This is how we make sure it does, and what to do if repaying becomes hard."
-        updated="2026-09-27"
+        updated="2026-10-04"
+        image="images/insights/budgeting-1600.webp"
+        alt="Planning a household budget on paper"
+        position="50% 50%"
+        :width="1600"
+        :height="1067"
     >
         <p>
             We lend to salaried workers, farmers, traders and small businesses across Zimbabwe. Lending
@@ -33,6 +38,13 @@
             <li><strong>Your schedule fits how you earn.</strong> Weekly, fortnightly or monthly, agreed before you accept.</li>
         </ul>
 
+        <h2>What we will not do</h2>
+        <ul>
+            <li>Lend to you just because you could be approved. If the repayments would strain you, we will say so.</li>
+            <li>Hide a cost. Anything you will be charged is written down before you commit.</li>
+            <li>Rush you. You can take the written terms away and think before you accept.</li>
+        </ul>
+
         <h2>While you repay</h2>
         <ul>
             <li>You can settle early, and you will not be charged a penalty for doing so.</li>
@@ -45,6 +57,12 @@
             advance than after a payment has been missed. Call or WhatsApp us, or visit your branch, and a person
             will go through your options with you. What a missed payment means for you is set out in your loan
             agreement.
+        </p>
+
+        <h2>If something goes wrong</h2>
+        <p>
+            If you believe we did not lend responsibly, or you were treated unfairly, you can complain. See our
+            <a href="{{ route('legal.complaints') }}" class="text-accent underline underline-offset-4">complaints procedure</a>.
         </p>
 
         <h2>Borrowing well</h2>

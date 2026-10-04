@@ -64,7 +64,7 @@ class FooterAndLegalPagesTest extends TestCase
 
     public function test_the_enquiry_form_links_to_the_privacy_notice(): void
     {
-        $content = $this->get('/')->assertOk()->getContent();
+        $content = $this->get('/contact')->assertOk()->getContent();
 
         $contact = substr($content, strpos($content, 'id="contact"'));
 

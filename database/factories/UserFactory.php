@@ -34,6 +34,22 @@ class UserFactory extends Factory
     }
 
     /**
+     * Can sign in to the admin panel.
+     */
+    public function admin(): static
+    {
+        return $this->afterMaking(fn ($user) => $user->is_admin = true);
+    }
+
+    /**
+     * Can sign in and approve promotions for publishing.
+     */
+    public function approver(): static
+    {
+        return $this->admin()->afterMaking(fn ($user) => $user->can_approve_promotions = true);
+    }
+
+    /**
      * Indicate that the model's email address should be unverified.
      */
     public function unverified(): static

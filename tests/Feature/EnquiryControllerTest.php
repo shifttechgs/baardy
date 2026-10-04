@@ -2,15 +2,19 @@
 
 namespace Tests\Feature;
 
+use App\LeadActivityType;
+use App\LeadStage;
 use App\Mail\EnquiryReceived;
+use App\Models\Lead;
 use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Attributes\TestWith;
+use RuntimeException;
 use Tests\TestCase;
 
 /**
- * The "Get in touch" form. An enquiry must reach the client's inbox, bad
- * input must come back with a message a person can act on, and bots must
- * get nothing through.
+ * The "Get in touch" form. An enquiry must be kept as a lead and reach the
+ * team's inbox, bad input must come back with a message a person can act
+ * on, and bots must get nothing through.
  */
 class EnquiryControllerTest extends TestCase
 {
@@ -35,7 +39,7 @@ class EnquiryControllerTest extends TestCase
         config(['company.enquiries.to' => 'loans@baardy.test']);
 
         $this->post(route('enquiries.store'), $this->validEnquiry())
-            ->assertRedirect(route('home').'#contact')
+            ->assertRedirect(route('contact').'#contact')
             ->assertSessionHas('enquiry_sent');
 
         Mail::assertSent(EnquiryReceived::class, function (EnquiryReceived $mail): bool {
@@ -50,11 +54,84 @@ class EnquiryControllerTest extends TestCase
     {
         Mail::fake();
 
+        $response = $this->postJson(route('enquiries.store'), $this->validEnquiry())
+            ->assertOk()
+            ->assertJson(['message' => 'Thank you. We have your details and will call or WhatsApp you shortly.']);
+
+        $this->assertSame(Lead::sole()->reference, $response->json('reference'));
+        Mail::assertSent(EnquiryReceived::class);
+    }
+
+    public function test_an_enquiry_is_stored_as_a_new_lead_before_it_is_mailed(): void
+    {
+        Mail::fake();
+
+        $this->postJson(route('enquiries.store'), $this->validEnquiry())->assertOk();
+
+        $lead = Lead::sole();
+        $this->assertSame('Tendai Moyo', $lead->name);
+        $this->assertSame('263771234567', $lead->phone_normalized);
+        $this->assertSame(LeadStage::New, $lead->stage);
+        $this->assertMatchesRegularExpression('/^BMC-[A-Z2-9]{6}$/', $lead->reference);
+        $this->assertSame(LeadActivityType::Enquired, $lead->activities()->sole()->type);
+
+        Mail::assertSent(EnquiryReceived::class, fn (EnquiryReceived $mail): bool => $mail->lead->is($lead));
+    }
+
+    /**
+     * The same person enquiring twice -- even with the number written
+     * differently -- is one lead with two entries, not two leads.
+     */
+    public function test_a_repeat_enquiry_from_the_same_number_joins_the_open_lead(): void
+    {
+        Mail::fake();
+
+        $this->postJson(route('enquiries.store'), $this->validEnquiry())->assertOk();
+        $this->postJson(route('enquiries.store'), $this->validEnquiry(['phone' => '077 123 4567', 'message' => 'Any news?']))->assertOk();
+
+        $lead = Lead::sole();
+        $this->assertSame(2, $lead->activities()->count());
+        $this->assertSame(LeadActivityType::EnquiredAgain, $lead->activities()->first()->type);
+        $this->assertStringContainsString('Any news?', $lead->activities()->first()->body);
+    }
+
+    public function test_an_enquiry_after_a_lead_was_closed_opens_a_new_lead(): void
+    {
+        Mail::fake();
+        Lead::factory()->lost()->create(['phone' => '+263 77 123 4567']);
+
+        $this->postJson(route('enquiries.store'), $this->validEnquiry())->assertOk();
+
+        $this->assertSame(2, Lead::count());
+    }
+
+    public function test_the_lead_is_kept_when_the_email_cannot_be_sent(): void
+    {
+        Mail::shouldReceive('to')->andThrow(new RuntimeException('Mail server down'));
+
         $this->postJson(route('enquiries.store'), $this->validEnquiry())
             ->assertOk()
-            ->assertJson(['message' => 'Thank you. We have your details and will be in touch shortly.']);
+            ->assertJsonStructure(['message', 'reference']);
 
-        Mail::assertSent(EnquiryReceived::class);
+        $this->assertSame(1, Lead::count());
+    }
+
+    public function test_the_lead_records_the_campaign_and_site_that_sent_the_visitor(): void
+    {
+        Mail::fake();
+
+        $this->withHeader('referer', 'https://www.facebook.com/')
+            ->get('/?utm_source=facebook&utm_medium=social&utm_campaign=harvest')
+            ->assertOk();
+
+        $this->postJson(route('enquiries.store'), $this->validEnquiry())->assertOk();
+
+        $lead = Lead::sole();
+        $this->assertSame('facebook', $lead->utm_source);
+        $this->assertSame('harvest', $lead->utm_campaign);
+        $this->assertSame('https://www.facebook.com/', $lead->referrer);
+        $this->assertStringStartsWith('/?utm_source=facebook', $lead->landing_page);
+        $this->assertSame('Campaign: harvest (facebook)', $lead->sourceLabel());
     }
 
     public function test_email_and_message_are_optional(): void
@@ -112,16 +189,18 @@ class EnquiryControllerTest extends TestCase
 
     /**
      * A bot that fills the hidden field gets the normal success response, so
-     * it learns nothing, but no mail is sent.
+     * it learns nothing, but no lead is stored and no mail is sent.
      */
     public function test_a_filled_honeypot_is_accepted_but_not_mailed(): void
     {
         Mail::fake();
 
         $this->postJson(route('enquiries.store'), $this->validEnquiry(['website' => 'https://spam.example']))
-            ->assertOk();
+            ->assertOk()
+            ->assertJsonStructure(['message', 'reference']);
 
         Mail::assertNothingSent();
+        $this->assertSame(0, Lead::count());
     }
 
     public function test_the_sixth_enquiry_in_a_minute_is_throttled(): void

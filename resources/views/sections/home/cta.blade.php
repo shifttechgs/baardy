@@ -7,7 +7,7 @@
     then Continue. So the last thing on the page starts the application
     rather than pointing somewhere else.
 
-    HOW IT CONTINUES. The slip is a plain GET form to /#contact; the enquiry
+    HOW IT CONTINUES. The slip is a plain GET form to /contact; the enquiry
     form preselects whatever it is sent (?interest=&branch=, checked against
     its own options). On the homepage, `applicationSlip` in app.js skips the
     reload: it copies both answers into the enquiry form further up the
@@ -30,11 +30,16 @@
 @php
     $interests = \App\Http\Requests\StoreEnquiryRequest::interests();
     $branches = \App\Http\Requests\StoreEnquiryRequest::branches();
+
+    $whatsapp = collect(config('company.branches'))
+        ->pluck('phones')
+        ->flatten(1)
+        ->first(fn (array $phone): bool => str_contains($phone['label'], 'WhatsApp'));
 @endphp
 
 <x-ui.section id="get-started" :rule="false" aria-labelledby="get-started-heading" class="pt-10! sm:pt-14! lg:pt-20!">
     <x-ui.container wide>
-        <div data-reveal class="relative isolate grid gap-12 overflow-hidden rounded-xl bg-accent px-6 py-12 text-paper sm:px-10 sm:py-14 lg:px-14 lg:py-16 xl:grid-cols-12 xl:items-stretch xl:gap-x-12">
+        <div data-reveal class="relative isolate grid gap-12 overflow-hidden rounded-2xl bg-accent px-6 py-12 text-paper sm:px-10 sm:py-14 lg:px-14 lg:py-16 xl:grid-cols-12 xl:items-stretch xl:gap-x-12">
 
             {{-- The letterhead's mark, set very large and cropped by the card. --}}
             <img
@@ -51,29 +56,41 @@
                  baseline (Chrome, Safari; others fall back within a few px).
                  The slip's -1.2deg tilt drops its left corners ~6px below its
                  box, hence xl:pt-1.5 at the top and xl:-mb-1.5 at the foot. --}}
-            <div class="flex flex-col xl:col-span-6 xl:justify-between xl:pt-1.5 xl:-mb-1.5">
+            <div class="flex flex-col gap-10 xl:col-span-6 xl:justify-between xl:gap-12">
                 <div>
-                    <p class="text-body font-medium text-paper/70 [text-box:trim-both_cap_alphabetic]">Get started</p>
+                    <x-ui.eyebrow class="text-paper/70">Get started</x-ui.eyebrow>
 
                     <h2 data-word-reveal
                         id="get-started-heading"
-                        class="mt-6 text-[length:clamp(1.75rem,1.2rem+1.5vw,2.625rem)] leading-[1.12] font-normal tracking-[-0.03em] text-paper"
+                        class="mt-5 text-[length:clamp(2rem,3.34vw,3rem)] leading-[1.1] font-normal tracking-[-0.03em] text-paper"
                     >
-                        Start with two answers.<br class="hidden sm:inline">
-                        We&rsquo;ll call you with the rest.
+                        Two answers, and we&rsquo;ll call you back
                     </h2>
+
+                    <p class="mt-6 max-w-md text-body leading-[1.4] text-paper/75">
+                        A person from our team calls you. Applications are made in person at a branch,
+                        and nothing is committed until you see the full cost.
+                    </p>
                 </div>
 
-                <p data-word-reveal class="mt-8 text-lead text-paper/75 [text-box:trim-both_cap_alphabetic] xl:mt-0">
-                    A person from our team calls you back.<br class="hidden sm:inline">
-                    Nothing is committed until you see the full cost.
-                </p>
+                {{-- Prefer to talk now? --}}
+                <div class="flex flex-col gap-3">
+                    <p class="text-small text-paper/60">Prefer to talk now?</p>
+                    <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+                        @if ($whatsapp)
+                            <x-ui.whatsapp-cta :number="$whatsapp['tel']" label="WhatsApp us" />
+                        @endif
+                        <a href="{{ route('contact') }}#visit" class="group inline-flex items-center gap-2 text-body text-paper/85 transition-colors hover:text-paper">
+                            Find a branch
+                            <x-ui.icon name="arrow-up-right" class="size-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                        </a>
+                    </div>
+                </div>
             </div>
-
             {{-- The slip. --}}
             <form
                 method="GET"
-                action="{{ route('home') }}#contact"
+                action="{{ route('contact') }}#contact"
                 x-data="applicationSlip({{ Js::from($interests[0]) }}, {{ Js::from($branches[0]) }})"
                 x-on:submit="carryOn($event)"
                 class="cta-slip paper-grain relative w-full max-w-xl justify-self-center rounded-[4px] bg-paper p-6 text-ink shadow-[0_40px_60px_-30px_rgb(21_16_25/0.6)] sm:p-8 xl:col-span-6 xl:justify-self-end"
@@ -84,7 +101,7 @@
                         <img src="{{ asset('images/baardy-mark.png') }}" alt="" class="size-5">
                         <span class="text-[0.75rem] font-medium tracking-[0.12em] uppercase">Baardy Micro Capital</span>
                     </div>
-                    <span class="text-[0.75rem] tracking-[0.12em] text-muted uppercase">Application</span>
+                    <span class="text-[0.75rem] tracking-[0.12em] text-muted uppercase">Enquiry</span>
                 </div>
 
                 <fieldset class="mt-6">
@@ -135,12 +152,7 @@
                         <span>Next: your name and number.</span>
                     </p>
 
-                    <x-ui.button type="submit" pill size="lg" class="group w-fit gap-3 pr-1.5 pl-6">
-                        Continue
-                        <span class="inline-flex size-10 items-center justify-center rounded-full bg-paper/15 transition-transform duration-300 group-hover:translate-x-0.5">
-                            <x-ui.icon name="arrow-right" />
-                        </span>
-                    </x-ui.button>
+                    <x-ui.button type="submit" size="lg" arrow class="w-fit">Continue</x-ui.button>
                 </div>
             </form>
         </div>

@@ -27,21 +27,24 @@
     $phone = config('company.contact.phone');
 @endphp
 
-<x-ui.section id="faq" :rule="false" aria-labelledby="faq-heading" class="pt-10! sm:pt-14! lg:pt-20!">
+<x-ui.section id="faq" :rule="false" tone="mist" aria-labelledby="faq-heading" class="py-16! sm:py-20! lg:py-24!">
     <x-ui.container wide>
 
         <div data-reveal class="grid gap-8 lg:grid-cols-12 lg:items-end">
             <div class="lg:col-span-7">
-                <p class="text-body font-medium text-accent">Questions</p>
+                <p class="flex items-center gap-1.5 text-body text-ink">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-3.5"><path d="m6 3.5 4.5 4.5L6 12.5" /></svg>
+                    Questions
+                </p>
                 <h2 data-word-reveal
                     id="faq-heading"
-                    class="mt-4 text-[length:clamp(1.75rem,1.2rem+1.6vw,2.5rem)] leading-[1.2] font-normal tracking-[-0.025em] text-ink"
+                    class="mt-5 text-[length:clamp(2rem,3.34vw,3rem)] leading-[1.1] font-normal tracking-[-0.03em] text-ink"
                 >
                     What people ask<br class="hidden sm:inline"> before they borrow
                 </h2>
             </div>
 
-            <p data-word-reveal class="max-w-sm text-lead text-ink-soft lg:col-span-4 lg:col-start-9 lg:justify-self-end lg:text-right">
+            <p data-word-reveal class="max-w-sm text-body leading-[1.4] text-ink-soft lg:col-span-4 lg:col-start-9 lg:justify-self-end lg:text-right">
                 The things borrowers ask most often. If yours is not here, a person will answer it.
             </p>
         </div>
@@ -107,20 +110,7 @@
                         </a>
 
                         @if ($whatsapp)
-                            <x-ui.button
-                                href="https://wa.me/{{ ltrim($whatsapp['tel'], '+') }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                variant="inverse"
-                                pill
-                                class="group ml-auto gap-2.5 pr-1.5 pl-4"
-                            >
-                                <x-ui.icon name="chat" />
-                                WhatsApp us
-                                <span class="inline-flex size-8 items-center justify-center rounded-full bg-accent text-paper transition-transform duration-300 group-hover:translate-x-0.5">
-                                    <x-ui.icon name="arrow-right" />
-                                </span>
-                            </x-ui.button>
+                            <x-ui.whatsapp-cta :number="$whatsapp['tel']" label="WhatsApp us" class="ml-auto" />
                         @endif
                     </div>
                 </div>

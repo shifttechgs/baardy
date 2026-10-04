@@ -127,7 +127,7 @@
                     </p>
 
                     <x-ui.button :href="$whyUs['action']['href']" pill class="group/button w-fit gap-3 pr-1.5 pl-5">
-                        Apply with this schedule
+                        Ask about this schedule
                         <span class="inline-flex size-8 items-center justify-center rounded-full bg-paper/15 transition-transform duration-300 group-hover/button:translate-x-0.5">
                             <x-ui.icon name="arrow-right" />
                         </span>

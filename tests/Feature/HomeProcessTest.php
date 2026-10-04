@@ -5,8 +5,7 @@ namespace Tests\Feature;
 use Tests\TestCase;
 
 /**
- * "How it works" shows all four steps at once: nothing pinned, paced by
- * scrolling or hidden until reached, and it ends on both ways in.
+ * "How it works" shows every step, plainly, and offers both ways in.
  */
 class HomeProcessTest extends TestCase
 {
@@ -35,39 +34,23 @@ class HomeProcessTest extends TestCase
             $this->assertNotFalse($title, "Step title \"{$step['title']}\" is missing.");
             $this->assertGreaterThan($previous, $title, 'The steps must appear in their real order.');
             $this->assertStringContainsString(e($step['body']), $section);
-            $this->assertStringContainsString(e($step['meta']), $section);
 
             $previous = $title;
         }
     }
 
     /**
-     * The old 300vh scroll track hid three of the four steps until reached.
+     * Plain, after the reference: no photographs, no paper-stack visual, and
+     * the steps are CSS-sticky cards dealt one over another (no script).
      */
-    public function test_nothing_is_pinned_or_paced_by_scrolling(): void
+    public function test_it_is_plain_with_sticky_step_cards(): void
     {
         $section = $this->section();
 
+        $this->assertStringNotContainsString('<img', $section);
+        $this->assertStringNotContainsString('paperStack', $section);
         $this->assertStringNotContainsString('processRail', $section);
-        $this->assertStringNotContainsString('lg:sticky', $section);
-        $this->assertDoesNotMatchRegularExpression('/lg:h-\[\d+vh\]/', $section);
-    }
-
-    /**
-     * The paper stack is driven by the steps: one document per step, and
-     * every step can bring its document forward.
-     */
-    public function test_the_paper_stack_has_a_document_for_every_step(): void
-    {
-        $section = $this->section();
-        $steps = count(config('marketing.steps'));
-
-        $this->assertStringContainsString("paperStack({$steps})", $section);
-        $this->assertSame($steps, substr_count($section, 'x-bind:style="sheetStyle('));
-
-        for ($index = 0; $index < $steps; $index++) {
-            $this->assertStringContainsString("choose({$index})", $section);
-        }
+        $this->assertSame(count(config('marketing.steps')), substr_count($section, 'bg-mist p-6 sm:p-8 lg:sticky'));
     }
 
     /**

@@ -38,8 +38,8 @@ class HomeTestimonialsTest extends TestCase
 
         $this->assertSame(
             count(config('marketing.testimonials')),
-            preg_match_all('/<figure(?![^>]*aria-hidden)[^>]*>.*?Sample quote.*?<\/figure>/s', $content),
-            'Each quote should be exposed to assistive technology exactly once, labelled "Sample quote".'
+            preg_match_all('/<figure(?![^>]*aria-hidden)[^>]*>(?:(?!<\/figure>).)*Sample quote(?:(?!<\/figure>).)*<\/figure>/s', $content),
+            'Each review should be exposed to assistive technology exactly once, labelled "Sample quote".'
         );
     }
 
@@ -65,6 +65,7 @@ class HomeTestimonialsTest extends TestCase
     public function test_only_consented_quotes_are_published(): void
     {
         config()->set('marketing.testimonials_preview', true);
+        config()->set('marketing.customer_stories', []);
 
         config()->set('marketing.testimonials', [
             [
@@ -91,5 +92,26 @@ class HomeTestimonialsTest extends TestCase
             ->assertDontSee('A quote nobody agreed to share.')
             ->assertDontSee('Not Consented')
             ->assertDontSee('Sample quote');
+    }
+
+    public function test_two_stories_and_the_reviews_share_one_section(): void
+    {
+        config()->set('marketing.testimonials_preview', false);
+        config()->set('marketing.customer_stories', [
+            ['story' => 'Story one in their own words.', 'name' => 'Tendai M.', 'role' => 'Tailor, Bulawayo', 'consented' => true],
+            ['story' => 'Story two in their own words.', 'name' => 'Rudo C.', 'role' => 'Farmer, Mazowe', 'consented' => true],
+            ['story' => 'A third story that should wait.', 'name' => 'Farai N.', 'role' => 'Trader, Harare', 'consented' => true],
+        ]);
+        config()->set('marketing.testimonials', [
+            ['quote' => 'A short review.', 'name' => 'Chipo M.', 'role' => 'Teacher, Gweru', 'initials' => 'CM', 'consented' => true],
+        ]);
+
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $this->assertSame(1, substr_count($content, 'id="testimonials"'));
+        $this->assertStringContainsString('Story one in their own words.', $content);
+        $this->assertStringContainsString('Story two in their own words.', $content);
+        $this->assertStringNotContainsString('A third story that should wait.', $content);
+        $this->assertStringContainsString('A short review.', $content);
     }
 }
