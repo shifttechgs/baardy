@@ -11,6 +11,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\Width;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -37,7 +38,8 @@ class LeadsTable
             ->paginated([10, 25, 50])
             ->defaultPaginationPageOption(25)
             ->deferFilters(false)
-            ->filtersFormColumns(['md' => 2, 'xl' => 4])
+            ->filtersFormColumns(2)
+            ->filtersFormWidth(Width::Large)
             ->modifyQueryUsing(fn ($query) => $query->with(['assignee', 'promotion']))
             ->recordUrl(fn (Lead $record): string => LeadResource::getUrl('view', ['record' => $record]))
             ->emptyStateHeading('No leads here')

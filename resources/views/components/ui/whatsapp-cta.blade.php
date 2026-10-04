@@ -8,11 +8,12 @@
       label   the button text
       tone    'paper' (default): a white pill, for dark and tinted surfaces
               'mist': a lavender pill, for white surfaces
+      text    a message to start the chat with (optional)
 --}}
-@props(['number', 'label', 'tone' => 'paper'])
+@props(['number', 'label', 'tone' => 'paper', 'text' => null])
 
 <a
-    href="https://wa.me/{{ ltrim($number, '+') }}"
+    href="https://wa.me/{{ ltrim($number, '+') }}{{ filled($text) ? '?text='.rawurlencode($text) : '' }}"
     target="_blank"
     rel="noopener noreferrer"
     {{ $attributes->class([

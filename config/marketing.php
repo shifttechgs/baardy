@@ -277,6 +277,7 @@ return [
     'products' => [
         [
             'name' => 'Salary-Based Loans',
+            'slug' => 'salary-based-loans',
             'image' => ['src' => 'images/products/salary-1600.webp', 'alt' => 'A salaried professional in a suit, smiling', 'position' => '65% 30%'],
             'summary' => 'Short-term financing for public-sector employees, government pensioners '
                 .'and private-sector employees to meet personal and financial needs.',
@@ -287,6 +288,7 @@ return [
         ],
         [
             'name' => 'Educational Loans',
+            'slug' => 'educational-loans',
             'image' => ['src' => 'images/products/education-1600.webp', 'alt' => 'A schoolchild holding up work in a classroom', 'position' => '50% 35%'],
             'summary' => 'Affordable financing to support education expenses at various levels, '
                 .'helping families and students access educational opportunities.',
@@ -297,6 +299,7 @@ return [
         ],
         [
             'name' => 'Agricultural Loans',
+            'slug' => 'agricultural-loans',
             'image' => ['src' => 'images/products/agriculture-1600.webp', 'alt' => 'A farmer tending a green field of crops', 'position' => '40% 40%'],
             'summary' => 'Financing to support farmers and agricultural activities, including '
                 .'inputs, production and other farming requirements.',
@@ -307,6 +310,7 @@ return [
         ],
         [
             'name' => 'Women Empowerment Loans',
+            'slug' => 'women-empowerment-loans',
             'image' => ['src' => 'images/products/women-1600.webp', 'alt' => 'A woman running her own shop, serving a customer', 'position' => '30% 35%'],
             'summary' => 'Financial support designed to empower women, promote entrepreneurship and '
                 .'strengthen livelihoods, with opportunities for strategic partnerships focused on '
@@ -324,6 +328,7 @@ return [
             // like every range here -- and no age limit is stated, as none
             // has been given. Replace all of it with the client's real terms.
             'name' => 'Youth Empowerment Loans',
+            'slug' => 'youth-empowerment-loans',
             'image' => ['src' => 'images/products/youth-1600.webp', 'alt' => 'Young traders gathered at a phone-case stall', 'position' => '50% 40%'],
             'summary' => 'Financial support to help young people start and grow a business, '
                 .'build their livelihoods and create opportunity for themselves and others.',
@@ -334,6 +339,7 @@ return [
         ],
         [
             'name' => 'SME Bridging Finance',
+            'slug' => 'sme-bridging-finance',
             'image' => ['src' => 'images/products/sme-1600.webp', 'alt' => 'A butcher standing in the shop doorway', 'position' => '60% 40%'],
             'summary' => 'Short-term working capital for SMEs, sole traders and cross-border traders '
                 .'to support business start-up, working capital and recapitalisation.',

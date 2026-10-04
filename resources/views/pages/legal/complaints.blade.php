@@ -15,7 +15,12 @@
     <x-layout.legal-page
         title="Complaints procedure"
         summary="If we have got something wrong, we want to hear about it. This is how to tell us, and what happens next."
-        updated="2026-09-27"
+        updated="2026-10-04"
+        image="images/insights/first-loan-1600.webp"
+        alt="A customer and a loan officer talking through an application"
+        position="50% 40%"
+        :width="1600"
+        :height="1067"
     >
         <p>
             You can complain about anything to do with our service: an application, a loan, a repayment, or how
@@ -35,6 +40,13 @@
             <li>your loan or application details, if you have them</li>
             <li>what happened, and what you would like us to do about it</li>
         </ul>
+
+        <h2>Your complaint is safe with us</h2>
+        <p>
+            You will not be treated worse for complaining. Only the people who need to look into it will see it,
+            and we will handle your details as set out in our
+            <a href="{{ route('legal.privacy') }}" class="text-accent underline underline-offset-4">privacy notice</a>.
+        </p>
 
         <h2>What happens next</h2>
         <p>

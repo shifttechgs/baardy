@@ -31,3 +31,8 @@ Thumbs.db
 
 # Personal Claude Code settings
 /.claude/settings.local.json
+
+# End-to-end tests: throwaway database and reports
+/database/e2e.sqlite
+/playwright-report
+/test-results

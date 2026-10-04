@@ -207,6 +207,31 @@ class Promotion extends Model
     }
 
     /**
+     * Width over height of the uploaded image, kept between a tall poster
+     * (4:5) and a wide banner (16:9) so no card is ever absurdly tall or flat.
+     * Cards frame the picture to its own proportions instead of cropping it
+     * or shrinking a square poster into a wide strip. Falls back to 4:3 when
+     * the file is missing or unreadable.
+     */
+    public function imageAspectRatio(): float
+    {
+        $fallback = 4 / 3;
+
+        if (! $this->image_path) {
+            return $fallback;
+        }
+
+        $path = Storage::disk('public')->path($this->image_path);
+        $size = is_file($path) ? @getimagesize($path) : false;
+
+        if (! $size || ($size[1] ?? 0) === 0) {
+            return $fallback;
+        }
+
+        return round(max(0.8, min(16 / 9, $size[0] / $size[1])), 3);
+    }
+
+    /**
      * Where the promotion's call to action goes: the enquiry form, with the
      * loan preselected and the tracking code carried through, so the team
      * knows which promotion brought the enquiry in.
@@ -217,6 +242,36 @@ class Promotion extends Model
             'interest' => $this->product,
             'promo' => $this->tracking_code,
         ])).'#contact';
+    }
+
+    /**
+     * Whole days until the promotion ends, counted by calendar day: 0 on its
+     * last day, never negative.
+     */
+    public function daysLeft(): int
+    {
+        return max(0, (int) now()->startOfDay()->diffInDays($this->ends_at->copy()->startOfDay()));
+    }
+
+    /**
+     * How long is left, in words a visitor reads at a glance.
+     */
+    public function timeLeftLabel(): string
+    {
+        return match ($days = $this->daysLeft()) {
+            0 => 'Ends today',
+            1 => 'Ends tomorrow',
+            default => "{$days} days left",
+        };
+    }
+
+    /**
+     * The WhatsApp message a visitor sends from this promotion's page, naming
+     * the offer and its code so the team knows which one it is about.
+     */
+    public function whatsappMessage(): string
+    {
+        return 'Hello '.config('company.name').', I would like to know more about "'.$this->title.'" (ref '.$this->tracking_code.').';
     }
 
     public function getRouteKeyName(): string

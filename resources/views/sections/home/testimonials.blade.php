@@ -156,7 +156,7 @@
                 @if ($reviews->isNotEmpty())
                     <div
                         data-reveal
-                        class="marquee min-w-0 lg:flex-1
+                        class="marquee min-w-0 overflow-hidden lg:flex-1
                                [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]"
                     >
                         <p class="sr-only">Reviews</p>

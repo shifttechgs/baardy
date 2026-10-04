@@ -89,7 +89,7 @@
                                 @endforeach
                             </div>
                         @endif
-                        <p class="figure-nums text-small text-ink-soft" aria-live="polite"><span x-text="counts[place]">{{ $vacancies->count() }}</span> {{ $vacancies->count() === 1 ? 'role' : 'roles' }} available</p>
+                        <p class="figure-nums text-small text-ink-soft" aria-live="polite"><span x-text="counts[place]">{{ $vacancies->count() }}</span> <span x-text="counts[place] === 1 ? 'role' : 'roles'">{{ $vacancies->count() === 1 ? 'role' : 'roles' }}</span> available</p>
                     </div>
                 @endif
 

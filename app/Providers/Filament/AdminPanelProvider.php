@@ -69,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
             ->maxContentWidth(Width::Full)
             ->sidebarWidth('16rem')
             ->renderHook(PanelsRenderHook::SCRIPTS_AFTER, fn (): View => view('filament.session-expired'))
+            ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn (): View => view('filament.sidebar-credit'))
             ->renderHook(PanelsRenderHook::SIMPLE_LAYOUT_START, fn (): View => view('filament.auth.top'))
             ->renderHook(PanelsRenderHook::SIMPLE_PAGE_END, fn (): View => view('filament.auth.bottom'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

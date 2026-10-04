@@ -98,10 +98,15 @@
                                     </div>
                                 </dl>
 
-                                <x-ui.button :href="config('company.cta.primary.href')" arrow class="sm:w-fit sm:self-start">
-                                    <span class="sm:hidden">Enquire now</span>
-                                    <span class="hidden sm:inline">Enquire about {{ Str::lower($product['name']) }}</span>
-                                </x-ui.button>
+                                <div class="flex flex-wrap items-center gap-x-6 gap-y-3">
+                                    <x-ui.button :href="config('company.cta.primary.href')" arrow class="sm:w-fit sm:self-start">
+                                        <span class="sm:hidden">Enquire now</span>
+                                        <span class="hidden sm:inline">Enquire about {{ Str::lower($product['name']) }}</span>
+                                    </x-ui.button>
+                                    <a href="{{ route('loans.show', $product['slug']) }}" class="text-body text-accent underline decoration-accent/30 underline-offset-4 transition-colors hover:decoration-accent">
+                                        Read more<span class="sr-only"> about {{ Str::lower($product['name']) }}</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
 

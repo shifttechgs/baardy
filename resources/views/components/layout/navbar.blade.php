@@ -29,7 +29,8 @@
     to the same place.
 
     A live promotion placed in the banner runs as a full-width bar above the
-    header bar, on every page. It folds away while a menu is open.
+    header bar, on every page, lined up with the hero: the same inset and the
+    same rounded top corners. It folds away while a menu is open.
 
     Non-overlay pages get a spacer the height of the bar, since the header is
     fixed rather than in the flow.
@@ -71,16 +72,23 @@
                    group-data-stuck/nav:grid-rows-[0fr] group-data-stuck/nav:opacity-0"
         >
             <div class="min-h-0 overflow-hidden">
-                <div>
+                {{-- Full width, but lined up with the hero: the same 0.5rem
+                     inset from the screen edges, starting at the hero's top
+                     edge, with the hero frame's 1.25rem top corners, so it
+                     reads as the top of the hero. --}}
+                <div class="px-2 pt-2">
                     <a
                         href="{{ route('promotions.show', $bannerPromotion) }}"
                         x-bind:tabindex="stuck ? -1 : false"
-                        class="group/promo pointer-events-auto flex h-10 w-full items-center justify-center gap-2.5 bg-accent px-4 text-small text-paper transition-colors duration-300 hover:bg-accent-strong"
+                        class="group/promo pointer-events-auto flex h-10 w-full items-center justify-center gap-2.5 rounded-t-[1.25rem] bg-accent px-4 text-small text-paper transition-colors duration-300 hover:bg-accent-strong"
                     >
                         <span class="shrink-0 rounded-full bg-highlight px-2.5 py-0.5 text-micro font-medium">Limited offer</span>
                         <span class="truncate">{{ $bannerPromotion->summary }}</span>
                         <span class="hidden shrink-0 text-paper/70 sm:inline">&middot; Ends {{ $bannerPromotion->ends_at->format('j M') }}</span>
-                        <x-ui.icon name="arrow-right" class="size-3.5 shrink-0 transition-transform duration-300 group-hover/promo:translate-x-0.5" />
+                        {{-- The call-to-action arrow: a frosted circle on the purple bar, easing forward on hover. --}}
+                        <span aria-hidden="true" class="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-paper/15 text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/promo:translate-x-0.5">
+                            <x-ui.icon name="arrow-right" class="size-3.5" />
+                        </span>
                     </a>
                 </div>
             </div>
@@ -92,7 +100,7 @@
         class="pointer-events-auto relative mx-auto max-w-[120rem] overflow-hidden bg-paper/90 text-ink backdrop-blur-xl
                transition-[max-width,border-radius,background-color,border-color,box-shadow,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
                group-data-over-photo/nav:border-transparent group-data-over-photo/nav:bg-transparent group-data-over-photo/nav:text-paper group-data-over-photo/nav:backdrop-blur-none
-               group-data-stuck/nav:max-w-[62rem] group-data-stuck/nav:rounded-full group-data-stuck/nav:border-transparent group-data-stuck/nav:bg-paper/85 group-data-stuck/nav:backdrop-saturate-150
+               group-data-stuck/nav:max-w-[62rem] group-data-stuck/nav:rounded-[2rem] group-data-stuck/nav:border-transparent group-data-stuck/nav:bg-paper/85 group-data-stuck/nav:backdrop-saturate-150
                group-data-stuck/nav:shadow-[0_18px_40px_-20px_rgb(21_16_25/0.35),0_0_0_1px_rgb(21_16_25/0.06)]
                group-data-expanded/nav:bg-paper group-data-expanded/nav:shadow-[0_40px_60px_-40px_rgb(21_16_25/0.35)]
                group-data-expanded/nav:max-w-[200rem] group-data-expanded/nav:rounded-[1.25rem]
@@ -188,21 +196,24 @@
             <div id="menu-loans" x-ref="menu-loans" x-show="menu === 'loans'" x-cloak class="menu-panel hidden pt-1 pb-8 [grid-area:1/1] lg:block lg:pb-10">
                 <div class="grid grid-cols-7 gap-2">
                     @foreach ($products as $product)
-                        <a href="/#products" x-on:click="closeMenu(true)" class="group/card flex flex-col gap-3 rounded-2xl bg-mist p-2 pb-4 transition-colors duration-300 hover:bg-line/60">
+                        <a href="{{ route('loans.show', $product['slug']) }}" x-on:click="closeMenu(true)" class="group/card flex flex-col gap-3 rounded-2xl bg-mist p-2 pb-4 transition-colors duration-300 hover:bg-line/60">
                             <span class="block aspect-[4/3] overflow-hidden rounded-xl bg-line">
                                 <img src="{{ asset($thumb($product['image']['src'])) }}" alt="" loading="lazy" decoding="async" width="480" height="360"
                                      class="size-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/card:scale-[1.06]"
                                      style="object-position: {{ $product['image']['position'] }}">
                             </span>
-                            <span class="flex flex-col gap-1 px-2">
-                                <span class="flex items-center gap-1.5 text-body text-ink">
-                                    {{ $product['name'] }}
-                                    <x-ui.icon name="arrow-right" class="size-3.5 text-highlight transition-transform duration-300 group-hover/card:translate-x-0.5" />
+                            <span class="flex flex-1 flex-col justify-between gap-3 px-2">
+                                <span class="flex flex-col gap-1">
+                                    <span class="text-body text-ink">{{ $product['name'] }}</span>
+                                    <span class="figure-nums text-small text-muted">{{ $product['term'] }}</span>
+                                    @isset ($productPromotions[$product['name']])
+                                        <span class="mt-1 w-fit rounded-full bg-highlight-tint px-2.5 py-0.5 text-micro font-medium text-highlight">Limited offer</span>
+                                    @endisset
                                 </span>
-                                <span class="figure-nums text-small text-muted">{{ $product['term'] }}</span>
-                                @isset ($productPromotions[$product['name']])
-                                    <span class="mt-1 w-fit rounded-full bg-highlight-tint px-2.5 py-0.5 text-micro font-medium text-highlight">Limited offer</span>
-                                @endisset
+                                {{-- The call-to-action arrow: a circle, easing forward on hover. --}}
+                                <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center self-end rounded-full bg-accent text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/card:translate-x-0.5">
+                                    <x-ui.icon name="arrow-right" />
+                                </span>
                             </span>
                         </a>
                     @endforeach
@@ -215,9 +226,14 @@
                                 <span aria-hidden="true" class="absolute inset-0 -z-10 bg-linear-to-t from-ink/85 via-ink/30 to-ink/10"></span>
                             @endif
                             <span class="w-fit rounded-full bg-highlight px-2.5 py-0.5 text-micro font-medium">Limited offer</span>
-                            <span class="flex flex-col gap-1.5">
-                                <span class="text-lead leading-snug">{{ $menuPromotion->title }}</span>
-                                <span class="text-small text-paper/80">Ends {{ $menuPromotion->ends_at->format('j M') }}</span>
+                            <span class="flex items-end justify-between gap-3">
+                                <span class="flex flex-col gap-1.5">
+                                    <span class="text-lead leading-snug">{{ $menuPromotion->title }}</span>
+                                    <span class="text-small text-paper/80">Ends {{ $menuPromotion->ends_at->format('j M') }}</span>
+                                </span>
+                                <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-paper/15 text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/card:translate-x-0.5">
+                                    <x-ui.icon name="arrow-right" />
+                                </span>
                             </span>
                         </a>
                     @else
@@ -226,8 +242,8 @@
                             <span class="text-lead leading-snug">Not sure which loan?</span>
                             <span class="text-small text-paper/75">Tell us what it is for, and a person will point you to the right one.</span>
                         </span>
-                        <span class="inline-flex size-10 items-center justify-center rounded-full bg-paper text-accent transition-transform duration-300 group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5">
-                            <x-ui.icon name="arrow-up-right" />
+                        <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-paper/15 text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/card:translate-x-0.5">
+                            <x-ui.icon name="arrow-right" />
                         </span>
                     </a>
                     @endif
@@ -243,7 +259,9 @@
                                 <span class="text-body text-ink">{{ $card['label'] }}</span>
                                 <span class="text-small text-muted">{{ $card['description'] }}</span>
                             </span>
-                            <x-ui.icon name="arrow-right" class="size-4 text-highlight transition-transform duration-300 group-hover/card:translate-x-1" />
+                            <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/card:translate-x-0.5">
+                                <x-ui.icon name="arrow-right" />
+                            </span>
                         </a>
                     @endforeach
                 </div>
@@ -257,7 +275,7 @@
                         <ul class="mt-2 flex flex-col">
                             @foreach ($products as $product)
                                 <li>
-                                    <a href="/#products" x-on:click="toggleMobile()" class="flex items-center gap-3 py-2">
+                                    <a href="{{ route('loans.show', $product['slug']) }}" x-on:click="toggleMobile()" class="flex items-center gap-3 py-2">
                                         <img src="{{ asset($thumb($product['image']['src'])) }}" alt="" loading="lazy" width="480" height="360" class="size-11 rounded-lg object-cover" style="object-position: {{ $product['image']['position'] }}">
                                         <span class="flex flex-col">
                                             <span class="text-body text-ink">{{ $product['name'] }}</span>
@@ -300,5 +318,5 @@
 @unless ($overlay)
     {{-- The pill is fixed, so pages without a full-bleed first section need
          its height held open above their content. --}}
-    <div aria-hidden="true" @class(['h-22', 'mt-10' => $bannerPromotion])></div>
+    <div aria-hidden="true" @class(['h-22', 'mt-12' => $bannerPromotion])></div>
 @endunless

@@ -227,7 +227,7 @@ return [
     | section heading.
     */
     'nav' => [
-        ['label' => 'Loans', 'href' => '/#products', 'menu' => 'loans'],
+        ['label' => 'Loans', 'href' => '/loans', 'menu' => 'loans'],
         ['label' => 'Company', 'href' => '/#trust', 'menu' => 'about'],
         ['label' => 'Partners', 'href' => '/partners'],
         ['label' => 'Careers', 'href' => '/careers'],
@@ -263,12 +263,12 @@ return [
     */
     'footer' => [
         'Borrow' => [
-            ['label' => 'Salary-based loans', 'href' => '/#products'],
-            ['label' => 'Educational loans', 'href' => '/#products'],
-            ['label' => 'Agricultural loans', 'href' => '/#products'],
-            ['label' => 'Women empowerment loans', 'href' => '/#products'],
-            ['label' => 'Youth empowerment loans', 'href' => '/#products'],
-            ['label' => 'SME bridging finance', 'href' => '/#products'],
+            ['label' => 'Salary-based loans', 'href' => '/loans/salary-based-loans'],
+            ['label' => 'Educational loans', 'href' => '/loans/educational-loans'],
+            ['label' => 'Agricultural loans', 'href' => '/loans/agricultural-loans'],
+            ['label' => 'Women empowerment loans', 'href' => '/loans/women-empowerment-loans'],
+            ['label' => 'Youth empowerment loans', 'href' => '/loans/youth-empowerment-loans'],
+            ['label' => 'SME bridging finance', 'href' => '/loans/sme-bridging-finance'],
         ],
         'Company' => [
             ['label' => 'About us', 'href' => '/about'],
@@ -318,6 +318,19 @@ return [
         ['label' => 'LinkedIn', 'href' => null, 'icon' => 'linkedin'],
         ['label' => 'X', 'href' => null, 'icon' => 'x'],
         ['label' => 'Facebook', 'href' => null, 'icon' => 'facebook'],
+    ],
+
+    /*
+    | The operations platform proposal (admin panel -> Management -> Proposal).
+    |
+    | `price_from` is the starting monthly price in US dollars, shown as "from
+    | US$X a month" and confirmed after the working session. It is the only
+    | place the number lives: change it here and the page, the price section
+    | and the calculator all follow. Set it to null to show "priced after the
+    | working session" with no number at all.
+    */
+    'proposal' => [
+        'price_from' => 50,
     ],
 
 ];

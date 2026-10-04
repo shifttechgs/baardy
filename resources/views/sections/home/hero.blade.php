@@ -74,7 +74,11 @@
     <div class="relative isolate flex h-full flex-col overflow-hidden rounded-[1.25rem] bg-ink text-paper">
 
         {{-- The photograph: one, still, at full resolution. --}}
-        <div class="absolute inset-0 -z-20">
+        {{-- Calm motion: the wrapper travels a little slower than the page as it
+             scrolls away (hero-photo-scroll); the picture itself settles in on
+             arrival (hero-photo-in). Two elements, because each owns one
+             animation. See the hero rules in app.css. --}}
+        <div class="hero-photo-scroll absolute inset-0 -z-20">
             <img
                 src="{{ $photo['src'] }}"
                 srcset="{{ $photo['srcset'] }}"
@@ -84,7 +88,7 @@
                 alt="{{ $photo['alt'] }}"
                 fetchpriority="high"
                 decoding="async"
-                @class(['absolute inset-0 size-full max-w-none object-cover', '-scale-x-100' => $photo['flip']])
+                @class(['hero-photo-in absolute inset-0 size-full max-w-none object-cover', '-scale-x-100' => $photo['flip']])
                 style="object-position: {{ $photo['position'] }}"
             >
         </div>
@@ -97,7 +101,7 @@
             <div class="mt-auto flex flex-col gap-8 pb-20 sm:pb-[4.5rem] lg:flex-row lg:items-end lg:justify-between lg:gap-12 lg:pb-[4.5rem]">
 
                 {{-- Left: the licence line, the headline, the ask --}}
-                <div class="flex min-w-0 flex-col items-start lg:w-1/2">
+                <div class="hero-lift flex min-w-0 flex-col items-start lg:w-1/2">
                     <p class="rise flex flex-wrap items-center gap-x-2 text-[0.875rem] text-paper/80 [animation-delay:200ms]">
                         <span>Licensed Microfinance</span>
                         <span aria-hidden="true">&middot;</span>
@@ -152,15 +156,23 @@
                     </div>
                 </div>
 
-                {{-- Right: the loans people ask about first --}}
-                <div class="rise flex flex-col gap-5 [animation-delay:900ms] lg:w-1/2 lg:max-w-[44rem] lg:items-end lg:text-right">
+                {{-- Right: the offer and the loans people ask about first. The outer
+                     element lifts on scroll WITHOUT fading (it holds frosted glass);
+                     the inner one carries the arrival animation. --}}
+                <div class="hero-lift-soft lg:w-1/2 lg:max-w-[44rem]">
+                <div class="rise flex flex-col gap-5 [animation-delay:900ms] lg:items-end lg:text-right">
                     @if ($heroPromotion)
                         <a
                             href="{{ route('promotions.show', $heroPromotion) }}"
                             class="group/flyer hidden w-72 rounded-2xl bg-ink/45 p-2 text-left text-paper ring-1 ring-paper/15 backdrop-blur-xl ring-inset
-                                   transition-[background-color,box-shadow] duration-500 hover:bg-ink/55 hover:ring-paper/30 lg:block"
+                                   transition-[background-color,box-shadow] duration-500 hover:bg-ink/55 hover:ring-paper/30
+                                   md:[@media(min-height:44rem)]:block lg:block lg:w-64 xl:w-72 2xl:w-80"
                         >
-                            <span class="relative block aspect-[16/9] overflow-hidden rounded-xl bg-accent">
+                            {{-- The frame takes the poster's own proportions (so a square
+                                 poster is not squeezed into a wide strip) and is capped to
+                                 a share of the screen height, so on a short screen the card
+                                 stays clear of the headline. --}}
+                            <span class="relative block max-h-[34svh] w-full overflow-hidden rounded-xl bg-accent" style="aspect-ratio: {{ $heroPromotion->imageAspectRatio() }}">
                                 @if ($heroPromotion->imageUrl())
                                     <img src="{{ $heroPromotion->imageUrl() }}" alt="" aria-hidden="true" decoding="async"
                                          class="absolute inset-0 size-full scale-125 object-cover opacity-50 blur-2xl">
@@ -173,12 +185,15 @@
                             <span class="flex items-end justify-between gap-3 px-3 pt-3 pb-2">
                                 <span class="flex min-w-0 flex-col gap-1.5">
                                     <span class="flex items-center gap-2 text-small">
-                                        <span class="rounded-full bg-highlight px-2.5 py-0.5 text-micro font-medium">Limited offer</span>
-                                        <span class="figure-nums text-paper/60">Ends {{ $heroPromotion->ends_at->format('j F') }}</span>
+                                        <span class="shrink-0 rounded-full bg-highlight px-2.5 py-0.5 text-micro font-medium whitespace-nowrap">Limited offer</span>
+                                        <span class="figure-nums whitespace-nowrap text-paper/60">Ends {{ $heroPromotion->ends_at->format('j M') }}</span>
                                     </span>
                                     <span class="text-body leading-snug text-balance">{{ $heroPromotion->title }}</span>
                                 </span>
-                                <x-ui.icon name="arrow-up-right" class="shrink-0" />
+                                {{-- The call-to-action arrow: a frosted circle, easing forward on hover. --}}
+                                <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-paper/15 text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/flyer:translate-x-0.5">
+                                    <x-ui.icon name="arrow-right" />
+                                </span>
                             </span>
                         </a>
                     @endif
@@ -201,6 +216,7 @@
                             </li>
                         @endforeach
                     </ul>
+                </div>
                 </div>
             </div>
         </x-ui.container>

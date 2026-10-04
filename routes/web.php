@@ -4,7 +4,9 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\InsightController;
 use App\Http\Controllers\JobApplicationCvController;
+use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PromotionController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +39,13 @@ Route::view('/complaints', 'pages.legal.complaints')->name('legal.complaints');
 
 Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
 Route::get('/promotions/{promotion:slug}', [PromotionController::class, 'show'])->name('promotions.show');
+
+// One page per loan, so each can rank for what it is.
+Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
+Route::get('/loans/{slug}', [LoanController::class, 'show'])->name('loans.show');
+
+Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 
 Route::view('/about', 'pages.about')->name('about');
 

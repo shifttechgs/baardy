@@ -434,6 +434,84 @@
         animation: hero-slide 1s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
 
+    /* ---------------------------------------------------------------------
+       The calm hero: arriving, and leaving.
+
+       ARRIVING. The photograph settles from a slight zoom, 2.2s on the same
+       ease-out-expo as everything else. Transform only: it is never faded
+       up from nothing, so the picture is on screen as soon as it has loaded
+       and the page's loading speed is untouched.
+
+       LEAVING. As the page is scrolled through the hero's first screen,
+       three things happen, tied to the scroll position itself (CSS
+       scroll-driven animations -- no JavaScript, off the main thread):
+         the photograph travels a little slower than the page (parallax),
+           with a small zoom so no edge is ever exposed;
+         the headline block lifts away and fades;
+         the offer card and chips lift, WITHOUT fading.
+       The last is deliberate: fading an element that contains frosted glass
+       turns it into a backdrop root, and the blur inside silently stops
+       working (see the note above on `.hero-drop`). Only the left column,
+       which holds no frosted glass, takes an opacity change.
+
+       Everything here is progressive: a browser without scroll-driven
+       animations shows the plain hero, and nothing runs for visitors who ask
+       for reduced motion.
+    --------------------------------------------------------------------- */
+    @media (prefers-reduced-motion: no-preference) {
+        @keyframes hero-photo-in {
+            from {
+                transform: scale(1.08);
+            }
+            to {
+                transform: none;
+            }
+        }
+
+        .hero-photo-in {
+            animation: hero-photo-in 2.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+
+        @supports (animation-timeline: scroll()) {
+            @keyframes hero-photo-scroll {
+                to {
+                    transform: translate3d(0, 4%, 0) scale(1.08);
+                }
+            }
+
+            @keyframes hero-lift-away {
+                to {
+                    transform: translate3d(0, -2.5rem, 0);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes hero-lift-soft {
+                to {
+                    transform: translate3d(0, -1.5rem, 0);
+                }
+            }
+
+            .hero-photo-scroll {
+                animation: hero-photo-scroll linear both;
+                animation-timeline: scroll(root block);
+                animation-range: 0 100svh;
+            }
+
+            .hero-lift {
+                animation: hero-lift-away linear both;
+                animation-timeline: scroll(root block);
+                animation-range: 0 55svh;
+            }
+
+            .hero-lift-soft {
+                animation: hero-lift-soft linear both;
+                animation-timeline: scroll(root block);
+                animation-range: 0 55svh;
+            }
+        }
+    }
+
     /* Each word is its own mask. The padding and matching negative margin
        give descenders and the italic overhang room inside the clip without
        moving the baseline. */
@@ -716,6 +794,48 @@
 
     .article-body li::marker {
         color: var(--color-accent);
+    }
+
+    /* Legal pages set their own standfirst, and their section headings, in the
+       page component; inside a section every paragraph is plain body. */
+    .article-body--plain > p:first-child {
+        font-size: inherit;
+        color: inherit;
+    }
+
+    .article-body--plain > * + * {
+        margin-top: 1.1em;
+    }
+
+    .article-body--plain a {
+        color: var(--color-accent);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+    }
+
+    /* The key points: ticks, not bullets. */
+    .legal-points ul {
+        padding-left: 0;
+        list-style: none;
+        gap: 0.9em;
+    }
+
+    .legal-points li {
+        position: relative;
+        padding-left: 2em;
+        color: var(--color-ink);
+    }
+
+    .legal-points li::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0.45em;
+        width: 1.1em;
+        height: 1.1em;
+        border-radius: 999px;
+        background: var(--color-accent-tint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%235e2681' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4.5 8.5 2.2 2.2L11.5 6'/%3E%3C/svg%3E") center / 80% no-repeat;
+        box-shadow: 0 0 0 1px var(--color-line-strong);
     }
 
     /* The first paragraph is the standfirst: a touch larger and darker. */

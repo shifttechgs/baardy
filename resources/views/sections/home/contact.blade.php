@@ -140,6 +140,18 @@
                 }"
                 class="relative overflow-hidden rounded-xl bg-paper p-6 sm:p-8 lg:col-span-7 lg:p-10"
             >
+                {{-- Without JavaScript the page reloads after the post; say it worked. --}}
+                @if (session('enquiry_sent'))
+                    <noscript>
+                        <div role="status" class="mb-6 rounded-lg bg-accent-tint px-4 py-3 text-body text-ink">
+                            {{ session('enquiry_sent') }}
+                            @if (session('enquiry_reference'))
+                                Reference: <span class="font-medium">{{ session('enquiry_reference') }}</span>
+                            @endif
+                        </div>
+                    </noscript>
+                @endif
+
                 {{-- Confirmation. Replaces the form rather than sitting above it,
                      so there is no way to send the same enquiry twice by accident. --}}
                 <div

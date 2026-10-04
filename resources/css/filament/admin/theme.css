@@ -357,3 +357,95 @@
         animation: none;
     }
 }
+
+/* =========================================================================
+   Sticky tabs. On a list page the status tabs stay in view, just under the
+   top bar, while the table scrolls beneath them. The sticky element is the
+   grid column that holds the tabs: its parent also holds the table, so it has
+   the whole page to stick within. The page colour behind it keeps rows from
+   showing through.
+   ========================================================================= */
+
+.fi-grid-col:has(> .fi-sc-component > .fi-sc-tabs > .fi-tabs) {
+    position: sticky;
+    top: 4rem;
+    z-index: 10;
+    background-color: var(--baardy-page);
+    padding-top: 0.5rem;
+    margin-top: -0.5rem;
+}
+
+/* Cards in the same dashboard row share a height: the grid already makes the
+   cells equal, so each widget's card stretches to fill its cell instead of
+   stopping at its own content. */
+.fi-wi-widget {
+    display: flex;
+    flex-direction: column;
+}
+
+.fi-wi-widget > .fi-section {
+    flex: 1 1 auto;
+}
+
+/* =========================================================================
+   "Per page" under every table. The control is the browser's own <select>, so
+   the list is styled with the customisable-select feature where the browser
+   has it (current Chrome and Edge): a lifted white card, rounded rows, a
+   tinted selected row with a tick, and a chevron that turns when open. Where
+   it is missing the native list is left alone, so nothing breaks.
+   ========================================================================= */
+
+@supports (appearance: base-select) {
+    .fi-pagination-records-per-page-select .fi-select-input,
+    .fi-pagination-records-per-page-select .fi-select-input::picker(select) {
+        appearance: base-select;
+    }
+
+    .fi-pagination-records-per-page-select .fi-select-input {
+        cursor: pointer;
+    }
+
+    /* Filament already draws a chevron on this control; hide the browser's own so
+       there is only one, and keep the value on a single line. */
+    .fi-pagination-records-per-page-select .fi-select-input::picker-icon {
+        display: none;
+    }
+
+    .fi-pagination-records-per-page-select .fi-select-input {
+        white-space: nowrap;
+    }
+
+    .fi-pagination-records-per-page-select .fi-select-input::picker(select) {
+        margin-block: 0.375rem;
+        padding: 0.375rem;
+        border: 0;
+        border-radius: 0.75rem;
+        background-color: #fff;
+        box-shadow:
+            0 0 0 1px var(--baardy-hairline),
+            0 24px 48px -20px rgb(16 24 40 / 0.28);
+        min-width: anchor-size(width);
+    }
+
+    .fi-pagination-records-per-page-select .fi-select-input option {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        cursor: pointer;
+    }
+
+    .fi-pagination-records-per-page-select .fi-select-input option:hover,
+    .fi-pagination-records-per-page-select .fi-select-input option:focus-visible {
+        background-color: var(--baardy-page);
+    }
+
+    .fi-pagination-records-per-page-select .fi-select-input option:checked {
+        background-color: var(--primary-50);
+        color: var(--primary-700);
+        font-weight: 500;
+    }
+
+    .fi-pagination-records-per-page-select .fi-select-input option::checkmark {
+        color: var(--primary-700);
+    }
+}
