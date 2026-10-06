@@ -9,6 +9,10 @@
 
 @section('title', $heading.' | '.config('company.name'))
 
+@section('description', 'This page is not available. Visit the Baardy Micro Capital home page, or talk to a person.')
+
+@section('robots', 'noindex')
+
 @section('content')
     <x-ui.section :rule="false" class="pt-28! pb-24! sm:pt-36! lg:pb-32!">
         <x-ui.container>

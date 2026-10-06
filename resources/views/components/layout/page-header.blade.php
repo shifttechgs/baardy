@@ -14,6 +14,9 @@
       alt        its description
       position   its object-position
       width      its pixel width / height, for layout stability
+      crumbs     the trail under the header, as [label, url|null] pairs ending
+                 with this page (Home is added); also emitted as a
+                 BreadcrumbList. The visible trail and the schema are one list.
 --}}
 @props([
     'eyebrow',
@@ -24,6 +27,7 @@
     'position' => '50% 50%',
     'width' => 2400,
     'height' => 1600,
+    'crumbs' => null,
 ])
 
 <section aria-labelledby="page-title" @class(['bg-paper pt-6 sm:pt-8', 'pb-14 lg:pb-20' => $image, 'pb-10 lg:pb-14' => ! $image])>
@@ -58,5 +62,24 @@
         @endif
 
         {{ $slot }}
+
+        @if ($crumbs)
+            @php
+                $trail = array_merge([['Home', route('home')]], $crumbs);
+            @endphp
+            <x-seo.schema :data="\App\Support\StructuredData::graph([\App\Support\StructuredData::breadcrumbs(array_map(fn (array $crumb): array => [$crumb[0], $crumb[1] ?? url()->current()], $trail))])" />
+            <nav aria-label="Breadcrumb" class="rise mt-6 text-small text-muted [animation-delay:340ms]">
+                <ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    @foreach ($trail as $crumb)
+                        @if ($loop->last)
+                            <li aria-current="page" class="text-ink">{{ $crumb[0] }}</li>
+                        @else
+                            <li><a href="{{ $crumb[1] }}" class="transition-colors hover:text-accent">{{ $crumb[0] }}</a></li>
+                            <li aria-hidden="true">/</li>
+                        @endif
+                    @endforeach
+                </ol>
+            </nav>
+        @endif
     </x-ui.container>
 </section>

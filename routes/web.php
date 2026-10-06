@@ -46,8 +46,14 @@ Route::get('/loans/{slug}', [LoanController::class, 'show'])->name('loans.show')
 
 Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+Route::get('/llms.txt', [SitemapController::class, 'llms'])->name('llms');
 
 Route::view('/about', 'pages.about')->name('about');
+
+// Answers to the questions people ask before borrowing: how to apply, the FAQs, the terms.
+Route::view('/how-to-apply', 'pages.how-to-apply')->name('how-to-apply');
+Route::view('/faq', 'pages.faq')->name('faq');
+Route::view('/glossary', 'pages.glossary')->name('glossary');
 
 Route::view('/contact', 'pages.contact')->name('contact');
 
