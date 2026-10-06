@@ -262,8 +262,8 @@
                             <li class="flex flex-col justify-between gap-10 rounded-xl bg-ink/50 p-5 text-paper backdrop-blur-xl backdrop-saturate-150">
                                 <span class="figure-nums flex size-8 items-center justify-center rounded-full bg-paper/15 text-small">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                                 <div class="flex flex-col gap-2">
-                                    <p class="text-body font-medium">{{ $step['title'] }}</p>
-                                    <p class="text-small leading-[1.5] text-paper/80">
+                                    <p class="text-lead font-medium">{{ $step['title'] }}</p>
+                                    <p class="text-body leading-[1.5] text-paper/80">
                                         @if ($loop->first && ! $documentsAreComplete)
                                             Come in to our Harare or Bulawayo branch with your valid national ID, and anything else our team asks for.
                                         @else

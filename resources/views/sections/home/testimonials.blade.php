@@ -83,7 +83,7 @@
                     </h2>
                 </div>
 
-                <p class="max-w-sm text-body leading-[1.4] text-ink-soft lg:col-span-4 lg:col-start-9 lg:ml-auto lg:text-right">
+                <p class="max-w-sm text-lead leading-[1.4] text-ink-soft lg:col-span-4 lg:col-start-9 lg:ml-auto lg:text-right">
                     The part people mention most is not the money. It is being told plainly, and in writing.
                 </p>
             </div>

@@ -242,7 +242,7 @@
                                             x-bind:aria-selected="vacancy === option.id"
                                             x-on:click="pick(option.id)"
                                             x-on:keydown.enter.prevent="pick(option.id)"
-                                            class="flex cursor-pointer items-center justify-between gap-3 rounded-lg px-3.5 py-3 text-body text-ink transition-colors duration-150 hover:bg-mist"
+                                            class="flex cursor-pointer items-center justify-between gap-3 rounded-[0.5rem] px-3.5 py-3 text-body text-ink transition-colors duration-150 hover:bg-mist"
                                             x-bind:class="vacancy === option.id && 'bg-accent-tint text-accent'"
                                         >
                                             <span x-text="option.label"></span>

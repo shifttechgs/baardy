@@ -73,7 +73,7 @@
                         class="mt-5 text-[length:clamp(2rem,3.34vw,3rem)] leading-[1.1] font-normal tracking-[-0.03em] text-balance text-ink"
                     >{{ $trust['heading'] }}</h2>
 
-                    <p class="mt-4 max-w-md text-body leading-[1.4] text-ink-soft">{{ $trust['body'] }}</p>
+                    <p class="mt-4 max-w-md text-lead leading-[1.4] text-ink-soft">{{ $trust['body'] }}</p>
 
                     <x-ui.button :href="route('about')" arrow class="mt-8">
                         Our story

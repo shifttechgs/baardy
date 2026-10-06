@@ -42,7 +42,7 @@
 
     $phone = config('company.contact.phone');
 
-    $input = 'h-12 w-full rounded-md border bg-paper px-4 text-body text-ink transition-colors duration-150 '
+    $input = 'h-12 w-full rounded-xl border bg-paper px-4 text-body text-ink transition-colors duration-150 '
         .'placeholder:text-muted/70 hover:border-ink focus:border-accent';
 @endphp
 
@@ -210,7 +210,7 @@
                     <div
                         x-show="errors.form"
                         x-cloak
-                        class="rounded-md border border-danger/30 bg-danger/5 px-4 py-3 text-small text-danger"
+                        class="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-small text-danger"
                         role="alert"
                         x-text="errors.form?.[0]"
                     ></div>
@@ -259,22 +259,62 @@
                         <label for="enquiry-interest" class="text-small font-medium text-ink">
                             What is it about?<span class="text-accent"> *</span>
                         </label>
-                        <div class="relative">
-                            <select
+                        <div
+                            class="relative"
+                            x-data="{
+                                open: false,
+                                interest: @js((string) $chosenInterest),
+                                options: @js(array_values($interests)),
+                                pick(option) { this.interest = option; this.open = false; this.$refs.trigger.focus() },
+                                move(step) {
+                                    const index = this.options.indexOf(this.interest);
+                                    this.interest = this.options[(index + step + this.options.length) % this.options.length];
+                                },
+                            }"
+                            x-effect="if (sent) { interest = '' }"
+                            x-on:click.outside="open = false"
+                            x-on:keydown.escape="open = false"
+                        >
+                            <input type="hidden" name="interest" x-bind:value="interest">
+                            <button
+                                type="button"
                                 id="enquiry-interest"
-                                name="interest"
-                                required
-                                class="{{ $input }} appearance-none pr-11"
-                                x-bind:class="errors.interest ? 'border-danger' : 'border-line-strong'"
+                                x-ref="trigger"
+                                aria-haspopup="listbox"
+                                x-bind:aria-expanded="open"
+                                x-on:click="open = ! open"
+                                x-on:keydown.arrow-down.prevent="open ? move(1) : open = true"
+                                x-on:keydown.arrow-up.prevent="open ? move(-1) : open = true"
+                                class="{{ $input }} flex items-center justify-between gap-3 pr-4 text-left"
+                                x-bind:class="[errors.interest ? 'border-danger' : 'border-line-strong', open && 'border-accent!']"
                                 x-bind:aria-invalid="errors.interest ? 'true' : 'false'"
                                 aria-describedby="enquiry-interest-error"
                             >
-                                <option value="" disabled @selected(! $chosenInterest)>Choose one</option>
-                                @foreach ($interests as $interest)
-                                    <option value="{{ $interest }}" @selected($chosenInterest === $interest)>{{ $interest }}</option>
-                                @endforeach
-                            </select>
-                            <x-ui.icon name="chevron-down" class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 text-muted" />
+                                <span class="truncate" x-bind:class="interest || 'text-muted'" x-text="interest || 'Choose one'">Choose one</span>
+                                <x-ui.icon name="chevron-down" class="size-4 shrink-0 text-muted transition-transform duration-300" x-bind:class="open && 'rotate-180'" />
+                            </button>
+
+                            <ul
+                                x-show="open"
+                                x-cloak
+                                x-transition.origin.top.duration.200ms
+                                role="listbox"
+                                aria-labelledby="enquiry-interest"
+                                class="absolute z-20 mt-2 max-h-72 w-full overflow-auto rounded-xl bg-paper p-1.5 shadow-[0_24px_48px_-20px_rgb(21_16_25/0.35)]"
+                            >
+                                <template x-for="option in options" x-bind:key="option">
+                                    <li
+                                        role="option"
+                                        x-bind:aria-selected="interest === option"
+                                        x-on:click="pick(option)"
+                                        class="flex cursor-pointer items-center justify-between gap-3 rounded-[0.5rem] px-3.5 py-3 text-body text-ink transition-colors duration-150 hover:bg-mist"
+                                        x-bind:class="interest === option && 'bg-accent-tint text-accent'"
+                                    >
+                                        <span x-text="option"></span>
+                                        <x-ui.icon name="check" class="size-4 shrink-0 text-accent" x-show="interest === option" />
+                                    </li>
+                                </template>
+                            </ul>
                         </div>
                         <p id="enquiry-interest-error" class="text-small text-danger empty:hidden" x-text="errors.interest?.[0]">@error('interest'){{ $message }}@enderror</p>
                     </div>
@@ -287,7 +327,7 @@
                         <div class="grid grid-cols-2 gap-3">
                             @foreach ($branches as $branch)
                                 <label
-                                    class="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-md border border-line-strong
+                                    class="flex h-12 cursor-pointer items-center justify-center gap-2 rounded-xl border border-line-strong
                                            text-body text-ink transition-colors hover:border-ink
                                            has-[:checked]:border-accent has-[:checked]:bg-accent-tint has-[:checked]:text-accent
                                            has-[:focus-visible]:outline has-[:focus-visible]:outline-2

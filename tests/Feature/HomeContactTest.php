@@ -30,7 +30,7 @@ class HomeContactTest extends TestCase
         $response = $this->get('/contact')->assertOk();
 
         foreach (StoreEnquiryRequest::interests() as $interest) {
-            $response->assertSee('value="'.$interest.'"', false);
+            $response->assertSee($interest, false);
         }
 
         foreach (StoreEnquiryRequest::branches() as $branch) {

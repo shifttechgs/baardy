@@ -45,7 +45,7 @@
                     From application<br class="hidden sm:inline"> to funds
                 </h2>
 
-                <p class="mt-4 max-w-md text-body leading-[1.4] text-ink-soft">
+                <p class="mt-4 max-w-md text-lead leading-[1.4] text-ink-soft">
                     The same steps for every loan. Bring the right documents, and you will know where you stand.
                 </p>
 
@@ -69,7 +69,7 @@
                             <span class="figure-nums w-8 shrink-0 pt-0.5 text-[1.25rem] leading-none text-ink">{{ str_pad((string) ($i + 1), 2, '0', STR_PAD_LEFT) }}</span>
                             <div class="flex max-w-lg flex-col gap-2">
                                 <h3 class="text-[1.5rem] leading-[1.3] font-medium text-ink">{{ $step['title'] }}</h3>
-                                <p class="text-body leading-[1.4] text-ink-soft">{{ $step['body'] }}</p>
+                                <p class="text-lead leading-[1.4] text-ink-soft">{{ $step['body'] }}</p>
                             </div>
                         </div>
                     </li>
