@@ -11,11 +11,23 @@
     $image = 'images/insights/'.$article['image'];
 @endphp
 
-@section('title', $article['title'].' | '.config('company.name'))
+@section('title', ($article['seo_title'] ?? $article['title']).' | '.config('company.name'))
+
+@section('og_type', 'article')
+
+@section('og_image', asset($image.'-1600.webp'))
+
+@section('og_image_alt', $article['alt'])
+
+@push('og')
+    <meta property="article:published_time" content="{{ $published->toDateString() }}">
+@endpush
 
 @section('description', $article['excerpt'])
 
 @section('content')
+    <x-seo.schema :data="[\App\Support\StructuredData::article($article), \App\Support\StructuredData::breadcrumbs([['Home', route('home')], ['Insights', route('insights.index')], [$article['title'], url()->current()]])]" />
+
     <article>
         <x-ui.section :rule="false" class="pt-10 pb-0 sm:pt-14 sm:pb-0 lg:pt-16 lg:pb-0">
             <x-ui.container>
@@ -29,6 +41,8 @@
                     <p class="rise figure-nums flex flex-wrap items-center gap-x-3 gap-y-1 text-small text-muted [animation-delay:60ms]">
                         <span class="rounded-full bg-accent-tint px-3 py-1 font-medium text-accent">{{ $article['category'] }}</span>
                         <time datetime="{{ $published->toDateString() }}">{{ $published->format('j F Y') }}</time>
+                        <span aria-hidden="true">&middot;</span>
+                        <span>By {{ \App\Support\StructuredData::BRAND }}</span>
                         <span aria-hidden="true">&middot;</span>
                         <span>{{ $article['minutes'] }} min read</span>
                     </p>
@@ -62,6 +76,20 @@
                 <div class="article-body mx-auto max-w-2xl">
                     @include('insights.articles.'.$article['slug'])
                 </div>
+
+                @php
+                    $relatedLoans = collect(config('marketing.products'))->whereIn('slug', $article['loans'] ?? []);
+                @endphp
+                @if ($relatedLoans->isNotEmpty())
+                    <aside class="mx-auto mt-14 max-w-2xl rounded-lg border border-line p-6 sm:p-8">
+                        <h2 class="text-body font-medium text-ink">Loans related to this guide</h2>
+                        <ul class="mt-4 flex flex-col gap-2">
+                            @foreach ($relatedLoans as $related)
+                                <li><a href="{{ route('loans.show', $related['slug']) }}" class="text-body text-accent underline decoration-accent/30 underline-offset-4 transition-colors hover:decoration-accent">{{ $related['name'] }}</a> <span class="text-small text-muted">&middot; {{ $related['best_for'] }}</span></li>
+                            @endforeach
+                        </ul>
+                    </aside>
+                @endif
 
                 <div class="mx-auto mt-14 flex max-w-2xl flex-col gap-4 rounded-lg bg-mist p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
                     <p class="text-body text-ink">

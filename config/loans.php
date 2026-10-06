@@ -38,6 +38,9 @@
 return [
 
     'salary-based-loans' => [
+        'noun' => 'a salary-based loan',
+        'where_question' => 'Where can I get a salary-based loan in Zimbabwe?',
+        'definition' => 'A salary-based loan is a short-term loan for people with a regular income. Repayments are agreed to suit that income, so what you can borrow is matched to what it can support. Baardy Micro Capital, a licensed credit-only microfinance lender, offers salary-based loans to public-sector employees, government pensioners and private-sector employees.',
         'title' => 'Salary-Based Loans in Zimbabwe | Baardy Micro Capital',
         'meta' => 'Short-term salary-based loans for government employees, pensioners and private-sector workers in Zimbabwe, from a licensed lender in Harare and Bulawayo.',
         'headline' => 'Salary-based loans for employees and pensioners in Zimbabwe',
@@ -60,6 +63,9 @@ return [
     ],
 
     'educational-loans' => [
+        'noun' => 'an educational loan',
+        'where_question' => 'Where can I get a school fees loan in Zimbabwe?',
+        'definition' => 'An educational loan spreads the cost of school or tuition fees over several months instead of one payment. It supports education expenses at various levels, for parents, guardians and students. Baardy Micro Capital, a licensed credit-only microfinance lender, offers educational loans in Zimbabwe, with a repayment schedule you agree before you accept.',
         'title' => 'Educational Loans and School Fees Loans | Baardy',
         'meta' => 'Affordable educational loans in Zimbabwe to help families and students pay school and tuition fees. Licensed lender with branches in Harare and Bulawayo.',
         'headline' => 'Educational loans for school and tuition fees in Zimbabwe',
@@ -81,6 +87,9 @@ return [
     ],
 
     'agricultural-loans' => [
+        'noun' => 'an agricultural loan',
+        'where_question' => 'Where can I get a farming loan in Zimbabwe?',
+        'definition' => 'An agricultural loan is financing for farming: inputs, production and other farming requirements, paid for before the harvest income arrives. Baardy Micro Capital, a licensed credit-only microfinance lender, offers agricultural loans to farmers and agricultural producers in Zimbabwe, with a repayment schedule agreed before you accept.',
         'title' => 'Agricultural Loans for Farmers in Zimbabwe | Baardy',
         'meta' => 'Agricultural loans for Zimbabwean farmers: financing for inputs, production and other farming needs from a licensed microfinance lender in Harare and Bulawayo.',
         'headline' => 'Agricultural loans for farmers and producers in Zimbabwe',
@@ -102,6 +111,9 @@ return [
     ],
 
     'women-empowerment-loans' => [
+        'noun' => 'a women empowerment loan',
+        'where_question' => 'Where can a woman entrepreneur get a loan in Zimbabwe?',
+        'definition' => 'A women empowerment loan is financial support designed to promote entrepreneurship among women and strengthen livelihoods. Baardy Micro Capital, a licensed credit-only microfinance lender, offers it to women entrepreneurs and women-led businesses in Zimbabwe, and a person reviews every application.',
         'title' => 'Women Empowerment Loans in Zimbabwe | Baardy',
         'meta' => 'Women empowerment loans in Zimbabwe: finance to start or grow a business and strengthen livelihoods. Licensed lender, branches in Harare and Bulawayo.',
         'headline' => 'Women empowerment loans for entrepreneurs in Zimbabwe',
@@ -123,6 +135,9 @@ return [
     ],
 
     'youth-empowerment-loans' => [
+        'noun' => 'a youth empowerment loan',
+        'where_question' => 'Where can a young entrepreneur get a business loan in Zimbabwe?',
+        'definition' => 'A youth empowerment loan is financial support to help young people start and grow a business and build their livelihoods. Baardy Micro Capital, a licensed credit-only microfinance lender, offers youth empowerment loans in Zimbabwe, and a person reads and discusses every application.',
         'title' => 'Youth Empowerment Loans in Zimbabwe | Baardy',
         'meta' => 'Youth empowerment loans in Zimbabwe: finance for young entrepreneurs to start and grow a business. Licensed lender in Harare and Bulawayo.',
         'headline' => 'Youth empowerment loans for young entrepreneurs in Zimbabwe',
@@ -143,6 +158,9 @@ return [
     ],
 
     'sme-bridging-finance' => [
+        'noun' => 'SME bridging finance',
+        'where_question' => 'Where can I get working capital for my business in Zimbabwe?',
+        'definition' => 'SME bridging finance is short-term working capital that carries a business across the gap between paying suppliers and being paid. Baardy Micro Capital, a licensed credit-only microfinance lender, offers it to SMEs, sole traders and cross-border traders in Zimbabwe for business start-up, working capital and recapitalisation.',
         'title' => 'SME Bridging Finance and Working Capital | Baardy',
         'meta' => 'Short-term working capital for SMEs, sole traders and cross-border traders in Zimbabwe: start-up, working capital and recapitalisation from a licensed lender.',
         'headline' => 'SME bridging finance and working capital in Zimbabwe',

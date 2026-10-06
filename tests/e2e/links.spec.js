@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
  * Every internal link on every public page goes somewhere that exists, and
  * every in-page anchor points at an element that is there.
  */
-const pages = ['/', '/loans', '/loans/salary-based-loans', '/loans/educational-loans', '/about', '/careers', '/contact', '/partners', '/promotions', '/promotions/e2e-back-to-school', '/insights', '/privacy', '/terms', '/responsible-lending', '/complaints'];
+const pages = ['/', '/how-to-apply', '/faq', '/glossary', '/loans', '/loans/salary-based-loans', '/loans/educational-loans', '/about', '/careers', '/contact', '/partners', '/promotions', '/promotions/e2e-back-to-school', '/insights', '/privacy', '/terms', '/responsible-lending', '/complaints'];
 
 test('no internal link on any public page is broken', async ({ page, request }) => {
     const checked = new Map();

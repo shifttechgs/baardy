@@ -293,7 +293,7 @@
                     </div>
 
                     <ul class="flex flex-col border-t border-line">
-                        @foreach ([...$about, ['label' => 'FAQs', 'href' => '/#faq'], ['label' => 'Partners', 'href' => route('partners')], ['label' => 'Careers', 'href' => route('careers')]] as $link)
+                        @foreach ([...$about, ['label' => 'FAQs', 'href' => route('faq')], ['label' => 'Partners', 'href' => route('partners')], ['label' => 'Careers', 'href' => route('careers')]] as $link)
                             <li class="border-b border-line">
                                 <a href="{{ $link['href'] }}" x-on:click="toggleMobile()" class="flex h-12 items-center justify-between text-body text-ink">
                                     {{ $link['label'] }}
