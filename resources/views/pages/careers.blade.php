@@ -9,7 +9,7 @@
 --}}
 @extends('layouts.marketing')
 
-@section('title', 'Careers | '.config('company.name'))
+@section('title', 'Careers at Baardy Micro Capital | Jobs in Harare and Bulawayo')
 
 @section('description', 'Open roles at '.config('company.legal_name').', a licensed Zimbabwean microfinance institution. Apply online and attach your CV.')
 
@@ -24,7 +24,12 @@
 @endphp
 
 @section('content')
+    @if ($vacancies->isNotEmpty())
+        <x-seo.schema :data="$vacancies->map(fn ($vacancy) => \App\Support\StructuredData::jobPosting($vacancy))->all()" />
+    @endif
+
     <x-layout.page-header
+        :crumbs="[['Careers']]"
         eyebrow="Careers"
         title="Build a career where people come first"
         lead="Join a licensed Zimbabwean lender that has served government employees, pensioners and small businesses since {{ config('company.compliance.licensed_since') }}."
@@ -57,7 +62,7 @@
 
                 <article class="relative isolate flex flex-col justify-between gap-10 overflow-hidden rounded-xl bg-accent p-6 text-paper sm:p-8 lg:col-span-3">
                     <span aria-hidden="true" class="pointer-events-none absolute -right-3 -bottom-10 -z-10 text-[12rem] leading-none tracking-[-0.06em] text-paper/[0.07]">1</span>
-                    <p class="text-[length:clamp(3rem,2.2rem+2.2vw,4.25rem)] leading-none tracking-[-0.045em]">Every CV, read</p>
+                    <p class="text-[length:clamp(3rem,2.2rem+2.2vw,4.25rem)] leading-none tracking-[-0.045em]">Every CV gets read</p>
                     <p class="text-body text-paper/80">A person reads every application. Send yours, even when no role is open.</p>
                 </article>
             </div>
@@ -96,6 +101,7 @@
                 <div class="grid items-stretch gap-3 md:grid-cols-2 lg:gap-4 xl:grid-cols-3">
                     @forelse ($vacancies as $vacancy)
                         <article
+                            id="role-{{ $vacancy->slug }}"
                             x-data="{ more: false }"
                             x-show="place === '' || place === @js($vacancy->location)"
                             x-transition.opacity.duration.300ms
