@@ -14,6 +14,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Behind a load balancer or Cloudflare, set TRUSTED_PROXIES (comma
+        // separated addresses, or * for all) so the app sees the visitor's
+        // real scheme and host.
+        $trusted = env('TRUSTED_PROXIES');
+
+        if ($trusted) {
+            $middleware->trustProxies(at: $trusted === '*' ? '*' : explode(',', $trusted));
+        }
+
         $middleware->web(append: [
             RememberLeadSource::class,
             SetSecurityHeaders::class,
