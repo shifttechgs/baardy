@@ -23,7 +23,10 @@
 @php
     $symbol = config('company.currency.symbol');
     $range = $symbol.number_format($loan['min']).' to '.$symbol.number_format($loan['max']);
-    $audience = collect($loan['audience'])->map(fn (string $item): string => Str::lcfirst($item));
+    // Lower-case each item for the middle of a sentence, except proper nouns.
+    $audience = collect($loan['audience'])->map(fn (string $item): string => str_starts_with($item, 'Public Service Commission') ? $item : Str::lcfirst($item));
+    $cities = collect(config('company.branches'))->pluck('name')->filter()->unique()->values();
+    $reviewed = \Illuminate\Support\Carbon::parse(config('seo.reviewed'));
     $whatsapp = collect(config('company.branches'))
         ->pluck('phones')
         ->flatten(1)
@@ -66,16 +69,9 @@
                 'description' => $loan['meta'],
                 'url' => url()->current(),
                 'areaServed' => ['@type' => 'Country', 'name' => 'Zimbabwe'],
-                'provider' => ['@type' => 'Organization', 'name' => config('company.legal_name'), 'url' => url('/')],
+                'provider' => \App\Support\StructuredData::organizationRef(),
             ],
-            [
-                '@type' => 'BreadcrumbList',
-                'itemListElement' => [
-                    ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home', 'item' => url('/')],
-                    ['@type' => 'ListItem', 'position' => 2, 'name' => 'Loans', 'item' => route('loans.index')],
-                    ['@type' => 'ListItem', 'position' => 3, 'name' => $loan['name'], 'item' => url()->current()],
-                ],
-            ],
+            \App\Support\StructuredData::breadcrumbs([['Home', route('home')], ['Loans', route('loans.index')], [$loan['name'], url()->current()]]),
             [
                 '@type' => 'FAQPage',
                 'mainEntity' => collect($faqs)->map(fn (array $faq): array => [
@@ -88,6 +84,7 @@
     ];
 
     $tick = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mt-1 size-4 shrink-0 text-accent"><path d="m3.5 8.5 3 3 6-7" /></svg>';
+    $highlightTick = str_replace('text-accent', 'text-highlight', $tick);
 @endphp
 
 @push('head')
@@ -129,35 +126,35 @@
                     @endforeach
                 </div>
 
-                <aside data-reveal class="flex flex-col gap-6 self-start rounded-2xl bg-mist p-6 sm:p-8 lg:sticky lg:top-28 lg:col-span-4">
+                <x-ui.photo-card data-reveal image="images/why-us/privacy-1400.webp" position="50% 15%" panel="gap-6 sm:p-7" class="self-start pt-40 sm:pt-52 lg:sticky lg:top-28 lg:col-span-4">
                     @isset ($promotion)
                         <a href="{{ route('promotions.show', $promotion) }}" class="w-fit rounded-full bg-highlight px-3 py-1 text-micro font-medium text-paper">
                             Limited offer &middot; {{ $promotion->summary }}
                         </a>
                     @endisset
 
-                    <p class="text-small font-medium text-ink">At a glance</p>
-                    <dl class="grid grid-cols-2 gap-x-4 gap-y-5 border-t border-ink/15 pt-5">
+                    <p class="text-small font-medium text-paper">At a glance</p>
+                    <dl class="grid grid-cols-2 gap-x-4 gap-y-5 border-t border-paper/20 pt-5">
                         <div class="col-span-2 flex flex-col gap-0.5">
-                            <dt class="text-micro text-muted">Amount</dt>
-                            <dd class="text-lead font-medium text-ink">
-                                <x-ui.money :amount="$loan['min']" /> <span class="text-muted">&ndash;</span> <x-ui.money :amount="$loan['max']" />
+                            <dt class="text-micro text-paper/60">Amount</dt>
+                            <dd class="text-lead font-medium text-paper">
+                                <x-ui.money :amount="$loan['min']" /> <span class="text-paper/60">&ndash;</span> <x-ui.money :amount="$loan['max']" />
                             </dd>
                         </div>
                         <div class="flex flex-col gap-0.5">
-                            <dt class="text-micro text-muted">Term</dt>
-                            <dd class="figure-nums text-body font-medium text-ink">{{ $loan['term'] }}</dd>
+                            <dt class="text-micro text-paper/60">Term</dt>
+                            <dd class="figure-nums text-body font-medium text-paper">{{ $loan['term'] }}</dd>
                         </div>
                         <div class="flex flex-col gap-0.5">
-                            <dt class="text-micro text-muted">Decision</dt>
-                            <dd class="text-body font-medium text-ink">In one working day</dd>
+                            <dt class="text-micro text-paper/60">Decision</dt>
+                            <dd class="text-body font-medium text-paper">In one working day</dd>
                         </div>
                         <div class="col-span-2 flex flex-col gap-0.5">
-                            <dt class="text-micro text-muted">Best for</dt>
-                            <dd class="text-body text-ink-soft">{{ $loan['best_for'] }}</dd>
+                            <dt class="text-micro text-paper/60">Best for</dt>
+                            <dd class="text-body text-paper/80">{{ $loan['best_for'] }}</dd>
                         </div>
                     </dl>
-                    <p class="text-micro leading-[1.5] text-muted">Your own limit is set when your application is assessed. A decision in one working day applies to complete applications.</p>
+                    <p class="text-micro leading-[1.5] text-paper/60">Your own limit is set when your application is assessed. A decision in one working day applies to complete applications.</p>
 
                     <div class="flex flex-col gap-3">
                         <x-ui.button :href="$enquiryUrl" arrow>Enquire about this loan</x-ui.button>
@@ -165,7 +162,40 @@
                             <x-ui.whatsapp-cta :number="$whatsapp['tel']" :text="'Hello Baardy Micro Capital, I would like to know more about '.$loan['name'].'.'" label="Ask on WhatsApp" tone="paper" />
                         @endif
                     </div>
-                </aside>
+                </x-ui.photo-card>
+            </div>
+        </x-ui.container>
+    </x-ui.section>
+
+    {{-- Quick answers: each is a question people ask, with its answer first --}}
+    <x-ui.section :rule="false" aria-labelledby="answers-label" class="pt-0! pb-16! sm:pb-20! lg:pb-24!">
+        <x-ui.container wide>
+            <div class="grid gap-10 lg:grid-cols-12 lg:gap-x-8">
+                <x-ui.eyebrow id="answers-label" data-reveal class="self-start lg:col-span-2">Quick answers</x-ui.eyebrow>
+
+                <div class="flex flex-col lg:col-span-10">
+                    <section data-reveal class="grid gap-3 border-t border-line py-8 lg:grid-cols-10 lg:gap-x-8">
+                        <h2 class="text-[length:clamp(1.25rem,1.05rem+0.7vw,1.5rem)] leading-[1.25] font-normal tracking-[-0.02em] text-balance text-ink lg:col-span-4">What is {{ $loan['noun'] }}?</h2>
+                        <p class="max-w-2xl text-[1.0625rem] leading-[1.65] text-ink-soft lg:col-span-6">{{ $loan['definition'] }}</p>
+                    </section>
+
+                    <section data-reveal class="grid gap-3 border-t border-line py-8 lg:grid-cols-10 lg:gap-x-8">
+                        <h2 class="text-[length:clamp(1.25rem,1.05rem+0.7vw,1.5rem)] leading-[1.25] font-normal tracking-[-0.02em] text-balance text-ink lg:col-span-4">{{ $loan['where_question'] }}</h2>
+                        <p class="max-w-2xl text-[1.0625rem] leading-[1.65] text-ink-soft lg:col-span-6">
+                            At {{ config('company.legal_name') }}, in person at our {{ $cities->slice(0, -1)->implode(', ') }}{{ $cities->count() > 1 ? ' or ' : '' }}{{ $cities->last() }} {{ $cities->count() > 1 ? 'offices' : 'office' }}. Bring your documents, and a person assesses your application. Complete applications get a decision within one working day, and the full cost is written down before you accept.
+                        </p>
+                    </section>
+
+                    <section data-reveal class="grid gap-3 border-t border-b border-line py-8 lg:grid-cols-10 lg:gap-x-8">
+                        <h2 class="text-[length:clamp(1.25rem,1.05rem+0.7vw,1.5rem)] leading-[1.25] font-normal tracking-[-0.02em] text-balance text-ink lg:col-span-4">What documents do I need for {{ $loan['noun'] }}?</h2>
+                        <p class="max-w-2xl text-[1.0625rem] leading-[1.65] text-ink-soft lg:col-span-6">
+                            {{ $documentsAreComplete ? 'Bring '.Str::lcfirst(collect($documents)->slice(0, -1)->implode(', ')).' and '.Str::lcfirst(collect($documents)->last()).'.' : 'Bring a valid national ID.' }}
+                            If your application needs anything else, our team will tell you during appraisal.
+                        </p>
+                    </section>
+
+                    <p class="figure-nums pt-6 text-small text-muted">Last reviewed <time datetime="{{ $reviewed->toDateString() }}">{{ $reviewed->format('j F Y') }}</time></p>
+                </div>
             </div>
         </x-ui.container>
     </x-ui.section>
@@ -181,14 +211,14 @@
             />
 
             <div data-reveal-stagger class="mt-12 grid gap-3 lg:mt-16 lg:grid-cols-2 lg:gap-4">
-                <div class="flex flex-col gap-6 rounded-2xl bg-paper p-6 sm:p-8">
-                    <h3 class="text-[length:clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.2] font-normal tracking-[-0.02em] text-ink">You can use it for</h3>
-                    <ul class="flex flex-col gap-3 text-body text-ink-soft">
+                <x-ui.photo-card :image="$loan['image']['src']" :alt="$loan['image']['alt']" :position="$loan['image']['position']" class="min-h-[28rem] pt-40 sm:pt-56">
+                    <h3 class="text-[length:clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.2] font-normal tracking-[-0.02em]">You can use it for</h3>
+                    <ul class="flex flex-col gap-3 text-body text-paper/85">
                         @foreach ($loan['uses'] as $use)
-                            <li class="flex gap-3">{!! $tick !!} {{ $use }}</li>
+                            <li class="flex gap-3">{!! $highlightTick !!} {{ $use }}</li>
                         @endforeach
                     </ul>
-                </div>
+                </x-ui.photo-card>
 
                 <div class="flex flex-col gap-6 rounded-2xl bg-paper p-6 sm:p-8">
                     <h3 class="text-[length:clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.2] font-normal tracking-[-0.02em] text-ink">It is meant for</h3>
@@ -213,35 +243,38 @@
             />
 
             <div class="mt-12 grid gap-3 lg:mt-16 lg:grid-cols-12 lg:gap-4">
-                <div data-reveal class="flex flex-col gap-6 rounded-2xl bg-ink p-6 text-paper sm:p-8 lg:col-span-5">
+                <x-ui.photo-card data-reveal image="images/why-us/shopkeeper-1440.webp" position="50% 35%" class="min-h-[30rem] pt-48 lg:col-span-5">
                     <h3 class="text-[length:clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.2] font-normal tracking-[-0.02em]">What to bring</h3>
                     <ul class="flex flex-col gap-3 text-body text-paper/85">
                         @foreach ($documents as $document)
-                            <li class="flex gap-3">{!! str_replace('text-accent', 'text-highlight', $tick) !!} {{ $document }}</li>
+                            <li class="flex gap-3">{!! $highlightTick !!} {{ $document }}</li>
                         @endforeach
                     </ul>
                     @unless ($documentsAreComplete)
-                        <p class="text-small leading-[1.5] text-paper/65">If your application needs anything else, our team will tell you during appraisal.</p>
+                        <p class="text-small leading-[1.5] text-paper/70">If your application needs anything else, our team will tell you during appraisal.</p>
                     @endunless
-                </div>
+                </x-ui.photo-card>
 
-                <ol data-reveal-stagger class="grid gap-3 sm:grid-cols-3 lg:col-span-7 lg:gap-4">
-                    @foreach (config('marketing.steps') as $step)
-                        <li class="flex flex-col justify-between gap-8 rounded-2xl bg-mist p-6">
-                            <span class="figure-nums text-small text-muted">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
-                            <div class="flex flex-col gap-2">
-                                <p class="text-body font-medium text-ink">{{ $step['title'] }}</p>
-                                <p class="text-small leading-[1.5] text-ink-soft">
-                                    @if ($loop->first && ! $documentsAreComplete)
-                                        Come in to our Harare or Bulawayo branch with your valid national ID, and anything else our team asks for.
-                                    @else
-                                        {{ $step['body'] }}
-                                    @endif
-                                </p>
-                            </div>
-                        </li>
-                    @endforeach
-                </ol>
+                <div data-reveal class="relative isolate flex overflow-hidden rounded-2xl bg-ink p-3 sm:p-4 lg:col-span-7">
+                    <img src="{{ asset('images/why-us/schedules-1400.webp') }}" alt="" width="1400" height="932" loading="lazy" decoding="async" class="absolute inset-0 -z-10 size-full object-cover object-[50%_40%]">
+                    <ol data-reveal-stagger class="grid w-full gap-3 sm:grid-cols-3">
+                        @foreach (config('marketing.steps') as $step)
+                            <li class="flex flex-col justify-between gap-10 rounded-xl bg-ink/50 p-5 text-paper backdrop-blur-xl backdrop-saturate-150">
+                                <span class="figure-nums flex size-8 items-center justify-center rounded-full bg-paper/15 text-small">{{ str_pad((string) $loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                                <div class="flex flex-col gap-2">
+                                    <p class="text-lead font-medium">{{ $step['title'] }}</p>
+                                    <p class="text-body leading-[1.5] text-paper/80">
+                                        @if ($loop->first && ! $documentsAreComplete)
+                                            Come in to our Harare or Bulawayo branch with your valid national ID, and anything else our team asks for.
+                                        @else
+                                            {{ $step['body'] }}
+                                        @endif
+                                    </p>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ol>
+                </div>
             </div>
         </x-ui.container>
     </x-ui.section>
@@ -284,7 +317,7 @@
 
             <div data-reveal-stagger class="mt-12 grid gap-3 sm:grid-cols-2 lg:mt-16 lg:grid-cols-5 lg:gap-4">
                 @foreach ($others as $other)
-                    <x-ui.loan-card :loan="$other" />
+                    <x-ui.loan-card :loan="$other" :range="false" />
                 @endforeach
             </div>
         </x-ui.container>

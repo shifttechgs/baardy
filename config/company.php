@@ -95,7 +95,11 @@ return [
     */
     'contact' => [
         'phone' => '+263 772 550 189',             // CONFIRMED by the client
-        'phone_label' => 'Mon–Fri, 08:00–17:00',   // PLACEHOLDER — real opening hours
+        'phone_label' => 'Mon–Fri 08:00–16:30, Sat 08:00–12:00',   // CONFIRMED by the client
+        'hours' => [                            // CONFIRMED by the client
+            ['days' => 'Monday to Friday', 'time' => '08:00–16:30'],
+            ['days' => 'Saturday', 'time' => '08:00–12:00'],
+        ],
         'email' => 'hello@example.com',            // PLACEHOLDER — reconfirm with client
     ],
 
@@ -243,7 +247,7 @@ return [
     'nav_about' => [
         ['label' => 'Who we are', 'description' => 'A licensed microfinance institution on the Reserve Bank of Zimbabwe register since 2015, in Harare and Bulawayo.', 'href' => '/about'],
         ['label' => 'Why borrow from us', 'description' => 'Repayments that follow your cash, free advisory, and your information kept private.', 'href' => '/#why-us'],
-        ['label' => 'How it works', 'description' => 'Three steps from a branch visit to funds, on paper at every step.', 'href' => '/#how-it-works'],
+        ['label' => 'How it works', 'description' => 'Three steps from a branch visit to funds, on paper at every step.', 'href' => '/how-to-apply'],
         ['label' => 'Responsible lending', 'description' => 'How we lend, and what to do if repaying becomes hard.', 'href' => '/responsible-lending'],
         ['label' => 'Get in touch', 'description' => 'Talk to a person, by phone or WhatsApp, or send us a message.', 'href' => '/contact'],
     ],
@@ -273,14 +277,15 @@ return [
         'Company' => [
             ['label' => 'About us', 'href' => '/about'],
             ['label' => 'Why borrow from us', 'href' => '/#why-us'],
-            ['label' => 'How it works', 'href' => '/#how-it-works'],
+            ['label' => 'How it works', 'href' => '/how-to-apply'],
             ['label' => 'Insights', 'href' => '/insights'],
             ['label' => 'Promotions', 'href' => '/promotions'],
             ['label' => 'Partners', 'href' => '/partners'],
             ['label' => 'Careers', 'href' => '/careers'],
         ],
         'Support' => [
-            ['label' => 'FAQs', 'href' => '/#faq'],
+            ['label' => 'FAQs', 'href' => '/faq'],
+            ['label' => 'Loan glossary', 'href' => '/glossary'],
             ['label' => 'Visit a branch', 'href' => '/contact#visit'],
             ['label' => 'Contact us', 'href' => '/contact'],
             ['label' => 'Struggling to repay?', 'href' => '/responsible-lending#struggling-to-repay'],

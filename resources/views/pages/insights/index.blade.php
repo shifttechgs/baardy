@@ -13,7 +13,7 @@
 --}}
 @extends('layouts.marketing')
 
-@section('title', 'Insights | '.config('company.name'))
+@section('title', 'Loan and Money Guides for Zimbabwe | Baardy Insights')
 
 @section('description', 'Practical guidance on budgeting, borrowing and running a small business in Zimbabwe, from '.config('company.legal_name').'.')
 
@@ -24,6 +24,7 @@
 
 @section('content')
     <x-layout.page-header
+        :crumbs="[['Insights']]"
         eyebrow="Insights"
         title="Advice from across the counter"
         lead="Short, practical guides on budgeting, borrowing and seasonal finance. The same advice our team gives at the branch."

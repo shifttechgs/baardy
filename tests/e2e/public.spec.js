@@ -5,6 +5,9 @@ import { expectNoProblems, scrollThrough, watch } from './helpers.js';
 const pages = [
     ['/', 'Home'],
     ['/loans', 'Loans'],
+    ['/how-to-apply', 'How to apply'],
+    ['/faq', 'Questions'],
+    ['/glossary', 'Glossary'],
     ['/loans/salary-based-loans', 'A loan page'],
     ['/loans/sme-bridging-finance', 'Another loan page'],
     ['/about', 'About'],

@@ -7,14 +7,16 @@
 --}}
 @extends('layouts.marketing')
 
-@section('title', config('company.name').' | Loans you can read, from people you can reach')
+@section('title', 'Licensed Microfinance Loans in Zimbabwe | Baardy Micro Capital')
 
-@section('description', config('company.description'))
+@section('description', 'Salary-based, school fees, farming, women and youth empowerment loans and SME working capital from an RBZ-licensed lender in Harare and Bulawayo.')
 
 {{-- The header floats over the hero photograph until the page scrolls. --}}
 @section('navbar', 'overlay')
 
 @section('content')
+    <x-seo.schema :data="[\App\Support\StructuredData::organization(), \App\Support\StructuredData::website()]" />
+
     @include('sections.home.hero')
     @include('sections.home.trust')
     @include('sections.home.products')

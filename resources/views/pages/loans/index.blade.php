@@ -27,6 +27,7 @@
 
 @section('content')
     <x-layout.page-header
+        :crumbs="[['Loans']]"
         eyebrow="Loans"
         title="Six loans, matched to how you earn"
         lead="Each has its own range, term and paperwork, and every cost is in writing before you commit."
@@ -45,7 +46,7 @@
         </x-ui.container>
     </x-ui.section>
 
-    <x-ui.section :rule="false" tone="mist" aria-labelledby="compare-heading" class="py-16! sm:py-20! lg:py-24!">
+    <x-ui.section :rule="false" aria-labelledby="compare-heading" class="py-16! sm:py-20! lg:py-24!">
         <x-ui.container wide>
             <x-ui.section-heading
                 id="compare-heading"
@@ -54,7 +55,9 @@
                 lead="Your own limit is set when your application is assessed."
             />
 
-            <div data-reveal class="mt-12 overflow-x-auto rounded-2xl bg-paper lg:mt-16">
+            <div data-reveal class="relative isolate mt-12 overflow-hidden rounded-2xl bg-ink p-3 sm:p-4 lg:mt-16 lg:p-5">
+                <img src="{{ asset('images/hero/farmer-2400.webp') }}" alt="" width="2400" height="1602" loading="lazy" decoding="async" class="absolute inset-0 -z-10 size-full object-cover object-[50%_50%]">
+                <div class="overflow-x-auto rounded-xl bg-paper/90 backdrop-blur-xl backdrop-saturate-150">
                 <table class="w-full min-w-[40rem] text-left text-body">
                     <caption class="sr-only">Amount, term and who each loan is for</caption>
                     <thead>
@@ -78,6 +81,7 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
             </div>
         </x-ui.container>
     </x-ui.section>

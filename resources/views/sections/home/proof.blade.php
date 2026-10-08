@@ -59,7 +59,7 @@
                             {{ $item['title'] }}
                         </h3>
 
-                        <p class="text-body text-muted">
+                        <p class="text-lead text-muted">
                             {{ $item['body'] }}
                         </p>
                     </div>

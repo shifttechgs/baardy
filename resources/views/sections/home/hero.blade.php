@@ -102,7 +102,7 @@
 
                 {{-- Left: the licence line, the headline, the ask --}}
                 <div class="hero-lift flex min-w-0 flex-col items-start lg:w-1/2">
-                    <p class="rise flex flex-wrap items-center gap-x-2 text-[0.875rem] text-paper/80 [animation-delay:200ms]">
+                    <p class="rise flex flex-wrap items-center gap-x-2.5 gap-y-1 text-body font-medium text-paper sm:text-lead [animation-delay:200ms]">
                         <span>Licensed Microfinance</span>
                         <span aria-hidden="true">&middot;</span>
                         <span>Est. {{ $credentials['years']['since'] }}</span>

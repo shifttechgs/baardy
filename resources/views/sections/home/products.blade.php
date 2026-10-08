@@ -75,13 +75,13 @@
                                 @endisset
 
                                 <h3 class="text-[length:clamp(1.75rem,1.2rem+1.6vw,2.5rem)] leading-[1.1] font-normal tracking-[-0.03em] text-ink">{{ $product['name'] }}</h3>
-                                <p class="max-w-md text-body leading-[1.4] text-ink-soft">{{ $product['summary'] }}</p>
+                                <p class="max-w-md text-lead leading-[1.4] text-ink-soft">{{ $product['summary'] }}</p>
                             </div>
 
                             <div class="flex flex-col gap-6">
                                 <dl class="grid grid-cols-2 gap-4 border-t border-ink/15 pt-5">
                                     <div class="flex flex-col gap-0.5">
-                                        <dt class="text-micro text-muted">Amount</dt>
+                                        <dt class="text-small text-muted">Amount</dt>
                                         <dd class="text-body font-medium text-ink">
                                             <x-ui.money :amount="$product['min']" />
                                             <span class="text-muted">&ndash;</span>
@@ -89,12 +89,12 @@
                                         </dd>
                                     </div>
                                     <div class="flex flex-col gap-0.5">
-                                        <dt class="text-micro text-muted">Term</dt>
+                                        <dt class="text-small text-muted">Term</dt>
                                         <dd class="figure-nums text-body font-medium text-ink">{{ $product['term'] }}</dd>
                                     </div>
                                     <div class="col-span-2 flex flex-col gap-0.5">
-                                        <dt class="text-micro text-muted">Best for</dt>
-                                        <dd class="text-body text-ink-soft">{{ $product['best_for'] }}</dd>
+                                        <dt class="text-small text-muted">Best for</dt>
+                                        <dd class="text-lead text-ink-soft">{{ $product['best_for'] }}</dd>
                                     </div>
                                 </dl>
 

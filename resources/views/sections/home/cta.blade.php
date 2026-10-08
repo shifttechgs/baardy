@@ -67,7 +67,7 @@
                         Two answers, and we&rsquo;ll call you back
                     </h2>
 
-                    <p class="mt-6 max-w-md text-body leading-[1.4] text-paper/75">
+                    <p class="mt-6 max-w-md text-lead leading-[1.4] text-paper/75">
                         A person from our team calls you. Applications are made in person at a branch,
                         and nothing is committed until you see the full cost.
                     </p>

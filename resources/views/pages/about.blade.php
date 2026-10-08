@@ -10,9 +10,9 @@
 --}}
 @extends('layouts.marketing')
 
-@section('title', 'About us | '.config('company.name'))
+@section('title', 'About Baardy Micro Capital | Licensed Microfinance, Zimbabwe')
 
-@section('description', 'Baardy Micro Capital is a proudly Zimbabwean-owned, registered microfinance institution established in 2015, serving government employees, pensioners and SMEs.')
+@section('description', 'Zimbabwean-owned, registered microfinance institution since 2015, serving government employees, pensioners and SMEs, with offices in Harare and Bulawayo.')
 
 @php
     $profile = config('company.profile');
@@ -33,7 +33,10 @@
 @endphp
 
 @section('content')
+    <x-seo.schema :data="[\App\Support\StructuredData::organization(), \App\Support\StructuredData::page('AboutPage', 'About Baardy Micro Capital')]" />
+
     <x-layout.page-header
+        :crumbs="[['About us']]"
         eyebrow="About us"
         title="Proudly Zimbabwean, serving since {{ $compliance['licensed_since'] }}"
         lead="A licensed microfinance lender for government employees, pensioners and small businesses."

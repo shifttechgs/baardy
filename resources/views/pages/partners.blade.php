@@ -43,6 +43,7 @@
 
 @section('content')
     <x-layout.page-header
+        :crumbs="[['Partners']]"
         eyebrow="Partners"
         title="Better borrowing, together"
         lead="If your organisation serves workers, families, farmers or small businesses, we would like to talk."
@@ -110,14 +111,6 @@
                         </div>
                     </div>
                 @endforeach
-            </div>
-
-            <div data-reveal class="mt-3 flex flex-col gap-4 rounded-2xl bg-accent p-8 text-paper sm:flex-row sm:items-center sm:justify-between lg:mt-4 lg:p-10">
-                <div class="flex flex-col gap-1">
-                    <p class="text-[length:clamp(1.5rem,1.1rem+1.2vw,2rem)] leading-[1.2] font-medium tracking-[-0.02em]">Ready to talk?</p>
-                    <p class="text-body text-paper/75">Choose &ldquo;Something else&rdquo; on the form and tell us about your organisation.</p>
-                </div>
-                <x-ui.button :href="$contactUrl" variant="inverse" arrow>Get in touch</x-ui.button>
             </div>
         </x-ui.container>
     </x-ui.section>

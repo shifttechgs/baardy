@@ -1,0 +1,49 @@
+{
+  "node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2": {
+    "file": "assets/Geist-Variable-Bj2R_7yk.woff2",
+    "src": "node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2"
+  },
+  "node_modules/pdfjs-dist/build/pdf.worker.min.mjs": {
+    "file": "assets/pdf.worker.min-CjEcRF4W.mjs",
+    "src": "node_modules/pdfjs-dist/build/pdf.worker.min.mjs"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BhbDj_tm.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "assets": [
+      "assets/Geist-Variable-Bj2R_7yk.woff2"
+    ]
+  },
+  "resources/css/filament/admin/theme.css": {
+    "file": "assets/theme-Dw6TOZXz.css",
+    "name": "theme",
+    "names": [
+      "theme.css"
+    ],
+    "src": "resources/css/filament/admin/theme.css",
+    "isEntry": true,
+    "assets": [
+      "assets/Geist-Variable-Bj2R_7yk.woff2"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-1iAs08yw.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/cv-viewer.js": {
+    "file": "assets/cv-viewer-X9KInTfe.js",
+    "name": "cv-viewer",
+    "src": "resources/js/cv-viewer.js",
+    "isEntry": true,
+    "assets": [
+      "assets/pdf.worker.min-CjEcRF4W.mjs"
+    ]
+  }
+}

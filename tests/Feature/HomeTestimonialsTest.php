@@ -13,31 +13,50 @@ class HomeTestimonialsTest extends TestCase
     public function test_placeholder_quotes_stay_off_the_page_outside_the_demo_preview(): void
     {
         config()->set('marketing.testimonials_preview', false);
+        config()->set('marketing.customer_stories', []);
+        config()->set('marketing.testimonials', [$this->placeholder()]);
 
         $content = $this->get('/')->assertOk()->getContent();
 
         $this->assertStringNotContainsString('id="testimonials"', $content);
+        $this->assertStringNotContainsString('A placeholder nobody said.', $content);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function placeholder(): array
+    {
+        return ['quote' => 'A placeholder nobody said.', 'name' => 'Grocery retailer', 'role' => 'Sample quote', 'initials' => 'GR', 'consented' => false];
+    }
+
+    public function test_the_published_reviews_are_all_consented_and_unlabelled(): void
+    {
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('id="testimonials"', $content);
+        $this->assertStringNotContainsString('Sample quote', $content);
+        $this->assertStringNotContainsString('Sample story', $content);
 
         foreach (config('marketing.testimonials') as $testimonial) {
-            $this->assertFalse($testimonial['consented'], 'A placeholder testimonial is marked as consented.');
-            $this->assertStringNotContainsString(e($testimonial['quote']), $content);
+            $this->assertTrue($testimonial['consented']);
+            $this->assertStringContainsString(e($testimonial['quote']), $content);
         }
     }
 
     public function test_the_demo_preview_labels_its_quotes_as_samples(): void
     {
         config()->set('marketing.testimonials_preview', true);
+        config()->set('marketing.customer_stories', []);
+        config()->set('marketing.testimonials', [$this->placeholder()]);
 
         $content = preg_replace('/\s+/', ' ', $this->get('/')->assertOk()->getContent());
 
         $this->assertStringContainsString('id="testimonials"', $content);
-        foreach (config('marketing.testimonials') as $testimonial) {
-            $this->assertStringContainsString(e($testimonial['quote']), $content);
-            $this->assertSame('Sample quote', $testimonial['role'], 'A placeholder must be marked as a sample.');
-        }
+        $this->assertStringContainsString('A placeholder nobody said.', $content);
 
         $this->assertSame(
-            count(config('marketing.testimonials')),
+            1,
             preg_match_all('/<figure(?![^>]*aria-hidden)[^>]*>(?:(?!<\/figure>).)*Sample quote(?:(?!<\/figure>).)*<\/figure>/s', $content),
             'Each review should be exposed to assistive technology exactly once, labelled "Sample quote".'
         );

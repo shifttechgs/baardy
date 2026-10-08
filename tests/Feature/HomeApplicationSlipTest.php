@@ -31,7 +31,7 @@ class HomeApplicationSlipTest extends TestCase
     {
         $content = $this->get('/contact?interest=SME%20Bridging%20Finance&branch=Bulawayo')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/<option value="SME Bridging Finance"\s+selected/', $content);
+        $this->assertStringContainsString("interest: 'SME Bridging Finance'", html_entity_decode($content));
         $this->assertMatchesRegularExpression('/name="branch"\s+value="Bulawayo"\s+class="sr-only"\s+checked/', $content);
     }
 
@@ -40,7 +40,7 @@ class HomeApplicationSlipTest extends TestCase
         $content = $this->get('/contact?interest=Bogus&branch=Mars')->assertOk()->getContent();
 
         $this->assertStringNotContainsString('value="Bogus"', $content);
-        $this->assertMatchesRegularExpression('/<option value="" disabled\s+selected>Choose one/', $content);
+        $this->assertStringContainsString("interest: ''", html_entity_decode($content));
         $this->assertMatchesRegularExpression('/name="branch"\s+value="Harare"\s+class="sr-only"\s+checked/', $content);
     }
 }

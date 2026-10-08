@@ -8,12 +8,13 @@
 --}}
 @extends('layouts.marketing')
 
-@section('title', 'Promotions | '.config('company.name'))
+@section('title', 'Loan Offers and Promotions | Baardy Micro Capital')
 
 @section('description', 'Current offers from '.config('company.legal_name').'. Every offer is subject to application, affordability assessment and approval.')
 
 @section('content')
     <x-layout.page-header
+        :crumbs="[['Promotions']]"
         eyebrow="Promotions"
         title="Current offers"
         lead="Every offer runs for a set time, with its terms in full on its page. Each is subject to application, affordability assessment and approval."

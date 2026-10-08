@@ -33,6 +33,8 @@ return [
             'image' => 'budgeting',
             'category' => 'Financial literacy',
             'title' => 'Budgeting when your income changes every month',
+            'seo_title' => 'Budgeting on an Irregular Income in Zimbabwe',
+            'loans' => ['sme-bridging-finance', 'women-empowerment-loans', 'youth-empowerment-loans'],
             'excerpt' => 'Traders, farmers and anyone paid by the job know a fixed monthly budget '
                 .'does not fit. Here is a way of planning that does.',
             'alt' => 'A woman writing on a sheet of paper at a wooden table',
@@ -44,6 +46,8 @@ return [
             'image' => 'first-loan',
             'category' => 'Borrowing',
             'title' => 'Five things to sort out before your first loan application',
+            'seo_title' => 'What to Prepare Before Applying for a Loan in Zimbabwe',
+            'loans' => ['salary-based-loans', 'sme-bridging-finance', 'educational-loans'],
             'excerpt' => 'A complete application is the fastest one. What to gather, what to work '
                 .'out, and what to ask before you sign anything.',
             'alt' => 'Two people signing a document at a table, one pressing a thumbprint',
@@ -55,6 +59,8 @@ return [
             'image' => 'seasonal-farm',
             'category' => 'Agriculture',
             'title' => 'Planning finance around the farming season',
+            'seo_title' => 'Planning Farm Finance Around the Season in Zimbabwe',
+            'loans' => ['agricultural-loans'],
             'excerpt' => 'Your costs come at planting, your income at harvest. How to borrow for '
                 .'inputs without the repayments arriving before the crop does.',
             'alt' => 'Grain pouring from a farmer\'s cupped hands',

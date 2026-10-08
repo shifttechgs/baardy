@@ -10,12 +10,15 @@
 --}}
 @extends('layouts.marketing')
 
-@section('title', 'Contact us | '.config('company.name'))
+@section('title', 'Contact Baardy Micro Capital | Harare and Bulawayo')
 
 @section('description', 'Visit '.config('company.legal_name').' in Harare or Bulawayo, call or WhatsApp us, or send an enquiry and a person will call you back.')
 
 @section('content')
+    <x-seo.schema :data="[\App\Support\StructuredData::page('ContactPage', 'Contact Baardy Micro Capital')]" />
+
     <x-layout.page-header
+        :crumbs="[['Contact us']]"
         eyebrow="Contact us"
         title="Talk to a person"
         lead="Visit an office, call or WhatsApp us, or send a message and we will call you back."

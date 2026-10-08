@@ -138,7 +138,7 @@
                     <h3 data-word-reveal class="text-[length:clamp(1.25rem,1rem+0.6vw,1.5rem)] leading-snug font-normal tracking-[-0.015em]">
                         {{ $scheduleBenefit['title'] }}
                     </h3>
-                    <p class="text-body text-paper/80">
+                    <p class="text-lead text-paper/80">
                         {{ $scheduleBenefit['stat'] }} {{ $scheduleBenefit['stat_label'] }}. {{ $scheduleBenefit['body'] }}
                     </p>
                 </div>
@@ -156,7 +156,7 @@
                             <h3 data-word-reveal class="text-[length:clamp(1.25rem,1rem+0.6vw,1.5rem)] leading-snug font-normal tracking-[-0.015em] text-ink">
                                 {{ $advisoryBenefit['title'] }}
                             </h3>
-                            <p class="text-body text-ink-soft">{{ $advisoryBenefit['body'] }}</p>
+                            <p class="text-lead text-ink-soft">{{ $advisoryBenefit['body'] }}</p>
                         </div>
                     </div>
 

@@ -34,7 +34,7 @@ class VisitSectionTest extends TestCase
 
     public function test_customer_stories_publish_only_with_consent(): void
     {
-        config(['marketing.testimonials_preview' => false]);
+        config(['marketing.testimonials_preview' => false, 'marketing.customer_stories' => [], 'marketing.testimonials' => []]);
 
         $this->get(route('home'))->assertOk()->assertDontSee('id="testimonials"', false);
 

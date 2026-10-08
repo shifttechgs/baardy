@@ -44,7 +44,7 @@
                 </h2>
             </div>
 
-            <p data-word-reveal class="max-w-sm text-body leading-[1.4] text-ink-soft lg:col-span-4 lg:col-start-9 lg:justify-self-end lg:text-right">
+            <p data-word-reveal class="max-w-sm text-lead leading-[1.4] text-ink-soft lg:col-span-4 lg:col-start-9 lg:justify-self-end lg:text-right">
                 The things borrowers ask most often. If yours is not here, a person will answer it.
             </p>
         </div>
@@ -94,7 +94,7 @@
                 <div class="flex flex-col gap-6 rounded-[0.625rem] bg-ink/45 p-5 ring-1 ring-paper/15 ring-inset backdrop-blur-xl sm:p-6">
                     <div class="flex flex-col gap-2">
                         <p id="faq-ask-heading" data-word-reveal class="text-[1.5rem] leading-tight tracking-[-0.02em]">Still have a question?</p>
-                        <p class="text-body text-paper/85">
+                        <p class="text-lead text-paper/85">
                             Ask the team directly.
                             <span class="whitespace-nowrap">{{ config('company.contact.phone_label') }}.</span>
                         </p>
