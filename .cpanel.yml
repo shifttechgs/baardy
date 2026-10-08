@@ -6,6 +6,8 @@
 # needs no Node. vendor/ stays on the server and is only touched by the
 # composer step below, which does nothing when composer.lock is unchanged.
 #
+# PHP is found by looking for the usual cPanel locations, newest first.
+#
 # Layout on the server (adjust these paths if yours differ):
 #   APP  the Laravel app (app/, config/, vendor/, .env, storage/ ...)
 #   WEB  the document root (index.php, .htaccess, build/, images/ ...)
@@ -15,7 +17,8 @@ deployment:
   tasks:
     - export APP=/home/baarxhsj/public_html/baardy
     - export WEB=/home/baarxhsj/public_html
-    - export PHP=/opt/cpanel/ea-php84/root/usr/bin/php
+    - export PHP=$(for p in /opt/cpanel/ea-php84/root/usr/bin/php /opt/cpanel/ea-php83/root/usr/bin/php /usr/local/bin/ea-php84 /usr/local/bin/ea-php83 /opt/alt/php84/usr/bin/php /opt/alt/php83/usr/bin/php /usr/local/bin/php /usr/bin/php; do [ -x $p ] && echo $p && break; done)
+    - echo "Using PHP at $PHP" && test -n "$PHP"
     - /usr/bin/rsync -a --delete --exclude='.git' --exclude='.env' --exclude='.cpanel.yml' --exclude='/vendor' --exclude='/storage' --exclude='/bootstrap/cache' --exclude='/public' --exclude='/tests' --exclude='/node_modules' ./ $APP/
     - /usr/bin/rsync -a --exclude='index.php' --exclude='.htaccess' --exclude='/storage' --exclude='/build' ./public/ $WEB/
     - /usr/bin/rsync -a --delete ./public/build/ $WEB/build/
