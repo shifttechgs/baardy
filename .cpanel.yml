@@ -23,6 +23,7 @@ deployment:
     - cd $APP && ($PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction --no-scripts || echo "composer step skipped")
     - cd $APP && $PHP artisan package:discover --ansi
     - cd $APP && $PHP artisan migrate --force --no-interaction
+    - cd $APP && $PHP artisan db:seed --class=AdminUserSeeder --force --no-interaction
     - cd $APP && $PHP artisan config:cache --no-interaction
     - cd $APP && $PHP artisan route:cache --no-interaction
     - cd $APP && $PHP artisan view:cache --no-interaction
