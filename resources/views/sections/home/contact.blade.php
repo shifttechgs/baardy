@@ -93,11 +93,27 @@
                             <x-ui.icon name="phone" />
                         </span>
                         <span class="flex min-w-0 flex-1 flex-col">
-                            <span class="truncate text-small text-muted">Call &middot; {{ config('company.contact.phone_label') }}</span>
+                            <span class="truncate text-small text-muted">Call</span>
                             <span class="figure-nums truncate text-body font-medium text-ink">{{ $phone }}</span>
                         </span>
                         <x-ui.icon name="arrow-up-right" class="text-muted transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-ink" />
                     </a>
+
+                    {{-- Opening hours --}}
+                    <div class="flex items-start gap-3.5 rounded-xl bg-paper p-4 sm:col-span-2">
+                        <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-mist text-ink">
+                            <x-ui.icon name="clock" />
+                        </span>
+                        <div class="flex min-w-0 flex-1 flex-col gap-1">
+                            <span class="text-small text-muted">Opening hours</span>
+                            @foreach (config('company.contact.hours') as $row)
+                                <span class="flex justify-between gap-4 text-body text-ink">
+                                    <span>{{ $row['days'] }}</span>
+                                    <span class="figure-nums font-medium">{{ $row['time'] }}</span>
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
 

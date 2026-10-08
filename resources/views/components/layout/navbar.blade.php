@@ -111,7 +111,7 @@
                     group-data-expanded/nav:px-4 group-data-expanded/nav:sm:px-8 group-data-expanded/nav:lg:px-14 group-data-expanded/nav:2xl:px-[4.5rem]
                     group-[[data-stuck][data-expanded]]/nav:h-22 group-[[data-stuck][data-expanded]]/nav:px-4 group-[[data-stuck][data-expanded]]/nav:sm:px-8 group-[[data-stuck][data-expanded]]/nav:lg:px-14 group-[[data-stuck][data-expanded]]/nav:2xl:px-[4.5rem]">
 
-            <x-ui.logo compact tone="adaptive" />
+            <x-ui.logo tone="adaptive" />
 
             <div class="flex items-center gap-2 sm:gap-4">
                 {{-- Desktop menu --}}
@@ -159,7 +159,7 @@
                     pill
                     class="gap-3 pr-1.5 pl-5 group-data-over-photo/nav:bg-paper group-data-over-photo/nav:text-ink group-data-over-photo/nav:hover:bg-mist"
                 >
-                    {{ config('company.cta.primary.label') }}
+                    Contact us
                     <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-paper/15 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5 group-data-over-photo/nav:bg-accent group-data-over-photo/nav:text-paper">
                         <x-ui.icon name="arrow-right" />
                     </span>
@@ -305,7 +305,7 @@
 
                     <div class="flex flex-col gap-2.5">
                         <x-ui.button :href="config('company.cta.primary.href')" size="lg" arrow x-on:click="toggleMobile()" class="w-full justify-between">
-                            {{ config('company.cta.primary.label') }}
+                            Contact us
                         </x-ui.button>
                     </div>
                 </nav>

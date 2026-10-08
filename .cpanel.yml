@@ -1,0 +1,27 @@
+---
+# Run by cPanel > Git Version Control > Deploy (a cron job pulls main and
+# triggers it, so a push to main goes live on its own).
+#
+# public/build is committed (run `npm run build` before pushing), so the server
+# needs no Node. vendor/ stays on the server and is only touched by the
+# composer step below, which does nothing when composer.lock is unchanged.
+#
+# Layout on the server (adjust these paths if yours differ):
+#   APP  the Laravel app (app/, config/, vendor/, .env, storage/ ...)
+#   WEB  the document root (index.php, .htaccess, build/, images/ ...)
+# The server's own index.php and .htaccess are never overwritten, and neither
+# are .env, vendor/ or storage/ (uploads, logs, sessions).
+deployment:
+  tasks:
+    - export APP=/home/baarxhsj/public_html/baardy
+    - export WEB=/home/baarxhsj/public_html
+    - export PHP=/opt/cpanel/ea-php84/root/usr/bin/php
+    - /usr/bin/rsync -a --delete --exclude='.git' --exclude='.env' --exclude='.cpanel.yml' --exclude='/vendor' --exclude='/storage' --exclude='/bootstrap/cache' --exclude='/public' --exclude='/tests' --exclude='/node_modules' ./ $APP/
+    - /usr/bin/rsync -a --exclude='index.php' --exclude='.htaccess' --exclude='/storage' --exclude='/build' ./public/ $WEB/
+    - /usr/bin/rsync -a --delete ./public/build/ $WEB/build/
+    - cd $APP && ($PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction --no-scripts || echo "composer step skipped")
+    - cd $APP && $PHP artisan package:discover --ansi
+    - cd $APP && $PHP artisan migrate --force --no-interaction
+    - cd $APP && $PHP artisan config:cache --no-interaction
+    - cd $APP && $PHP artisan route:cache --no-interaction
+    - cd $APP && $PHP artisan view:cache --no-interaction

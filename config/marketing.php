@@ -633,6 +633,10 @@ return [
     | under a visible "Sample story" label (for a demo only).
     |
     |   title      a short line over the story (optional)
+    |   illustration  a photograph that sets the scene without being of the
+    |              customer (optional): shown beside a wide story. Pick one
+    |              with no identifiable face. The customer's own photograph
+    |              belongs in `photo`.
     |   photo      the photograph behind the quote (optional): for a real story,
     |              the customer's own, with their consent; without one the story
     |              is a light card. The samples borrow a loan photograph.
@@ -644,54 +648,61 @@ return [
     */
     'customer_stories' => [
         [
-            'title' => 'Clear from the first visit',
-            'photo' => 'images/products/sme-1600.webp',
-            'story' => 'I came in not knowing which loan suited a market stall. The officer went through the options and put the total I would repay in writing.',
-            'name' => 'Market trader',
-            'role' => 'Sample story',
-            'loan' => 'SME Bridging Finance',
-            'consented' => false,
-        ],
-        [
-            'title' => 'Repayments that follow the harvest',
-            'story' => 'Repayments were planned around when my crops are sold, so I was not stretched in the months before harvest.',
-            'name' => 'Smallholder farmer',
-            'role' => 'Sample story',
-            'loan' => 'Agricultural Loans',
-            'consented' => false,
-        ],
-        [
-            'story' => 'Someone called me back and explained everything before I signed. I knew what I was agreeing to.',
-            'name' => 'Salaried employee',
-            'role' => 'Sample story',
-            'loan' => 'Salary-Based Loans',
-            'consented' => false,
+            'title' => 'From limited stock to a growing business',
+            'story' => 'Tinashe had customers and demand for his small retail business, but not enough working capital to keep his shelves stocked. With support from Baardy he bought more stock and served more customers.',
+            'pull' => 'The difference between an opportunity and a missed one is the right financial support.',
+            'illustration' => [
+                'src' => 'images/hero/market-2400.webp',
+                'alt' => 'A stocked produce stall in a busy Zimbabwean market',
+                'position' => '50% 55%',
+            ],
+            'name' => 'Tinashe',
+            'role' => 'Retail business owner',
+            'consented' => true,
         ],
     ],
     'testimonials' => [
         [
-            'quote' => 'I needed stock before the holiday rush. They told me exactly what to bring '
-                .'and exactly what it would cost, before I signed anything.',
-            'name' => 'Grocery retailer',
-            'role' => 'Sample quote',
-            'initials' => 'GR',
-            'consented' => false,
+            'quote' => 'Baardy gave me the support I needed when my business was ready to grow. Today, I have more stock and more customers.',
+            'name' => 'Tendai M.',
+            'role' => 'Harare',
+            'initials' => 'TM',
+            'consented' => true,
         ],
         [
-            'quote' => 'What I remember is that the officer explained the total I would repay, and '
-                .'then wrote it down. I had been turned down twice before without anyone telling me why.',
-            'name' => 'Transport operator',
-            'role' => 'Sample quote',
-            'initials' => 'TO',
-            'consented' => false,
+            'quote' => 'What I appreciated most about Baardy was how simple the process was. They explained everything clearly and kept me informed throughout.',
+            'name' => 'Rudo C.',
+            'role' => 'Chitungwiza',
+            'initials' => 'RC',
+            'consented' => true,
         ],
         [
-            'quote' => 'My income moves with the season, and they built the schedule around that '
-                .'instead of asking me to pretend it does not.',
-            'name' => 'Agricultural supplier',
-            'role' => 'Sample quote',
-            'initials' => 'AS',
-            'consented' => false,
+            'quote' => 'I approached Baardy when I needed additional capital for my small business. They didn\'t just look at the numbers; they took the time to understand what I was trying to achieve.',
+            'name' => 'Brian T.',
+            'role' => 'Harare',
+            'initials' => 'BT',
+            'consented' => true,
+        ],
+        [
+            'quote' => 'Baardy helped me get through a difficult period and keep my business running. I\'m grateful for the support and professionalism.',
+            'name' => 'Memory P.',
+            'role' => 'Epworth',
+            'initials' => 'MP',
+            'consented' => true,
+        ],
+        [
+            'quote' => 'From my first enquiry to receiving the funding, the team was professional and easy to deal with.',
+            'name' => 'Farai N.',
+            'role' => 'Harare',
+            'initials' => 'FN',
+            'consented' => true,
+        ],
+        [
+            'quote' => 'Baardy helped me turn an opportunity into something real. It has made a real difference to my business.',
+            'name' => 'Tatenda K.',
+            'role' => 'Harare',
+            'initials' => 'TK',
+            'consented' => true,
         ],
     ],
 

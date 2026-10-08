@@ -95,7 +95,11 @@ return [
     */
     'contact' => [
         'phone' => '+263 772 550 189',             // CONFIRMED by the client
-        'phone_label' => 'Mon–Fri, 08:00–17:00',   // PLACEHOLDER — real opening hours
+        'phone_label' => 'Mon–Fri 08:00–16:30, Sat 08:00–12:00',   // CONFIRMED by the client
+        'hours' => [                            // CONFIRMED by the client
+            ['days' => 'Monday to Friday', 'time' => '08:00–16:30'],
+            ['days' => 'Saturday', 'time' => '08:00–12:00'],
+        ],
         'email' => 'hello@example.com',            // PLACEHOLDER — reconfirm with client
     ],
 
