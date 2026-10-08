@@ -118,7 +118,9 @@ class LeadsTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->modalHeading('Delete the selected leads?')
+                        ->modalDescription('The leads and their timelines are removed for good. This cannot be undone.'),
                 ]),
             ]);
     }

@@ -13,7 +13,8 @@ class EditVacancy extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
+            DeleteAction::make()
+                ->modalDescription('The role comes off the careers page for good. Applications for it are kept, as general applications. This cannot be undone.'),
         ];
     }
 }

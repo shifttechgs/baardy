@@ -235,7 +235,7 @@ class Lead extends Model
             filled($this->utm_campaign) => 'Campaign: '.$this->utm_campaign.(filled($this->utm_source) ? ' ('.$this->utm_source.')' : ''),
             filled($this->utm_source) => ucfirst((string) $this->utm_source),
             filled($this->referrer) => (string) (parse_url((string) $this->referrer, PHP_URL_HOST) ?: $this->referrer),
-            default => 'Direct',
+            default => 'Website',
         };
     }
 

@@ -62,7 +62,7 @@ class ViewJobApplication extends ViewRecord
 
             ActionGroup::make([
                 DeleteAction::make()
-                    ->modalDescription('The application and its CV are removed for good.'),
+                    ->modalDescription('The application and its CV are removed for good. This cannot be undone.'),
             ])
                 ->icon(Heroicon::EllipsisHorizontal)
                 ->color('gray')

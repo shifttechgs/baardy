@@ -135,7 +135,7 @@ class AdminOperationsDashboardTest extends TestCase
         $this->assertSame([1], $data['datasets'][1]['data']);
 
         $sources = Livewire::test(SourceChart::class)->instance();
-        $this->assertSame(['Direct'], (fn (): array => $this->getData()['labels'])->call($sources));
+        $this->assertSame(['Website'], (fn (): array => $this->getData()['labels'])->call($sources));
     }
 
     public function test_breakdown_does_not_compare_on_too_little_data(): void

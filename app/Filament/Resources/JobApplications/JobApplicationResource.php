@@ -200,7 +200,8 @@ class JobApplicationResource extends Resource
                     static::viewCvAction(),
                     static::downloadCvAction(),
                     static::markReviewedAction(),
-                    DeleteAction::make(),
+                    DeleteAction::make()
+                        ->modalDescription('The application and its CV are removed for good. This cannot be undone.'),
                 ])->tooltip('Actions'),
             ])
             ->toolbarActions([
@@ -214,7 +215,9 @@ class JobApplicationResource extends Resource
 
                             Notification::make()->title('Marked as reviewed')->success()->send();
                         }),
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->modalHeading('Delete the selected applications?')
+                        ->modalDescription('The applications and their CVs are removed for good. This cannot be undone.'),
                 ]),
             ]);
     }

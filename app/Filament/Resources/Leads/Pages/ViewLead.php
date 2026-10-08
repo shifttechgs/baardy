@@ -58,6 +58,9 @@ class ViewLead extends ViewRecord
                 Action::make('assign')
                     ->label('Assign')
                     ->icon(Heroicon::OutlinedUser)
+                    ->modalHeading('Assign this lead')
+                    ->modalDescription('Choose who follows this lead up. They are named on the lead and in the timeline.')
+                    ->modalSubmitActionLabel('Assign')
                     ->schema([
                         Select::make('assigned_to')
                             ->label('Handled by')
@@ -84,7 +87,9 @@ class ViewLead extends ViewRecord
                     ->label('Close as lost')
                     ->icon(Heroicon::OutlinedXCircle)
                     ->visible(fn (Lead $record): bool => $record->stage->isOpen())
-                    ->modalHeading('Close this lead')
+                    ->modalHeading('Close this lead?')
+                    ->modalIcon(Heroicon::OutlinedXCircle)
+                    ->modalIconColor('warning')
                     ->modalDescription('It leaves the open list. You can reopen it later.')
                     ->modalSubmitActionLabel('Close as lost')
                     ->schema([

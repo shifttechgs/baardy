@@ -54,7 +54,9 @@ class EditPromotion extends EditRecord
                     ->label('Return to draft')
                     ->icon(Heroicon::OutlinedArrowUturnLeft)
                     ->requiresConfirmation()
+                    ->modalHeading('Return to draft?')
                     ->modalDescription('It comes off the site until it is published again.')
+                    ->modalSubmitActionLabel('Return to draft')
                     ->visible(fn (Promotion $record): bool => $record->status !== PromotionStatus::Draft)
                     ->action(function (Promotion $record): void {
                         $record->status = PromotionStatus::Draft;
@@ -65,7 +67,8 @@ class EditPromotion extends EditRecord
                         Notification::make()->title('Returned to draft')->send();
                     }),
 
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->modalDescription('The promotion comes off the site for good. The leads it brought in are kept. This cannot be undone.'),
             ])
                 ->icon(Heroicon::EllipsisHorizontal)
                 ->color('gray')

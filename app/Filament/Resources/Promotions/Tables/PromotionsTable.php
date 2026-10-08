@@ -131,12 +131,15 @@ class PromotionsTable
                         })
                         ->successNotificationTitle('Duplicated as a draft')
                         ->successRedirectUrl(fn (Promotion $replica): string => PromotionResource::getUrl('edit', ['record' => $replica])),
-                    DeleteAction::make(),
+                    DeleteAction::make()
+                        ->modalDescription('The promotion comes off the site for good. The leads it brought in are kept. This cannot be undone.'),
                 ])->tooltip('Actions'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->modalHeading('Delete the selected promotions?')
+                        ->modalDescription('They come off the site for good. The leads they brought in are kept. This cannot be undone.'),
                 ]),
             ]);
     }

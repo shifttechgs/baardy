@@ -110,12 +110,15 @@ class VacancyResource extends Resource
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-                    DeleteAction::make(),
+                    DeleteAction::make()
+                        ->modalDescription('The role comes off the careers page for good. Applications for it are kept, as general applications. This cannot be undone.'),
                 ])->tooltip('Actions'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->modalHeading('Delete the selected roles?')
+                        ->modalDescription('The roles come off the careers page for good. Applications for them are kept, as general applications. This cannot be undone.'),
                 ]),
             ]);
     }
