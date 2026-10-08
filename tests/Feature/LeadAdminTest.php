@@ -77,11 +77,11 @@ class LeadAdminTest extends TestCase
         $page->assertActionHasLabel('advance', 'Application started')->callAction('advance');
         $this->assertSame(LeadStage::Application, $lead->refresh()->stage);
 
-        $page->assertActionHasLabel('advance', 'Mark approved')->callAction('advance');
+        $page->assertActionHidden('advance')->assertActionHasLabel('approve', 'Mark approved')->callAction('approve');
         $this->assertSame(LeadStage::Approved, $lead->refresh()->stage);
         $this->assertNotNull($lead->closed_at);
 
-        $page->assertActionHidden('advance')->assertActionHidden('closeAsLost');
+        $page->assertActionHidden('advance')->assertActionHidden('approve')->assertActionHidden('closeAsLost');
     }
 
     public function test_closing_as_lost_needs_a_reason(): void

@@ -449,3 +449,158 @@
         color: var(--primary-700);
     }
 }
+
+/* ---- Modals ------------------------------------------------------------
+   One quiet, premium sheet. A tinted, blurred scrim; a 24px card with a soft
+   layered shadow; a haloed icon; a confident heading; and a footer that is
+   either two equal buttons (confirmations, centred) or a tray with Cancel and
+   then the action on the right (forms). Widths come from AppServiceProvider
+   (confirmation: md, form: lg). Radii and greys match the rest of the panel. */
+
+.fi-modal > .fi-modal-close-overlay {
+    background-color: rgb(21 16 25 / 0.5);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.fi-modal.fi-modal:not(.fi-modal-slide-over) > .fi-modal-window-ctn > .fi-modal-window {
+    border-radius: 1.5rem;
+    box-shadow:
+        0 0 0 1px rgb(21 16 25 / 0.06),
+        0 40px 80px -32px rgb(21 16 25 / 0.5),
+        0 14px 28px -14px rgb(21 16 25 / 0.22);
+
+    /* Arrive with a short, soft rise rather than a hard zoom. */
+    &.fi-transition-enter,
+    &.fi-transition-leave {
+        transition-duration: 280ms;
+        transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    &.fi-transition-enter-start,
+    &.fi-transition-leave-end {
+        scale: 0.97;
+        translate: 0 0.75rem;
+    }
+
+    &.fi-transition-enter-end,
+    &.fi-transition-leave-start {
+        scale: 1;
+        translate: 0 0;
+    }
+
+    /* Header */
+    & .fi-modal-header {
+        padding: 1.75rem 1.75rem 0;
+    }
+
+    &.fi-align-start .fi-modal-header {
+        column-gap: 1.125rem;
+    }
+
+    & .fi-modal-heading {
+        font-size: 1.1875rem;
+        line-height: 1.35;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: #151019;
+    }
+
+    & .fi-modal-description {
+        margin-top: 0.5rem;
+        font-size: 0.9375rem;
+        line-height: 1.55;
+        color: #676070;
+    }
+
+    /* The icon sits in a tinted disc with a soft halo of the same colour. */
+    & .fi-modal-icon-bg {
+        padding: 0.8125rem;
+        box-shadow: 0 0 0 0.4375rem color-mix(in oklab, var(--color-100, #f3f4f6) 55%, transparent);
+    }
+
+    &.fi-align-start .fi-modal-icon-bg {
+        padding: 0.625rem;
+        box-shadow: 0 0 0 0.3125rem color-mix(in oklab, var(--color-100, #f3f4f6) 55%, transparent);
+    }
+
+    &.fi-align-center .fi-modal-icon-ctn {
+        margin-bottom: 1.5rem;
+    }
+
+    &.fi-align-center .fi-modal-header {
+        padding-top: 2.25rem;
+    }
+
+    /* Close */
+    & .fi-modal-close-btn {
+        top: 1.125rem;
+        inset-inline-end: 1.125rem;
+        border-radius: 9999px;
+        color: #676070;
+    }
+
+    & .fi-modal-close-btn:hover {
+        background-color: #f6f4f8;
+        color: #151019;
+    }
+
+    /* Body and footer share one gutter, whatever the alignment. */
+    & .fi-modal-content {
+        padding-inline: 1.75rem !important;
+        padding-block: 1.5rem;
+        gap: 1.125rem;
+    }
+
+    & .fi-modal-footer {
+        padding-inline: 1.75rem !important;
+    }
+
+    & .fi-modal-footer .fi-btn {
+        min-height: 2.75rem;
+        padding-inline: 1.25rem;
+        border-radius: 0.75rem;
+        font-weight: 550;
+        justify-content: center;
+    }
+
+    /* Confirmations: two equal buttons, Cancel left, the action right. */
+    & .fi-modal-footer.fi-align-center {
+        padding-block: 1.75rem 1.75rem;
+    }
+
+    & .fi-modal-footer.fi-align-center .fi-modal-footer-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    & .fi-modal-footer.fi-align-center .fi-btn {
+        width: 100%;
+    }
+
+    /* Forms: a tray, Cancel then the action, both on the right. */
+    & .fi-modal-footer:is(.fi-align-start, .fi-align-left) {
+        margin-top: 0.25rem;
+        padding-block: 1rem;
+        background-color: var(--baardy-page);
+        border-top: 1px solid var(--baardy-hairline);
+        border-radius: 0 0 1.5rem 1.5rem;
+    }
+
+    & .fi-modal-footer:is(.fi-align-start, .fi-align-left) .fi-modal-footer-actions {
+        flex-direction: row-reverse;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 40rem) {
+    .fi-modal.fi-modal:not(.fi-modal-slide-over) > .fi-modal-window-ctn > .fi-modal-window .fi-modal-header {
+        padding: 1.5rem 1.25rem 0;
+    }
+
+    .fi-modal.fi-modal:not(.fi-modal-slide-over) > .fi-modal-window-ctn > .fi-modal-window .fi-modal-content,
+    .fi-modal.fi-modal:not(.fi-modal-slide-over) > .fi-modal-window-ctn > .fi-modal-window .fi-modal-footer {
+        padding-inline: 1.25rem !important;
+    }
+}

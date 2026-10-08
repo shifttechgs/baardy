@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\Select;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
@@ -33,6 +35,11 @@ class AppServiceProvider extends ServiceProvider
             URL::forceRootUrl(config('app.url'));
             URL::forceScheme('https');
         }
+
+        // Admin modals are small and focused: a confirmation is a compact
+        // card, a form a little wider -- never Filament's 56rem default.
+        Action::configureUsing(fn (Action $action): Action => $action
+            ->modalWidth(fn (Action $action): Width => $action->isConfirmationRequired() ? Width::Medium : Width::Large));
 
         // Every delete asks first, in the same words: what goes, and that it
         // cannot be undone. Screens with something specific to say override

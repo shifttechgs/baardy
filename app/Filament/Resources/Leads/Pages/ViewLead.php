@@ -58,6 +58,8 @@ class ViewLead extends ViewRecord
                 Action::make('assign')
                     ->label('Assign')
                     ->icon(Heroicon::OutlinedUser)
+                    ->modalIcon(Heroicon::OutlinedUserPlus)
+                    ->modalIconColor('primary')
                     ->modalHeading('Assign this lead')
                     ->modalDescription('Choose who follows this lead up. They are named on the lead and in the timeline.')
                     ->modalSubmitActionLabel('Assign')
@@ -134,7 +136,10 @@ class ViewLead extends ViewRecord
                 ->label('Add note')
                 ->icon(Heroicon::OutlinedPencil)
                 ->color('gray')
+                ->modalIcon(Heroicon::OutlinedPencilSquare)
+                ->modalIconColor('primary')
                 ->modalHeading('Add a note')
+                ->modalDescription('Everyone on the team sees it on the timeline of this lead.')
                 ->modalSubmitActionLabel('Add note')
                 ->schema([
                     Textarea::make('body')
@@ -158,22 +163,29 @@ class ViewLead extends ViewRecord
                 })
                 ->icon(fn (Lead $record): Heroicon => match ($record->stage) {
                     LeadStage::New => Heroicon::OutlinedPhone,
-                    LeadStage::Contacted => Heroicon::OutlinedDocumentText,
-                    default => Heroicon::OutlinedCheckBadge,
+                    default => Heroicon::OutlinedDocumentText,
                 })
-                ->visible(fn (Lead $record): bool => $record->stage->isOpen())
-                ->requiresConfirmation(fn (Lead $record): bool => $record->stage === LeadStage::Application)
-                ->modalHeading('Mark the loan approved?')
-                ->modalDescription('The lead closes as won and counts towards the funnel\'s conversions.')
+                ->visible(fn (Lead $record): bool => in_array($record->stage, [LeadStage::New, LeadStage::Contacted], true))
                 ->action(function (Lead $record): void {
-                    $next = match ($record->stage) {
-                        LeadStage::New => LeadStage::Contacted,
-                        LeadStage::Contacted => LeadStage::Application,
-                        default => LeadStage::Approved,
-                    };
+                    $next = $record->stage === LeadStage::New ? LeadStage::Contacted : LeadStage::Application;
 
                     $record->moveTo($next, auth()->user());
                     $this->afterMove('Moved to '.$next->getLabel());
+                }),
+
+            Action::make('approve')
+                ->label('Mark approved')
+                ->icon(Heroicon::OutlinedCheckBadge)
+                ->visible(fn (Lead $record): bool => $record->stage === LeadStage::Application)
+                ->requiresConfirmation()
+                ->modalIcon(Heroicon::OutlinedCheckBadge)
+                ->modalIconColor('success')
+                ->modalHeading('Mark this loan as approved?')
+                ->modalDescription('The lead closes as won and counts towards the funnel\'s conversions.')
+                ->modalSubmitActionLabel('Mark approved')
+                ->action(function (Lead $record): void {
+                    $record->moveTo(LeadStage::Approved, auth()->user());
+                    $this->afterMove('Moved to '.LeadStage::Approved->getLabel());
                 }),
         ];
     }
