@@ -185,7 +185,7 @@
                         <a href="{{ route('careers') }}" class="w-fit text-body text-accent hover:text-accent-strong">Send another application</a>
                     </div>
                 @else
-                    <form method="POST" action="{{ route('careers.apply') }}" enctype="multipart/form-data" class="flex flex-col gap-5" x-data="{ file: '' }">
+                    <form method="POST" action="{{ route('careers.apply') }}" enctype="multipart/form-data" class="flex flex-col gap-5" x-data="{ file: '', submitting: false }" x-on:submit="submitting = true" x-on:pageshow.window="submitting = false">
                         @csrf
 
                         @if ($errors->any())
@@ -299,8 +299,12 @@
                                 Your CV is used only to consider your application. See our
                                 <a href="{{ route('legal.privacy') }}" class="underline hover:text-accent">privacy notice</a>.
                             </p>
-                            <x-ui.button type="submit" size="lg" arrow class="w-full sm:w-fit">
-                                Send application
+                            <x-ui.button type="submit" size="lg" arrow class="w-full sm:w-fit" x-bind:disabled="submitting">
+                                <span x-show="! submitting">Send application</span>
+                                <span x-show="submitting" x-cloak class="flex items-center gap-2">
+                                    <x-ui.spinner />
+                                    Sending&hellip;
+                                </span>
                             </x-ui.button>
                         </div>
                     </form>

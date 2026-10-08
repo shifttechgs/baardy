@@ -93,6 +93,7 @@
                 action="{{ route('contact') }}#contact"
                 x-data="applicationSlip({{ Js::from($interests[0]) }}, {{ Js::from($branches[0]) }})"
                 x-on:submit="carryOn($event)"
+                x-on:pageshow.window="loading = false"
                 class="cta-slip paper-grain relative w-full max-w-xl justify-self-center rounded-[4px] bg-paper p-6 text-ink shadow-[0_40px_60px_-30px_rgb(21_16_25/0.6)] sm:p-8 xl:col-span-6 xl:justify-self-end"
             >
                 {{-- Letterhead. --}}
@@ -152,7 +153,13 @@
                         <span>Next: your name and number.</span>
                     </p>
 
-                    <x-ui.button type="submit" size="lg" arrow class="w-fit">Continue</x-ui.button>
+                    <x-ui.button type="submit" size="lg" arrow class="w-fit" x-bind:disabled="loading">
+                        <span x-show="! loading">Continue</span>
+                        <span x-show="loading" x-cloak class="flex items-center gap-2">
+                            <x-ui.spinner />
+                            Loading&hellip;
+                        </span>
+                    </x-ui.button>
                 </div>
             </form>
         </div>

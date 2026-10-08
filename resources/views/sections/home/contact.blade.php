@@ -401,7 +401,7 @@
                                 <x-ui.icon name="arrow-right" />
                             </span>
                             <span x-show="sending" x-cloak class="flex items-center gap-2 pr-4.5">
-                                <span class="size-4 animate-spin rounded-full border-2 border-paper/30 border-t-paper" aria-hidden="true"></span>
+                                <x-ui.spinner />
                                 Sending&hellip;
                             </span>
                         </x-ui.button>

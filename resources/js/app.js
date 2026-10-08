@@ -639,11 +639,15 @@ Alpine.data('branchLink', (branch) => ({
 Alpine.data('applicationSlip', (interest, branch) => ({
     interest,
     branch,
+    loading: false,
 
     carryOn(event) {
         const form = document.querySelector('#contact form');
 
         if (!form) {
+            // No enquiry form on this page: the slip carries on to /contact.
+            this.loading = true;
+
             return;
         }
 

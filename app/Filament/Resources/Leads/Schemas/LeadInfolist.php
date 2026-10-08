@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\Leads\Schemas;
 
-use App\LeadStage;
 use App\Models\Lead;
-use Carbon\CarbonInterface;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -16,8 +14,10 @@ use Filament\Support\Icons\Heroicon;
 
 /**
  * One lead, laid out for the person about to call them: where it is in the
- * funnel across the top, then the timeline of everything said and done on the
- * left, and on the right who they are, what they want and what brought them in.
+ * funnel across the top (stage, timing and any lost reason live there; the
+ * reference, interest and branch are in the page heading), then the timeline of
+ * everything said and done on the left, and on the right who they are, who is
+ * handling them, and, folded away, what brought them in.
  */
 class LeadInfolist
 {
@@ -57,30 +57,11 @@ class LeadInfolist
                                     ->icon(Heroicon::OutlinedEnvelope)
                                     ->placeholder('Not given')
                                     ->copyable(),
-                                TextEntry::make('branch')
-                                    ->label('Nearest branch')
-                                    ->icon(Heroicon::OutlinedMapPin),
                             ]),
 
-                        Section::make('What they want')
-                            ->icon(Heroicon::OutlinedBanknotes)
+                        Section::make('Lead')
+                            ->icon(Heroicon::OutlinedClipboardDocumentList)
                             ->schema([
-                                TextEntry::make('interest')
-                                    ->label('Interested in')
-                                    ->weight(FontWeight::Medium),
-                                TextEntry::make('reference')
-                                    ->icon(Heroicon::OutlinedHashtag)
-                                    ->copyable()
-                                    ->fontFamily('mono'),
-                            ]),
-
-                        Section::make('Funnel')
-                            ->icon(Heroicon::OutlinedFunnel)
-                            ->schema([
-                                TextEntry::make('stage')->badge(),
-                                TextEntry::make('lost_reason')
-                                    ->label('Why it was lost')
-                                    ->visible(fn (Lead $record): bool => $record->stage === LeadStage::Lost),
                                 TextEntry::make('assignee.name')
                                     ->label('Handled by')
                                     ->icon(Heroicon::OutlinedUserCircle)
@@ -89,16 +70,11 @@ class LeadInfolist
                                     ->label('Came in')
                                     ->icon(Heroicon::OutlinedClock)
                                     ->dateTime('j M Y, H:i'),
-                                TextEntry::make('first_response')
-                                    ->label('First contact')
-                                    ->state(fn (Lead $record): string => $record->first_contacted_at
-                                        ? $record->created_at->diffForHumans($record->first_contacted_at, ['syntax' => CarbonInterface::DIFF_ABSOLUTE, 'parts' => 2]).' after it came in'
-                                        : 'Not yet, waiting '.$record->created_at->diffForHumans(['syntax' => CarbonInterface::DIFF_ABSOLUTE, 'parts' => 2])),
                             ]),
 
                         Section::make('Source')
                             ->icon(Heroicon::OutlinedGlobeAlt)
-                            ->collapsible()
+                            ->collapsed()
                             ->schema([
                                 TextEntry::make('source')
                                     ->label('Came from')
