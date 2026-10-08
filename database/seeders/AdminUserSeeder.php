@@ -22,8 +22,8 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
-        $email = env('ADMIN_EMAIL');
-        $password = env('ADMIN_PASSWORD');
+        $email = config('app.admin.email');
+        $password = config('app.admin.password');
 
         if (blank($email) || blank($password)) {
             $this->command?->error('Set ADMIN_EMAIL and ADMIN_PASSWORD in .env first.');
@@ -32,7 +32,7 @@ class AdminUserSeeder extends Seeder
         }
 
         $user = User::firstOrNew(['email' => $email]);
-        $user->name = env('ADMIN_NAME', 'Administrator');
+        $user->name = config('app.admin.name');
         $user->password = $password;
         $user->email_verified_at ??= now();
         $user->is_admin = true;

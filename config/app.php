@@ -123,4 +123,20 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | First Admin User
+    |--------------------------------------------------------------------------
+    |
+    | Read by Database\Seeders\AdminUserSeeder. Kept in config, not read with
+    | env() in the seeder, so it still works once the config is cached.
+    |
+    */
+
+    'admin' => [
+        'name' => env('ADMIN_NAME', 'Administrator'),
+        'email' => env('ADMIN_EMAIL'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
+
 ];
