@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\RedirectToCanonicalUrl;
 use App\Http\Middleware\RememberLeadSource;
 use App\Http\Middleware\SetSecurityHeaders;
 use Illuminate\Foundation\Application;
@@ -22,6 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
         if ($trusted) {
             $middleware->trustProxies(at: $trusted === '*' ? '*' : explode(',', $trusted));
         }
+
+        $middleware->prepend(RedirectToCanonicalUrl::class);
 
         $middleware->web(append: [
             RememberLeadSource::class,
