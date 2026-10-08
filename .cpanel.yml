@@ -23,6 +23,7 @@ deployment:
     - /usr/bin/rsync -a --exclude='index.php' --exclude='.htaccess' --exclude='/storage' --exclude='/build' ./public/ $WEB/
     - /usr/bin/rsync -a --delete ./public/build/ $WEB/build/
     - mkdir -p $APP/public/build && /usr/bin/rsync -a --delete ./public/build/ $APP/public/build/
+    - mkdir -p $APP/storage/app/public/promotions && if [ ! -L $WEB/storage ]; then [ -e $WEB/storage ] && mv $WEB/storage $WEB/storage.old.$(date +%s); ln -s $APP/storage/app/public $WEB/storage; fi
     - cd $APP && ($PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction --no-scripts || echo "composer step skipped")
     - cd $APP && $PHP artisan package:discover --ansi
     - cd $APP && $PHP artisan config:clear --no-interaction
