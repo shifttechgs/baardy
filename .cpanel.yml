@@ -19,6 +19,7 @@ deployment:
     - /usr/bin/rsync -a --delete --exclude='.git' --exclude='.env' --exclude='.cpanel.yml' --exclude='/vendor' --exclude='/storage' --exclude='/bootstrap/cache' --exclude='/public' --exclude='/tests' --exclude='/node_modules' ./ $APP/
     - /usr/bin/rsync -a --exclude='index.php' --exclude='.htaccess' --exclude='/storage' --exclude='/build' ./public/ $WEB/
     - /usr/bin/rsync -a --delete ./public/build/ $WEB/build/
+    - mkdir -p $APP/public/build && /usr/bin/rsync -a --delete ./public/build/ $APP/public/build/
     - cd $APP && ($PHP /opt/cpanel/composer/bin/composer install --no-dev --optimize-autoloader --no-interaction --no-scripts || echo "composer step skipped")
     - cd $APP && $PHP artisan package:discover --ansi
     - cd $APP && $PHP artisan migrate --force --no-interaction
