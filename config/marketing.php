@@ -238,18 +238,6 @@ return [
             .'traders and small businesses, with every cost in writing, upfront.',
         'link' => 'Check our licence on the RBZ register',
 
-        /*
-        | The photograph beside the copy, with the glass card laid over it.
-        | Unsplash License: unsplash.com/photos/cU3xxfbB9Es
-        */
-        'image' => [
-            'alt' => 'A tailor smiling at a phone while working at a sewing machine',
-            'sources' => [
-                'images/about/tailor-720.webp' => 720,
-                'images/about/tailor-1280.webp' => 1280,
-            ],
-        ],
-
         'card' => [
             'title' => 'On the public register',
             'facts' => [
