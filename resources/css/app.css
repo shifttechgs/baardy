@@ -472,6 +472,33 @@
             animation: hero-photo-in 2.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
         }
 
+        /* The portrait's frame rises from its own foot: only the clip moves
+           (the final shape is the inline clip-path), so the picture is never
+           faded from nothing and loading speed is untouched. */
+        @keyframes hero-portrait-reveal {
+            from {
+                clip-path: polygon(0 100%, 100% 100%, 100% 100%, 26% 100%, 0 100%);
+            }
+        }
+
+        .hero-portrait-reveal {
+            animation: hero-portrait-reveal 1.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+
+        /* The loan cards arrive one after another once the portrait is up,
+           the last one overlapping its edge. `--i` is the card's position. */
+        @keyframes hero-card-in {
+            from {
+                opacity: 0;
+                transform: translate3d(2.5rem, 0, 0);
+            }
+        }
+
+        .hero-card-in {
+            animation: hero-card-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation-delay: calc(900ms + var(--i, 0) * 130ms);
+        }
+
         @supports (animation-timeline: scroll()) {
             @keyframes hero-photo-scroll {
                 to {
@@ -490,6 +517,32 @@
                 to {
                     transform: translate3d(0, -1.5rem, 0);
                 }
+            }
+
+            /* Depth: the portrait travels a little slower than the page and the
+               cards a little faster, so the cards seem to float in front. */
+            @keyframes hero-portrait-drift {
+                to {
+                    transform: translate3d(0, 2rem, 0);
+                }
+            }
+
+            @keyframes hero-cards-drift {
+                to {
+                    transform: translate3d(0, -2.5rem, 0);
+                }
+            }
+
+            .hero-portrait-drift {
+                animation: hero-portrait-drift linear both;
+                animation-timeline: scroll(root block);
+                animation-range: 0 100svh;
+            }
+
+            .hero-cards-drift {
+                animation: hero-cards-drift linear both;
+                animation-timeline: scroll(root block);
+                animation-range: 0 100svh;
             }
 
             .hero-photo-scroll {

@@ -37,7 +37,7 @@ class HomeHeroTest extends TestCase
 
     /**
      * One still photograph at full resolution (the client asked for no
-     * slideshow): a single <img> in the hero, the widest candidate offered,
+     * slideshow): a single eagerly loaded <img> in the hero, the widest candidate offered,
      * no slide control and no slideshow component.
      */
     public function test_it_shows_one_static_high_resolution_photograph(): void
@@ -48,7 +48,9 @@ class HomeHeroTest extends TestCase
         $hero = substr($hero, 0, strpos($hero, '</section>'));
         $widest = array_key_last(config('marketing.hero.slides')[0]['sources']);
 
-        $this->assertSame(1, substr_count($hero, '<img'));
+        // The loan cards carry small lazy thumbnails; the hero photograph is
+        // the only image fetched eagerly.
+        $this->assertSame(1, preg_match_all('/<img(?![^>]*loading="lazy")[^>]*>/', $hero));
         $this->assertStringContainsString(basename($widest), $hero);
         $this->assertStringNotContainsString('heroSlides', $hero);
         $this->assertStringNotContainsString('Pause the photographs', $hero);
@@ -111,7 +113,8 @@ class HomeHeroTest extends TestCase
     }
 
     /**
-     * The licence line, then the promise, then the ask, then who it is for.
+     * The licence line, then the promise, then the sentence that sets the
+     * loan apart, then the ask.
      */
     public function test_it_orders_the_hero_for_a_two_second_read(): void
     {
@@ -120,8 +123,8 @@ class HomeHeroTest extends TestCase
             ->assertSeeInOrder([
                 'Licensed Microfinance',
                 config('marketing.hero.heading')[0],
-                config('company.cta.primary.label'),
                 'reviewed by a person',
+                config('company.cta.primary.label'),
             ], false);
     }
 
@@ -151,7 +154,7 @@ class HomeHeroTest extends TestCase
         $xpath = new \DOMXPath($doc);
 
         $this->assertSame(1, $xpath->query('//section[contains(@class,"hero")]//*[@id="hero-heading"]')->length);
-        $this->assertSame(1, $xpath->query('//section[contains(@class,"hero")]//div[contains(concat(" ", normalize-space(@class), " "), " bg-ink ")][.//*[@id="hero-heading"]]')->length);
+        $this->assertSame(1, $xpath->query('//section[contains(@class,"hero")]//div[contains(concat(" ", normalize-space(@class), " "), " bg-mist ")][.//*[@id="hero-heading"]]')->length);
     }
 
     /**

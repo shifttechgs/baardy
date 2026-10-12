@@ -27,6 +27,10 @@
     // setting its 'navbar' section to 'overlay'. Only the homepage does: its hero is a
     // full-bleed photograph the header is designed to sit on.
     $navbarOverlay = trim($__env->yieldContent('navbar')) === 'overlay';
+
+    // 'floating' is the same idea for a LIGHT first section: the header sits
+    // transparent on it, in dark type, with no spacer.
+    $navbarFloating = trim($__env->yieldContent('navbar')) === 'floating';
 @endphp
 
 <!DOCTYPE html>
@@ -88,7 +92,7 @@
         Skip to content
     </a>
 
-    <x-layout.navbar :overlay="$navbarOverlay" />
+    <x-layout.navbar :overlay="$navbarOverlay" :floating="$navbarFloating" />
 
     <main id="main">
         @yield('content')

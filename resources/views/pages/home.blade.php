@@ -11,8 +11,8 @@
 
 @section('description', 'Salary-based, school fees, farming, women and youth empowerment loans and SME working capital from an RBZ-licensed lender in Harare and Bulawayo.')
 
-{{-- The header floats over the hero photograph until the page scrolls. --}}
-@section('navbar', 'overlay')
+{{-- The hero is a light panel: the header floats on it, transparent, in dark type. --}}
+@section('navbar', 'floating')
 
 @section('content')
     <x-seo.schema :data="[\App\Support\StructuredData::organization(), \App\Support\StructuredData::website()]" />

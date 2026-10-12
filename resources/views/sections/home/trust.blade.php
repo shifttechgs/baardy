@@ -55,7 +55,7 @@
         ->values();
 @endphp
 
-<x-ui.section id="trust" :rule="false" tone="mist" aria-labelledby="trust-heading" class="relative overflow-hidden py-16! sm:py-20! lg:py-24!">
+<x-ui.section id="trust" :rule="false" aria-labelledby="trust-heading" class="relative overflow-hidden py-16! sm:py-20! lg:py-24!">
     <x-ui.container wide class="relative">
         <div class="grid gap-12 lg:grid-cols-[1.15fr_1fr_1fr] lg:gap-x-8">
 
@@ -129,7 +129,7 @@
                     @endforeach
                 </dl>
 
-                <div data-reveal x-data="{ active: 1 }" class="flex flex-col rounded-2xl bg-paper p-4">
+                <div data-reveal x-data="{ active: 1 }" class="flex flex-col rounded-2xl bg-mist p-4">
                     <h3 class="px-2 pt-2 text-[1.5rem] leading-[1.3] font-medium text-ink">Every loan, a person behind it</h3>
                     <p class="mt-2 max-w-sm px-2 text-body leading-[1.4] text-ink-soft" aria-live="polite">
                         <template x-for="(loan, i) in {{ Js::from($fan->pluck('name')) }}" :key="i">
@@ -169,7 +169,7 @@
                                 x-bind:aria-selected="active === {{ $i }} ? 'true' : 'false'"
                                 aria-label="{{ $loan['name'] }}"
                                 class="inline-flex size-10 items-center justify-center rounded-full transition-colors duration-300"
-                                x-bind:class="active === {{ $i }} ? 'bg-accent text-paper' : 'text-ink hover:bg-mist'"
+                                x-bind:class="active === {{ $i }} ? 'bg-accent text-paper' : 'text-ink hover:bg-paper'"
                             >
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-5">
                                     @switch ($loan['icon'])

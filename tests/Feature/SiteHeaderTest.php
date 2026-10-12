@@ -38,15 +38,21 @@ class SiteHeaderTest extends TestCase
         }
     }
 
-    public function test_the_homepage_header_starts_over_the_photograph_and_other_pages_reserve_its_space(): void
+    /**
+     * The homepage hero is a light panel the header floats on: transparent, in
+     * normal type (not the dark-photo state), with no spacer. Other pages
+     * reserve the header's space.
+     */
+    public function test_the_homepage_header_floats_on_the_light_hero_and_other_pages_reserve_its_space(): void
     {
         $home = $this->get('/')->assertOk()->getContent();
         $insights = $this->get(route('insights.index'))->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/<header[^>]*data-over-photo/', $home);
-        $this->assertDoesNotMatchRegularExpression('/<header[^>]*data-over-photo(?!=)/', $insights);
-        $this->assertStringContainsString('class="h-22"', $insights);
+        $this->assertMatchesRegularExpression('/<header[^>]*data-floating(?!=)/', $home);
+        $this->assertDoesNotMatchRegularExpression('/<header[^>]*data-over-photo(?!=)/', $home);
+        $this->assertDoesNotMatchRegularExpression('/<header[^>]*data-floating(?!=)/', $insights);
         $this->assertStringNotContainsString('class="h-22"', $home);
+        $this->assertStringContainsString('class="h-22"', $insights);
     }
 
     public function test_the_mobile_menu_is_wired(): void

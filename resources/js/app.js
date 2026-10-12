@@ -496,12 +496,15 @@ Alpine.data('heroSlides', (count, interval = 7000) => ({
  *             Opens on hover (with a short intent delay) or on click/Enter;
  *             closes on leaving the header, Escape, or scrolling.
  *   open      the mobile panel, which grows out of the same pill.
- *   overPhoto the homepage hero state: dark glass and light type while the
+ *   floatingOnPage the light-hero state: the bar is transparent over the
+ *             first section while the page is at the top and nothing is open.
+ *   overPhoto the dark-photo hero state: dark glass and light type while the
  *             page is at the top and nothing is open. Rendered on the server
  *             too, so the first paint is already correct.
  */
-Alpine.data('siteHeader', (overlay) => ({
+Alpine.data('siteHeader', (overlay, floating = false) => ({
     overlay,
+    floating,
     y: window.scrollY,
     lastY: window.scrollY,
     compact: false,
@@ -513,6 +516,11 @@ Alpine.data('siteHeader', (overlay) => ({
 
     get overPhoto() {
         return this.overlay && this.y < 24 && !this.menu && !this.open;
+    },
+
+    /** The light-hero state: transparent bar, normal type, at the top of the page. */
+    get floatingOnPage() {
+        return this.floating && this.y < 24 && !this.menu && !this.open;
     },
 
     /**

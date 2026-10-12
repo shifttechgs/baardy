@@ -1,34 +1,47 @@
 {{--
     Hero.
 
-    After trova-travel.framer.website: the photograph is an inset, rounded
-    frame on the page (not edge to edge), and almost nothing sits on it.
+    A light panel with a centred portrait, after the editorial layouts that
+    lead with a real person: text on the left, one tall portrait with a single
+    cut corner in the middle, and the loans as cards that overlap the
+    portrait's right edge.
 
-        bottom left    one quiet line (the licence, checkable at the RBZ), the
-                       headline in two lines, and one button
-        bottom right   the sentence on who it is for, and three small chips
-                       for the loans people ask about first
+        left    one quiet line (the licence, checkable at the RBZ), the
+                headline in two lines, the promise and one button
+        centre  a single still portrait
+        right   the lead loans as cards; above them, a live promotion's flyer
+                when one runs
 
-    Restraint is the polish: no panels, no offer card, no row of credentials,
-    no scroll cue, one light scrim at the foot. The headline is set large and
-    tight in plain white; the lead sits far right, right-aligned, on two lines.
-    Everything fits one screen (svh, so a phone's collapsing toolbar cannot
-    push the foot out of view); type is clamped against viewport HEIGHT as
-    well as width.
+    The panel is light, so the header floats on it, transparent and in dark
+    type (the homepage asks for the 'floating' header, see layouts/marketing). Cards are flat fills: no
+    borders, rings or shadows.
+
+    Aimed at salaried people: the lead card is the Salary-Based Loans product,
+    for public- and private-sector employees and government pensioners.
 
     ONE STATIC PHOTOGRAPH, per the client: the first entry of hero.slides, at
-    full resolution (2400px wide; the browser picks the smaller file on small
-    screens). No slideshow, no drift, no pointer movement. The other entries
-    in hero.slides are kept in config for reuse but not shown.
+    full resolution (the browser picks the smaller file on small screens). No
+    slideshow, no pointer movement. The other entries in hero.slides are kept
+    in config for reuse but not shown.
+
+    NO CAPTION. The photograph is stock, so it carries no name, role or claim
+    that the person is a customer. A named caption belongs here only once a
+    real, consenting customer is photographed.
+
+    MOTION. All of it is transform or clip only (the photograph is never faded
+    up from nothing), and off for visitors who ask for reduced motion: the
+    portrait's frame rises from its foot, the loan cards slide in one after
+    another, and on scroll the portrait trails the page while the cards run
+    ahead of it. See the hero rules in app.css.
 
     WHILE A PROMOTION RUNS. A live promotion placed in the hero (admin panel)
-    appears as a small flyer card above the sentence on the right (lg and up);
-    the bar above the header carries it at every size.
+    appears as a flyer card above the loan cards (lg and up); the bar above the
+    header carries it at every size.
 
-    CREDENTIALS, HONESTLY. The only claim is the licence, checkable at the RBZ
-    (the years-lending figure lives in the section below the hero). A review
-    rating joins the line only once a real, sourced score is set (hero.rating);
-    the local design preview never reaches a live server.
+    CREDENTIALS, HONESTLY. The only claims are the licence and the year of
+    first listing, checkable at the RBZ. A review rating joins the first line
+    only once a real, sourced score is set (hero.rating); the local design
+    preview never reaches a live server.
 --}}
 @php
     $hero = config('marketing.hero');
@@ -44,6 +57,7 @@
     // The one photograph, with its responsive candidates (the widest is the
     // fallback `src`).
     $slide = collect($hero['slides'])->first();
+    $widest = max($slide['sources']);
     $photo = [
         ...$slide,
         'src' => asset(array_key_last($slide['sources'])),
@@ -53,172 +67,182 @@
     ];
 
     // A live promotion placed in the hero (admin panel), shown as a flyer
-    // card on the right. Nothing renders when none is running.
+    // card above the loan cards. Nothing renders when none is running.
     $heroPromotion = \App\Models\Promotion::forPlacement('hero');
 
-    // The three chips: the loans people ask about first, linked to the loans.
-    $chips = [
-        ['label' => 'Salary', 'icon' => 'M3 8h18v12H3zM9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18'],
-        ['label' => 'Farming', 'icon' => 'M12 21v-9M12 12c0-4 3-6 7-6 0 4-3 6-7 6ZM12 15c0-3-2-5-6-5 0 3 2 5 6 5Z'],
-        ['label' => 'Business', 'icon' => 'M4 9l1.5-5h13L20 9M4 9v11h16V9M10 20v-5h4v5'],
-    ];
+    // The loans the cards lead with, salary first.
+    $cardSlugs = ['salary-based-loans', 'sme-bridging-finance', 'agricultural-loans'];
+    $cards = collect(config('marketing.products'))
+        ->whereIn('slug', $cardSlugs)
+        ->sortBy(fn (array $product): int => array_search($product['slug'], $cardSlugs))
+        ->values();
 @endphp
 
 {{-- The hero photograph is the page's largest image: fetch it from the head,
      at high priority, with the same candidates the <img> will choose from. --}}
 @push('head')
-    <link rel="preload" as="image" fetchpriority="high" imagesrcset="{{ $photo['srcset'] }}" imagesizes="100vw">
+    <link rel="preload" as="image" fetchpriority="high" imagesrcset="{{ $photo['srcset'] }}" imagesizes="(min-width: 1024px) 34vw, 100vw">
 @endpush
 
-<section aria-labelledby="hero-heading" class="hero relative h-svh min-h-[36rem] p-2">
-    <div class="relative isolate flex h-full flex-col overflow-hidden rounded-[1.25rem] bg-ink text-paper">
+<section aria-labelledby="hero-heading" class="hero relative flex flex-col p-2 lg:min-h-[max(36rem,100svh)]">
+    <div class="relative isolate flex flex-1 flex-col gap-8 overflow-hidden rounded-[1.25rem] bg-mist p-6 pt-28 text-ink sm:p-10 sm:pt-32 lg:grid lg:grid-cols-12 lg:gap-0 lg:p-0">
 
-        {{-- The photograph: one, still, at full resolution. --}}
-        {{-- Calm motion: the wrapper travels a little slower than the page as it
-             scrolls away (hero-photo-scroll); the picture itself settles in on
-             arrival (hero-photo-in). Two elements, because each owns one
-             animation. See the hero rules in app.css. --}}
-        <div class="hero-photo-scroll absolute inset-0 -z-20">
-            <img
-                src="{{ $photo['src'] }}"
-                srcset="{{ $photo['srcset'] }}"
-                sizes="100vw"
-                width="{{ max($photo['sources']) }}"
-                height="{{ (int) round(max($photo['sources']) * 2 / 3) }}"
-                alt="{{ $photo['alt'] }}"
-                fetchpriority="high"
-                decoding="async"
-                @class(['hero-photo-in absolute inset-0 size-full max-w-none object-cover', '-scale-x-100' => $photo['flip']])
-                style="object-position: {{ $photo['position'] }}"
-            >
-        </div>
+        {{-- Left: the licence line, the headline, the promise, the ask --}}
+        <div class="flex min-w-0 flex-col justify-between lg:col-span-4 lg:pt-28 lg:pb-14 lg:pr-4 lg:pl-14 2xl:pl-[4.5rem]">
+            <div class="hidden lg:block"></div>
 
-        {{-- One light scrim at the foot to seat the type, and a hint at the top for the header. --}}
-        <div aria-hidden="true" class="absolute inset-x-0 top-0 -z-10 h-32 bg-linear-to-b from-ink/30 to-transparent"></div>
-        <div aria-hidden="true" class="absolute inset-x-0 bottom-0 -z-10 h-[58%] bg-linear-to-t from-ink/70 via-ink/25 to-transparent"></div>
-
-        <x-ui.container wide class="flex h-full flex-col px-4! pt-28 sm:px-8! sm:pt-32 lg:px-14! 2xl:px-[4.5rem]!">
-            <div class="mt-auto flex flex-col gap-8 pb-20 sm:pb-[4.5rem] lg:flex-row lg:items-end lg:justify-between lg:gap-12 lg:pb-[4.5rem]">
-
-                {{-- Left: the licence line, the headline, the ask --}}
-                <div class="hero-lift flex min-w-0 flex-col items-start lg:w-1/2">
-                    <p class="rise flex flex-wrap items-center gap-x-2.5 gap-y-1 text-body font-medium text-paper sm:text-lead [animation-delay:200ms]">
-                        <span>Licensed Microfinance</span>
+            <div>
+                <p class="rise flex flex-wrap items-center gap-x-2.5 gap-y-1 text-body font-medium text-accent [animation-delay:200ms]">
+                    <span>Licensed Microfinance</span>
+                    <span aria-hidden="true">&middot;</span>
+                    <span>Est. {{ $credentials['years']['since'] }}</span>
+                    @if ($rating)
                         <span aria-hidden="true">&middot;</span>
-                        <span>Est. {{ $credentials['years']['since'] }}</span>
-                        @if ($rating)
-                            <span aria-hidden="true">&middot;</span>
-                            <x-ui.rating
-                                :score="$rating['score'] ?? null"
-                                :count="$rating['count'] ?? null"
-                                :source="$rating['source'] ?? null"
-                                :href="$rating['href'] ?? null"
-                                tone="inverse"
-                                class="whitespace-nowrap text-highlight"
-                            />
-                        @endif
-                    </p>
-
-                    {{--
-                        The full sentence is given once, as text, for screen
-                        readers and search; the animated words beside it are
-                        hidden from assistive tech so it is not read twice.
-                    --}}
-                    <h1
-                        id="hero-heading"
-                        class="mt-5 text-[length:clamp(2.75rem,min(6.67vw,13svh),6rem)] leading-[1] font-medium
-                               tracking-[-0.03em] optical-left sm:mt-6 sm:whitespace-nowrap"
-                    >
-                        <span class="sr-only">{{ implode(' ', $lines) }}</span>
-
-                        <span aria-hidden="true">
-                            @php $wordIndex = 0; @endphp
-                            @foreach ($lines as $line)
-                                <span class="block">
-                                    @foreach (preg_split('/\s+/', $line) as $word)
-                                        <span class="hero-word"><span style="--w: {{ $wordIndex++ }}">{{ $word }}</span></span>
-                                    @endforeach
-                                </span>
-                            @endforeach
-                        </span>
-                    </h1>
-
-                    <div class="rise mt-7 flex w-full flex-col items-stretch [animation-delay:780ms] sm:mt-7 sm:w-auto">
-                        <x-ui.button
-                            :href="config('company.cta.primary.href')"
-                            variant="inverse"
-                            arrow
-                            class="hero-cta"
-                        >
-                            {{ config('company.cta.primary.label') }}
-                        </x-ui.button>
-
-                    </div>
-                </div>
-
-                {{-- Right: the offer and the loans people ask about first. The outer
-                     element lifts on scroll WITHOUT fading (it holds frosted glass);
-                     the inner one carries the arrival animation. --}}
-                <div class="hero-lift-soft lg:w-1/2 lg:max-w-[44rem]">
-                <div class="rise flex flex-col gap-5 [animation-delay:900ms] lg:items-end lg:text-right">
-                    @if ($heroPromotion)
-                        <a
-                            href="{{ route('promotions.show', $heroPromotion) }}"
-                            class="group/flyer hidden w-72 rounded-2xl bg-ink/45 p-2 text-left text-paper ring-1 ring-paper/15 backdrop-blur-xl ring-inset
-                                   transition-[background-color,box-shadow] duration-500 hover:bg-ink/55 hover:ring-paper/30
-                                   md:[@media(min-height:44rem)]:block lg:block lg:w-64 xl:w-72 2xl:w-80"
-                        >
-                            {{-- The frame takes the poster's own proportions (so a square
-                                 poster is not squeezed into a wide strip) and is capped to
-                                 a share of the screen height, so on a short screen the card
-                                 stays clear of the headline. --}}
-                            <span class="relative block max-h-[34svh] w-full overflow-hidden rounded-xl bg-accent" style="aspect-ratio: {{ $heroPromotion->imageAspectRatio() }}">
-                                @if ($heroPromotion->imageUrl())
-                                    <img src="{{ $heroPromotion->imageUrl() }}" alt="" aria-hidden="true" decoding="async"
-                                         class="absolute inset-0 size-full scale-125 object-cover opacity-50 blur-2xl">
-                                    <img src="{{ $heroPromotion->imageUrl() }}" alt="{{ $heroPromotion->imageAlt() }}" decoding="async"
-                                         class="relative size-full object-contain transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/flyer:scale-[1.03]">
-                                @else
-                                    <span class="flex size-full items-end p-4 text-body leading-snug text-balance">{{ $heroPromotion->summary }}</span>
-                                @endif
-                            </span>
-                            <span class="flex items-end justify-between gap-3 px-3 pt-3 pb-2">
-                                <span class="flex min-w-0 flex-col gap-1.5">
-                                    <span class="flex items-center gap-2 text-small">
-                                        <span class="shrink-0 rounded-full bg-highlight px-2.5 py-0.5 text-micro font-medium whitespace-nowrap">Limited offer</span>
-                                        <span class="figure-nums whitespace-nowrap text-paper/60">Ends {{ $heroPromotion->ends_at->format('j M') }}</span>
-                                    </span>
-                                    <span class="text-body leading-snug text-balance">{{ $heroPromotion->title }}</span>
-                                </span>
-                                {{-- The call-to-action arrow: a frosted circle, easing forward on hover. --}}
-                                <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-paper/15 text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/flyer:translate-x-0.5">
-                                    <x-ui.icon name="arrow-right" />
-                                </span>
-                            </span>
-                        </a>
+                        <x-ui.rating
+                            :score="$rating['score'] ?? null"
+                            :count="$rating['count'] ?? null"
+                            :source="$rating['source'] ?? null"
+                            :href="$rating['href'] ?? null"
+                            class="whitespace-nowrap text-highlight"
+                        />
                     @endif
+                </p>
 
-                    <p class="max-w-md text-body text-pretty text-paper sm:text-lead lg:max-w-[30rem] lg:text-[1.25rem] lg:leading-snug lg:text-balance">
-                        {{ $hero['lead'] }}
-                    </p>
+                {{--
+                    The full sentence is given once, as text, for screen
+                    readers and search; the animated words beside it are
+                    hidden from assistive tech so it is not read twice.
+                --}}
+                <h1
+                    id="hero-heading"
+                    class="mt-4 text-[length:clamp(2.25rem,min(3.15vw,8svh),4rem)] leading-[1] font-medium tracking-[-0.03em]"
+                >
+                    <span class="sr-only">{{ implode(' ', $lines) }}</span>
 
-                    <ul class="hidden flex-wrap gap-2 sm:flex lg:justify-end">
-                        @foreach ($chips as $chip)
-                            <li>
-                                <a
-                                    href="/#products"
-                                    class="inline-flex items-center gap-2 whitespace-nowrap rounded-xl bg-ink/60 px-3 py-2 text-body font-medium text-paper backdrop-blur-md
-                                           transition-colors duration-200 hover:bg-ink/75"
-                                >
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="size-4.5"><path d="{{ $chip['icon'] }}" /></svg>
-                                    {{ $chip['label'] }}
-                                </a>
-                            </li>
+                    <span aria-hidden="true">
+                        @php $wordIndex = 0; @endphp
+                        @foreach ($lines as $line)
+                            <span class="block">
+                                @foreach (preg_split('/\s+/', $line) as $word)
+                                    <span class="hero-word"><span style="--w: {{ $wordIndex++ }}">{{ $word }}</span></span>
+                                @endforeach
+                            </span>
                         @endforeach
-                    </ul>
-                </div>
+                    </span>
+                </h1>
+            </div>
+
+            <div class="rise mt-2 lg:mt-0 [animation-delay:780ms]">
+                <p class="max-w-xs text-body text-pretty text-ink-soft sm:text-lead">
+                    {{ $hero['lead'] }}
+                </p>
+                <div class="mt-6">
+                    <x-ui.button
+                        :href="config('company.cta.primary.href')"
+                        arrow
+                        class="hero-cta"
+                    >
+                        {{ config('company.cta.primary.label') }}
+                    </x-ui.button>
                 </div>
             </div>
-        </x-ui.container>
+        </div>
+
+        {{-- Centre: one tall portrait, one cut corner --}}
+        <div class="hero-portrait-drift relative lg:col-span-4 lg:p-3 lg:pt-[5.5rem]">
+            <figure
+                class="hero-portrait-reveal relative aspect-[4/5] size-full overflow-hidden rounded-[1.75rem] bg-accent-tint lg:aspect-auto"
+                style="clip-path: polygon(0 0, 100% 0, 100% 100%, 26% 100%, 0 80%)"
+            >
+                <img
+                    src="{{ $photo['src'] }}"
+                    srcset="{{ $photo['srcset'] }}"
+                    sizes="(min-width: 1024px) 34vw, 100vw"
+                    width="{{ $widest }}"
+                    height="{{ (int) round($widest * 3 / 2) }}"
+                    alt="{{ $photo['alt'] }}"
+                    fetchpriority="high"
+                    decoding="async"
+                    @class(['hero-photo-in absolute inset-0 size-full max-w-none object-cover', '-scale-x-100' => $photo['flip']])
+                    style="object-position: {{ $photo['position'] }}"
+                >
+            </figure>
+        </div>
+
+        {{-- Right: a live promotion when one runs, then the loans as
+             cards overlapping the portrait's edge. Raised above the portrait
+             so the overlap shows. --}}
+        <div class="relative z-10 flex min-w-0 flex-col justify-between gap-6 lg:col-span-4 lg:-ml-16 lg:pt-28 lg:pb-14 lg:pr-14 lg:pl-0 2xl:pr-[4.5rem]">
+            @if ($heroPromotion)
+            <div class="hidden lg:block lg:pt-6 lg:pl-16">
+                    <a
+                        href="{{ route('promotions.show', $heroPromotion) }}"
+                        class="group/flyer block w-64 rounded-2xl bg-paper p-2 text-left text-ink transition-colors duration-500 hover:bg-accent-tint xl:w-72"
+                    >
+                        {{-- The frame takes the poster's own proportions (so a square
+                             poster is not squeezed into a wide strip) and is capped to
+                             a share of the screen height. --}}
+                        <span class="relative block max-h-[30svh] w-full overflow-hidden rounded-xl bg-accent" style="aspect-ratio: {{ $heroPromotion->imageAspectRatio() }}">
+                            @if ($heroPromotion->imageUrl())
+                                <img src="{{ $heroPromotion->imageUrl() }}" alt="" aria-hidden="true" decoding="async" loading="lazy"
+                                     class="absolute inset-0 size-full scale-125 object-cover opacity-50 blur-2xl">
+                                <img src="{{ $heroPromotion->imageUrl() }}" alt="{{ $heroPromotion->imageAlt() }}" decoding="async" loading="lazy"
+                                     class="relative size-full object-contain transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/flyer:scale-[1.03]">
+                            @else
+                                <span class="flex size-full items-end p-4 text-body leading-snug text-paper text-balance">{{ $heroPromotion->summary }}</span>
+                            @endif
+                        </span>
+                        <span class="flex items-end justify-between gap-3 px-3 pt-3 pb-2">
+                            <span class="flex min-w-0 flex-col gap-1.5">
+                                <span class="flex items-center gap-2 text-small">
+                                    <span class="shrink-0 rounded-full bg-highlight px-2.5 py-0.5 text-micro font-medium whitespace-nowrap text-paper">Limited offer</span>
+                                    <span class="figure-nums whitespace-nowrap text-muted">Ends {{ $heroPromotion->ends_at->format('j M') }}</span>
+                                </span>
+                                <span class="text-body leading-snug text-balance">{{ $heroPromotion->title }}</span>
+                            </span>
+                            <span aria-hidden="true" class="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-paper transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/flyer:translate-x-0.5">
+                                <x-ui.icon name="arrow-right" />
+                            </span>
+                        </span>
+                    </a>
+            </div>
+            @endif
+
+            <div class="hero-cards-drift mt-auto flex flex-col gap-3">
+                <p class="hidden text-small font-medium tracking-wide text-muted uppercase lg:block">Loans for salaried people and more</p>
+
+                @foreach ($cards as $i => $product)
+                    <a
+                        href="{{ route('loans.show', $product['slug']) }}"
+                        style="--i: {{ $i }}"
+                        @class([
+                            'hero-card-in group/card flex items-center gap-4 rounded-2xl p-3 transition-[background-color,transform] duration-300 hover:-translate-y-0.5 lg:max-w-xs',
+                            'bg-accent text-paper hover:bg-accent-strong' => $i === 0,
+                            'bg-paper text-ink hover:bg-accent-tint' => $i > 0,
+                            'lg:ml-16' => $i === 1,
+                            'lg:ml-8' => $i === 2,
+                        ])
+                    >
+                        <img
+                            src="{{ asset(str_replace('-1600.webp', '-480.webp', $product['image']['src'])) }}"
+                            alt=""
+                            width="72"
+                            height="72"
+                            loading="lazy"
+                            decoding="async"
+                            class="size-16 shrink-0 rounded-xl object-cover"
+                        >
+                        <span class="min-w-0 flex-1 text-body leading-snug font-medium text-balance">{{ $product['name'] }}</span>
+                        <span aria-hidden="true" @class([
+                            'inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover/card:translate-x-0.5',
+                            'bg-paper text-accent' => $i === 0,
+                            'bg-accent text-paper' => $i > 0,
+                        ])>
+                            <x-ui.icon name="arrow-right" />
+                        </span>
+                    </a>
+                @endforeach
+            </div>
+        </div>
     </div>
 </section>

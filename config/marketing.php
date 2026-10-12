@@ -137,16 +137,17 @@ return [
         ],
 
         /*
-        | The hero shows ONE photograph: the first entry here, the farmer, whose
-        | subject sits right of centre so the two-line headline never crosses
-        | a face. The others are kept for reuse; the hero no longer rotates
-        | through them (a slideshow asks the visitor to wait, and each photo
+        | The hero shows ONE photograph: the first entry here, a salaried
+        | professional, as a tall portrait with one cut corner between the
+        | headline and the loan cards, so the type never crosses a face. The
+        | others are kept for reuse; the hero no longer rotates through them (a slideshow asks the visitor to wait, and each photo
         | implied a different message).
         |
         | All from Unsplash (free for commercial use, Unsplash License):
         |   vendor      unsplash.com/photos/uk3ey_vhDKA
         |   farmer      unsplash.com/photos/1AoGjqdyDLU
         |   market      unsplash.com/photos/XzgW_vYpm8M
+        |   salaried    unsplash.com/photos/S3GrMiUhpNU  (Christina @ wocintechchat.com)
         |
         | `position`  object-position -- keep the subject clear of the copy
         | `flip`      mirror the frame, to move a subject off the left half;
@@ -155,6 +156,17 @@ return [
         |             anchored left, which pushes a centred subject right
         */
         'slides' => [
+            [
+                'label' => 'Salaried professionals',
+                'alt' => 'A smiling professional woman in glasses seated in a bright office',
+                'sources' => [
+                    'images/hero/salaried-900.webp' => 900,
+                    'images/hero/salaried-1600.webp' => 1600,
+                ],
+                'position' => '50% 28%',
+                'flip' => false,
+                'stretch' => 0,
+            ],
             [
                 'label' => 'Farming',
                 'alt' => 'A farmer tending a green field of crops',

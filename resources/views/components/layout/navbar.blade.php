@@ -8,6 +8,9 @@
       at rest     over the homepage hero the bar is transparent with light
                   type ([data-over-photo]); everywhere else a light frosted
                   bar with a hairline under it.
+      floating    over a LIGHT first section (the homepage hero) the bar is
+                  transparent with the normal dark type ([data-floating]).
+
       scrolling   past the top the bar condenses into a centred pill that
                   floats over the page and stays with the reader in both
                   directions ([data-stuck]); back at the top it relaxes into
@@ -32,10 +35,10 @@
     header bar, on every page, lined up with the hero: the same inset and the
     same rounded top corners. It folds away while a menu is open.
 
-    Non-overlay pages get a spacer the height of the bar, since the header is
+    Pages that neither overlay nor float get a spacer the height of the bar, since the header is
     fixed rather than in the flow.
 --}}
-@props(['overlay' => false])
+@props(['overlay' => false, 'floating' => false])
 
 @php
     $nav = config('company.nav');
@@ -52,12 +55,14 @@
 @endphp
 
 <header
-    x-data="siteHeader(@js($overlay))"
+    x-data="siteHeader(@js($overlay), @js($floating))"
     x-on:scroll.window.passive="onScroll()"
     x-on:resize.window.passive="measure()"
     x-on:keydown.escape.window="escape()"
     @if ($overlay) data-over-photo @endif
     x-bind:data-over-photo="overPhoto ? '' : false"
+    @if ($floating) data-floating @endif
+    x-bind:data-floating="floatingOnPage ? '' : false"
     x-bind:data-stuck="stuck ? '' : false"
     x-bind:data-expanded="menu || open ? '' : false"
     class="group/nav hero-drop pointer-events-none fixed inset-x-0 top-0 z-50 px-0 pt-0 transition-[padding] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] data-stuck:px-3 data-stuck:pt-3 data-expanded:px-2 data-expanded:pt-2"
@@ -100,6 +105,7 @@
         class="pointer-events-auto relative mx-auto max-w-[120rem] overflow-hidden bg-paper/90 text-ink backdrop-blur-xl
                transition-[max-width,border-radius,background-color,border-color,box-shadow,color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]
                group-data-over-photo/nav:border-transparent group-data-over-photo/nav:bg-transparent group-data-over-photo/nav:text-paper group-data-over-photo/nav:backdrop-blur-none
+               group-data-floating/nav:border-transparent group-data-floating/nav:bg-transparent group-data-floating/nav:backdrop-blur-none
                group-data-stuck/nav:max-w-[62rem] group-data-stuck/nav:rounded-[2rem] group-data-stuck/nav:border-transparent group-data-stuck/nav:bg-paper/85 group-data-stuck/nav:backdrop-saturate-150
                group-data-stuck/nav:shadow-[0_18px_40px_-20px_rgb(21_16_25/0.35),0_0_0_1px_rgb(21_16_25/0.06)]
                group-data-expanded/nav:bg-paper group-data-expanded/nav:shadow-[0_40px_60px_-40px_rgb(21_16_25/0.35)]
@@ -315,7 +321,7 @@
     </div>
 </header>
 
-@unless ($overlay)
+@unless ($overlay || $floating)
     {{-- The pill is fixed, so pages without a full-bleed first section need
          its height held open above their content. --}}
     <div aria-hidden="true" @class(['h-22', 'mt-12' => $bannerPromotion])></div>
