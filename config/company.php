@@ -114,6 +114,12 @@ return [
     ],
 
     /*
+    | Extra recipient copied on every form notification (enquiries and job
+    | applications). Used for testing; leave MAIL_COPY_TO empty in production.
+    */
+    'copy_to' => env('MAIL_COPY_TO'),
+
+    /*
     | Where job applications (with the CV attached) are delivered.
     */
     'careers' => [

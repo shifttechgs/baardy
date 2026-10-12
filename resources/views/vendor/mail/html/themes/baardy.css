@@ -1,0 +1,239 @@
+/* Baardy mail theme: flat, quiet, one accent. Tokens mirror resources/css/app.css. */
+
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    position: relative;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    background-color: #f6f4f8;
+    color: #413b4a;
+    height: 100%;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+}
+
+p, ul, ol, blockquote {
+    line-height: 1.6;
+    text-align: left;
+}
+
+a {
+    color: #5e2681;
+}
+
+a img {
+    border: none;
+}
+
+/* Layout */
+
+.wrapper {
+    background-color: #f6f4f8;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.content {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.header {
+    padding: 40px 0 24px;
+    text-align: center;
+}
+
+.logo {
+    height: 34px;
+    width: auto;
+    max-height: 34px;
+    border: 0;
+}
+
+.body {
+    background-color: #f6f4f8;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.inner-body {
+    background-color: #ffffff;
+    border-radius: 12px;
+    margin: 0 auto;
+    padding: 0;
+    width: 570px;
+}
+
+.content-cell {
+    padding: 40px 44px;
+}
+
+/* Type */
+
+h1 {
+    color: #151019;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin: 0 0 14px;
+    text-align: left;
+}
+
+h2 {
+    color: #151019;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    text-align: left;
+}
+
+p {
+    color: #413b4a;
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 0 0 20px;
+}
+
+p strong {
+    color: #151019;
+}
+
+/* Details table: label and value, no borders */
+
+.table {
+    margin: 8px 0 28px;
+    width: 100%;
+}
+
+.table table {
+    background-color: #f6f4f8;
+    border-radius: 10px;
+    margin: 0;
+    padding: 8px 20px;
+    width: 100%;
+}
+
+.table th {
+    display: none;
+}
+
+.table td {
+    color: #151019;
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 10px 0;
+    vertical-align: top;
+}
+
+.table td:first-child {
+    color: #676070;
+    font-size: 13px;
+    font-weight: 500;
+    padding-right: 20px;
+    width: 38%;
+}
+
+/* Button */
+
+.action {
+    margin: 8px 0 28px;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+}
+
+.button {
+    -webkit-text-size-adjust: none;
+    border-radius: 8px;
+    color: #ffffff;
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    overflow: hidden;
+    padding: 13px 26px;
+    text-decoration: none;
+}
+
+.button-primary,
+.button-blue,
+.button-green {
+    background-color: #5e2681;
+    border-bottom: 1px solid #5e2681;
+    border-left: 1px solid #5e2681;
+    border-right: 1px solid #5e2681;
+    border-top: 1px solid #5e2681;
+}
+
+.button-red {
+    background-color: #b42318;
+    border: 1px solid #b42318;
+}
+
+/* Panel and subcopy */
+
+.panel {
+    margin: 0 0 21px;
+}
+
+.panel-content {
+    background-color: #f5f0f9;
+    padding: 16px;
+}
+
+.panel-item {
+    padding: 0;
+}
+
+.subcopy {
+    margin-top: 28px;
+    padding-top: 20px;
+}
+
+.subcopy p {
+    color: #676070;
+    font-size: 13px;
+}
+
+/* Footer */
+
+.footer {
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+    width: 570px;
+}
+
+.footer .content-cell {
+    padding: 28px 24px 48px;
+}
+
+.footer p {
+    color: #676070;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 0 6px;
+    text-align: center;
+}
+
+.footer a {
+    color: #676070;
+}
+
+@media only screen and (max-width: 600px) {
+    .content-cell {
+        padding: 32px 24px;
+    }
+    .inner-body, .footer {
+        width: 100% !important;
+        border-radius: 0;
+    }
+}

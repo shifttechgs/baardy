@@ -45,7 +45,7 @@ class EnquiryController extends Controller
         );
 
         try {
-            Mail::to(config('company.enquiries.to'))->send(new EnquiryReceived($lead, $enquiry));
+            Mail::to(config('company.enquiries.to'))->cc(array_filter([config('company.copy_to')]))->send(new EnquiryReceived($lead, $enquiry));
         } catch (Throwable $exception) {
             report($exception);
         }

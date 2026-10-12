@@ -46,7 +46,7 @@ class CareerController extends Controller
         ]);
 
         try {
-            Mail::to(config('company.careers.to'))->send(new JobApplicationReceived($application));
+            Mail::to(config('company.careers.to'))->cc(array_filter([config('company.copy_to')]))->send(new JobApplicationReceived($application));
         } catch (Throwable $exception) {
             report($exception);
         }
