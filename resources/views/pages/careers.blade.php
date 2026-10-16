@@ -179,19 +179,25 @@
 
                     <div class="rounded-2xl bg-paper p-6 text-ink sm:p-8 lg:col-span-7">
                 @if (session('application_sent'))
-                    <div class="flex flex-col gap-3" role="status">
-                        <p class="text-lead text-ink">Application received</p>
-                        <p class="max-w-xl text-body text-ink-soft">{{ session('application_sent') }}</p>
-                        <a href="{{ route('careers') }}" class="w-fit text-body text-accent hover:text-accent-strong">Send another application</a>
-                    </div>
+                    <x-ui.form-success title="Application received" class="min-h-[22rem]">
+                        {{ session('application_sent') }}
+
+                        <x-slot:actions>
+                            <a href="{{ route('careers') }}" class="text-small font-medium text-accent underline-offset-4 hover:underline">Send another application</a>
+                        </x-slot:actions>
+                    </x-ui.form-success>
                 @else
                     <form method="POST" action="{{ route('careers.apply') }}" enctype="multipart/form-data" class="flex flex-col gap-5" x-data="{ file: '', submitting: false }" x-on:submit="submitting = true" x-on:pageshow.window="submitting = false">
                         @csrf
 
                         @if ($errors->any())
-                            <div role="alert" class="rounded-lg border border-danger/30 bg-danger/5 px-4 py-3 text-small text-danger">
-                                Please fix the highlighted fields and try again.
-                            </div>
+                            <x-ui.form-alert title="Nearly there">
+                                @if ($errors->has('cv'))
+                                    {{ $errors->first('cv') }}
+                                @else
+                                    A few details need another look. They are marked below.
+                                @endif
+                            </x-ui.form-alert>
                         @endif
 
                         <div class="flex flex-col gap-2">
@@ -251,26 +257,26 @@
                                     </template>
                                 </ul>
                             </div>
-                            @error('vacancy_id')<p class="text-small text-danger">{{ $message }}</p>@enderror
+                            @error('vacancy_id')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
 
                         <div class="grid gap-5 sm:grid-cols-2">
                             <div class="flex flex-col gap-2">
                                 <label for="apply-name" class="text-small font-medium text-ink">Full name<span class="text-accent"> *</span></label>
                                 <input id="apply-name" name="name" type="text" autocomplete="name" required value="{{ old('name') }}" class="{{ $input }} @error('name') border-danger! @enderror">
-                                @error('name')<p class="text-small text-danger">{{ $message }}</p>@enderror
+                                @error('name')<p class="field-error">{{ $message }}</p>@enderror
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label for="apply-phone" class="text-small font-medium text-ink">Phone or WhatsApp<span class="text-accent"> *</span></label>
                                 <input id="apply-phone" name="phone" type="tel" autocomplete="tel" required value="{{ old('phone') }}" class="{{ $input }} @error('phone') border-danger! @enderror">
-                                @error('phone')<p class="text-small text-danger">{{ $message }}</p>@enderror
+                                @error('phone')<p class="field-error">{{ $message }}</p>@enderror
                             </div>
                         </div>
 
                         <div class="flex flex-col gap-2">
                             <label for="apply-email" class="text-small font-medium text-ink">Email <span class="font-normal text-muted">(optional)</span></label>
                             <input id="apply-email" name="email" type="email" autocomplete="email" value="{{ old('email') }}" class="{{ $input }} @error('email') border-danger! @enderror">
-                            @error('email')<p class="text-small text-danger">{{ $message }}</p>@enderror
+                            @error('email')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
 
                         <div class="flex flex-col gap-2">
@@ -280,13 +286,13 @@
                                 <span class="text-small text-muted">PDF, DOC or DOCX, up to 5 MB</span>
                                 <input id="apply-cv" name="cv" type="file" required accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="sr-only" x-on:change="file = $event.target.files[0]?.name ?? ''">
                             </label>
-                            @error('cv')<p class="text-small text-danger">{{ $message }}</p>@enderror
+                            @error('cv')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
 
                         <div class="flex flex-col gap-2">
                             <label for="apply-message" class="text-small font-medium text-ink">A short note <span class="font-normal text-muted">(optional)</span></label>
                             <textarea id="apply-message" name="message" rows="4" maxlength="2000" class="w-full rounded-xl border border-line bg-mist px-4 py-3 text-body text-ink transition duration-200 hover:border-line-strong focus:border-accent focus:bg-paper focus:ring-4 focus:ring-accent/10 focus:outline-none focus-visible:outline-none">{{ old('message') }}</textarea>
-                            @error('message')<p class="text-small text-danger">{{ $message }}</p>@enderror
+                            @error('message')<p class="field-error">{{ $message }}</p>@enderror
                         </div>
 
                         {{-- Honeypot: invisible to people. --}}

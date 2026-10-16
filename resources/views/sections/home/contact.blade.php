@@ -125,6 +125,7 @@
                     sent: {{ Js::from(session('enquiry_sent')) }},
                     reference: {{ Js::from(session('enquiry_reference')) }},
                     errors: {},
+                    get hasFieldErrors() { return Object.keys(this.errors).some((key) => key !== 'form') },
                     async submit(event) {
                         this.sending = true;
                         this.errors = {};
@@ -145,10 +146,10 @@
                                 this.errors = data.errors ?? {};
                                 this.$nextTick(() => this.$el.querySelector('[aria-invalid=true]')?.focus());
                             } else {
-                                this.errors = { form: ['We could not send that just now. Please call or WhatsApp us instead.'] };
+                                this.errors = { form: ['Something on our side stopped your message reaching us. Nothing is lost on your end, so try once more, or reach us directly.'] };
                             }
                         } catch {
-                            this.errors = { form: ['We could not send that just now. Please call or WhatsApp us instead.'] };
+                            this.errors = { form: ['Something on our side stopped your message reaching us. Nothing is lost on your end, so try once more, or reach us directly.'] };
                         }
 
                         this.sending = false;
@@ -159,50 +160,41 @@
                 {{-- Without JavaScript the page reloads after the post; say it worked. --}}
                 @if (session('enquiry_sent'))
                     <noscript>
-                        <div role="status" class="mb-6 rounded-lg bg-accent-tint px-4 py-3 text-body text-ink">
+                        <x-ui.form-success title="Message received" class="mb-6 min-h-0!">
                             {{ session('enquiry_sent') }}
                             @if (session('enquiry_reference'))
-                                Reference: <span class="font-medium">{{ session('enquiry_reference') }}</span>
+                                Your reference is {{ session('enquiry_reference') }}.
                             @endif
-                        </div>
+                        </x-ui.form-success>
                     </noscript>
                 @endif
 
                 {{-- Confirmation. Replaces the form rather than sitting above it,
                      so there is no way to send the same enquiry twice by accident. --}}
-                <div
+                <x-ui.form-success
+                    title="Message received"
                     x-show="sent"
                     x-cloak
                     x-transition:enter="transition duration-500 ease-out"
                     x-transition:enter-start="opacity-0 translate-y-3"
                     x-transition:enter-end="opacity-100 translate-y-0"
-                    class="flex min-h-[26rem] flex-col items-start justify-center gap-6"
-                    role="status"
                 >
-                    <span class="flex size-16 items-center justify-center rounded-full bg-accent text-paper">
-                        <svg viewBox="0 0 18 18" class="size-7" fill="none" stroke="currentColor" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M3.5 9.5 7 13l7.5-8" pathLength="1" stroke-dasharray="1"
-                                  class="transition-[stroke-dashoffset] delay-200 duration-500 ease-out"
-                                  x-bind:style="'stroke-dashoffset:' + (sent ? 0 : 1)" />
-                        </svg>
-                    </span>
+                    <span x-text="sent"></span>
 
-                    <div class="flex flex-col gap-2">
-                        <h3 class="text-[length:clamp(1.75rem,1.2rem+1.6vw,2.5rem)] leading-[1.2] font-normal tracking-[-0.025em] text-ink">Message received</h3>
-                        <p class="max-w-md text-lead text-muted" x-text="sent"></p>
-                    </div>
+                    <x-slot:reference>
+                        <p x-show="reference" class="flex flex-wrap items-center gap-3 text-small text-muted">
+                            Your reference
+                            <span class="figure-nums rounded-full bg-accent-tint px-3 py-1 font-medium tracking-[0.04em] text-accent" x-text="reference"></span>
+                            <span>Quote it if you call us.</span>
+                        </p>
+                    </x-slot:reference>
 
-                    <p x-show="reference" class="flex flex-wrap items-center gap-3 text-small text-muted">
-                        Your reference
-                        <span class="figure-nums rounded-full bg-accent-tint px-3 py-1 font-medium tracking-[0.04em] text-accent" x-text="reference"></span>
-                        <span>Quote it if you call us.</span>
-                    </p>
-
-                    <button type="button" x-on:click="sent = null; reference = null" class="text-small font-medium text-accent underline-offset-4 hover:underline">
-                        Send another enquiry
-                    </button>
-                </div>
+                    <x-slot:actions>
+                        <button type="button" x-on:click="sent = null; reference = null" class="text-small font-medium text-accent underline-offset-4 hover:underline">
+                            Send another enquiry
+                        </button>
+                    </x-slot:actions>
+                </x-ui.form-success>
 
                 <form
                     x-show="! sent"
@@ -223,13 +215,22 @@
                         <p class="text-small text-muted"><span class="text-accent">*</span> Required</p>
                     </div>
 
-                    <div
+                    <x-ui.form-alert
+                        title="That did not go through"
+                        fallback
                         x-show="errors.form"
                         x-cloak
-                        class="rounded-xl border border-danger/30 bg-danger/5 px-4 py-3 text-small text-danger"
-                        role="alert"
-                        x-text="errors.form?.[0]"
-                    ></div>
+                    >
+                        <span x-text="errors.form?.[0]"></span>
+                    </x-ui.form-alert>
+
+                    <x-ui.form-alert
+                        title="Nearly there"
+                        x-show="hasFieldErrors"
+                        x-cloak
+                    >
+                        A few details need another look. They are marked below.
+                    </x-ui.form-alert>
 
                     <div class="grid gap-5 sm:grid-cols-2">
                         @foreach ([['name', 'Full name', 'text', 'name', true], ['phone', 'Phone or WhatsApp', 'tel', 'tel', true]] as [$field, $label, $type, $autocomplete, $required])
@@ -249,7 +250,7 @@
                                     x-bind:aria-invalid="errors.{{ $field }} ? 'true' : 'false'"
                                     aria-describedby="enquiry-{{ $field }}-error"
                                 >
-                                <p id="enquiry-{{ $field }}-error" class="text-small text-danger empty:hidden" x-text="errors.{{ $field }}?.[0]">@error($field){{ $message }}@enderror</p>
+                                <p id="enquiry-{{ $field }}-error" class="field-error" x-text="errors.{{ $field }}?.[0]">@error($field){{ $message }}@enderror</p>
                             </div>
                         @endforeach
 
@@ -268,7 +269,7 @@
                             x-bind:aria-invalid="errors.email ? 'true' : 'false'"
                             aria-describedby="enquiry-email-error"
                         >
-                        <p id="enquiry-email-error" class="text-small text-danger empty:hidden" x-text="errors.email?.[0]">@error('email'){{ $message }}@enderror</p>
+                        <p id="enquiry-email-error" class="field-error" x-text="errors.email?.[0]">@error('email'){{ $message }}@enderror</p>
                     </div>
 
                     <div class="flex flex-col gap-2">
@@ -332,7 +333,7 @@
                                 </template>
                             </ul>
                         </div>
-                        <p id="enquiry-interest-error" class="text-small text-danger empty:hidden" x-text="errors.interest?.[0]">@error('interest'){{ $message }}@enderror</p>
+                        <p id="enquiry-interest-error" class="field-error" x-text="errors.interest?.[0]">@error('interest'){{ $message }}@enderror</p>
                     </div>
                     </div>
 
@@ -360,7 +361,7 @@
                                 </label>
                             @endforeach
                         </div>
-                        <p class="text-small text-danger empty:hidden" x-text="errors.branch?.[0]">@error('branch'){{ $message }}@enderror</p>
+                        <p class="field-error" x-text="errors.branch?.[0]">@error('branch'){{ $message }}@enderror</p>
                     </fieldset>
 
                     <div class="flex flex-col gap-2">
@@ -376,7 +377,7 @@
                             x-bind:class="errors.message ? 'border-danger' : 'border-line-strong'"
                             placeholder="For example: what the money is for, or the best time to call."
                         >{{ old('message') }}</textarea>
-                        <p class="text-small text-danger empty:hidden" x-text="errors.message?.[0]">@error('message'){{ $message }}@enderror</p>
+                        <p class="field-error" x-text="errors.message?.[0]">@error('message'){{ $message }}@enderror</p>
                     </div>
 
                     {{-- Honeypot. Off-screen rather than display:none, which some

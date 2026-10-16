@@ -13,6 +13,7 @@
 @php
     $paths = [
         'check' => '<path d="M3.5 8.5 7 12l7.5-8"/>',
+        'alert' => '<path d="M9 5v4.8"/><path d="M9 12.9v.1"/>',
         'minus' => '<path d="M3.5 9h11"/>',
         'plus' => '<path d="M9 3.5v11M3.5 9h11"/>',
         'chevron-down' => '<path d="M4.5 7 9 11.5 13.5 7"/>',

@@ -9,7 +9,7 @@
 
 @section('title', 'Loan Glossary: Plain-Language Terms | Baardy Micro Capital')
 
-@section('description', 'What credit-only microfinance, bridging finance, appraisal, disbursement and early settlement mean, explained in plain language.')
+@section('description', 'What credit-only microfinance, bridging finance, appraisal, disbursement, loan rollover and loan top-up mean, explained in plain language.')
 
 @php
     $terms = [
@@ -17,7 +17,8 @@
         ['term' => 'Bridging finance', 'definition' => 'Short-term borrowing that carries a business across a gap, for example between paying a supplier and being paid by a customer.'],
         ['term' => 'Credit-only microfinance institution', 'definition' => 'A lender licensed to make loans but not to take deposits. Baardy Micro Capital is licensed as a credit-only microfinance institution by the Reserve Bank of Zimbabwe.'],
         ['term' => 'Disbursement', 'definition' => 'The release of the loan money to the borrower once the loan has been approved.'],
-        ['term' => 'Early settlement', 'definition' => 'Paying off a loan before the end of its agreed term. At Baardy there is no early-settlement penalty, and you pay less interest.'],
+        ['term' => 'Loan rollover', 'definition' => 'The extension or renewal of a loan past its original maturity date, allowing a borrower to postpone full repayment.'],
+        ['term' => 'Loan top-up', 'definition' => 'An additional amount of money you borrow on top of an existing active loan from the same lender.'],
         ['term' => 'Payslip', 'definition' => 'The statement of pay an employer gives an employee. Lenders use the latest payslip to see a regular income.'],
         ['term' => 'Principal', 'definition' => 'The amount you borrow, before interest and fees are added.'],
         ['term' => 'Repayment schedule', 'definition' => 'The agreed plan for paying a loan back: how much, and on which dates. At Baardy it can be weekly, fortnightly or monthly, and you agree it before you accept the loan.'],

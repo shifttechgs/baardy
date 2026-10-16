@@ -14,6 +14,7 @@
 @section('description', 'Answers to common questions about borrowing from Baardy Micro Capital: documents, repayment, missed payments, early settlement and our licence.')
 
 @php
+    $landlines = collect(config('company.branches'))->map(fn (array $branch): array => $branch['phones'][0]);
     $register = config('company.compliance.register_url');
 
     $about = [
@@ -56,7 +57,7 @@
             <div class="grid gap-x-12 gap-y-10 lg:grid-cols-12">
                 <div data-reveal class="flex flex-col gap-5 lg:col-span-4 lg:sticky lg:top-28 lg:self-start">
                     <x-ui.eyebrow>Talk to a person</x-ui.eyebrow>
-                    <p class="max-w-sm text-body leading-[1.4] text-ink-soft">Call us on <a href="tel:{{ preg_replace('/\s+/', '', config('company.contact.phone')) }}" class="figure-nums text-accent underline underline-offset-4">{{ config('company.contact.phone') }}</a>, or <a href="{{ route('contact') }}#contact" class="text-accent underline underline-offset-4">send us a message</a>.</p>
+                    <p class="max-w-sm text-body leading-[1.4] text-ink-soft">Call us on @foreach ($landlines as $line)<a href="tel:{{ $line['tel'] }}" class="figure-nums text-accent underline underline-offset-4">{{ $line['display'] }}</a>@if (! $loop->last) or @endif@endforeach, or <a href="{{ route('contact') }}#contact" class="text-accent underline underline-offset-4">send us a message</a>.</p>
                     <p class="max-w-sm text-small leading-[1.5] text-muted">How to apply, step by step: <a href="{{ route('how-to-apply') }}" class="text-accent underline underline-offset-4">how to apply</a>. The loans: <a href="{{ route('loans.index') }}" class="text-accent underline underline-offset-4">see them all</a>.</p>
                 </div>
 

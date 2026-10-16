@@ -60,6 +60,7 @@ class CareersPageTest extends TestCase
 
         Mail::assertSent(JobApplicationReceived::class, function (JobApplicationReceived $mail): bool {
             $this->assertTrue($mail->hasTo('vacancies@baardymicrocapital.com'));
+            $this->assertTrue($mail->hasCc('pmadamombe@baardymicrocapital.com'));
             $mail->assertHasAttachedData('%PDF-1.4 hello', 'my-cv.pdf', ['mime' => 'application/pdf']);
 
             return true;

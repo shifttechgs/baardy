@@ -24,6 +24,9 @@
       alt       its description
       position  its object-position
       width     its pixel width / height, for layout stability
+      managementPhone  a number to reach management directly. When set, it
+                       replaces the general phone and WhatsApp lines in the
+                       closing card (used by the complaints procedure).
 --}}
 @props([
     'title',
@@ -34,6 +37,7 @@
     'position' => '50% 50%',
     'width' => 2400,
     'height' => 1600,
+    'managementPhone' => null,
 ])
 
 @php
@@ -166,17 +170,31 @@
                 {{-- Reaching a person --}}
                 <aside data-reveal class="mt-16 grid gap-8 rounded-2xl bg-ink p-6 text-paper sm:p-8 lg:mt-20 lg:grid-cols-9 lg:gap-x-8 lg:p-10">
                     <div class="flex flex-col gap-3 lg:col-span-5">
-                        <p class="text-[length:clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.2] tracking-[-0.02em]">Questions about this page?</p>
-                        <p class="max-w-md text-body leading-[1.5] text-paper/70">A person will answer. Call, WhatsApp or write to us, and say which page you are asking about.</p>
+                        @if ($managementPhone)
+                            <p class="text-[length:clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.2] tracking-[-0.02em]">Complaint to management</p>
+                            <p class="max-w-md text-body leading-[1.5] text-paper/70">Call this number to take your complaint straight to our management. A person will answer.</p>
+                        @else
+                            <p class="text-[length:clamp(1.375rem,1.1rem+0.9vw,1.75rem)] leading-[1.2] tracking-[-0.02em]">Questions about this page?</p>
+                            <p class="max-w-md text-body leading-[1.5] text-paper/70">A person will answer. Call, WhatsApp or write to us, and say which page you are asking about.</p>
+                        @endif
                     </div>
                     <ul class="flex flex-col gap-3 text-body lg:col-span-4">
-                        <li>
-                            <a href="tel:{{ preg_replace('/\s+/', '', config('company.contact.phone')) }}" class="inline-flex items-center gap-3 text-paper transition-colors hover:text-paper/70">
-                                <x-ui.icon name="phone" class="text-highlight" />
-                                <span class="figure-nums">{{ config('company.contact.phone') }}</span>
-                            </a>
-                        </li>
-                        @if ($whatsapp)
+                        @if ($managementPhone)
+                            <li>
+                                <a href="tel:{{ preg_replace('/\s+/', '', $managementPhone) }}" class="inline-flex items-center gap-3 text-paper transition-colors hover:text-paper/70">
+                                    <x-ui.icon name="phone" class="text-highlight" />
+                                    <span class="figure-nums">{{ $managementPhone }}</span>
+                                </a>
+                            </li>
+                        @else
+                            <li>
+                                <a href="tel:{{ preg_replace('/\s+/', '', config('company.contact.phone')) }}" class="inline-flex items-center gap-3 text-paper transition-colors hover:text-paper/70">
+                                    <x-ui.icon name="phone" class="text-highlight" />
+                                    <span class="figure-nums">{{ config('company.contact.phone') }}</span>
+                                </a>
+                            </li>
+                        @endif
+                        @if ($whatsapp && ! $managementPhone)
                             <li>
                                 <a href="https://wa.me/{{ ltrim($whatsapp['tel'], '+') }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 text-paper transition-colors hover:text-paper/70">
                                     <x-ui.icon name="chat" class="text-highlight" />

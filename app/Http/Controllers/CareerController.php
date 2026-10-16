@@ -28,7 +28,7 @@ class CareerController extends Controller
     public function store(StoreJobApplicationRequest $request): RedirectResponse
     {
         $done = redirect()->to(route('careers').'#apply')
-            ->with('application_sent', 'Thank you. We have your application and CV, and will be in touch if there is a fit.');
+            ->with('application_sent', 'Thank you. Your application and CV are with our team. A person reads every one, and we will be in touch if there is a fit.');
 
         // Honeypot: bots get the same success response.
         if ($request->filled('website')) {
@@ -46,7 +46,7 @@ class CareerController extends Controller
         ]);
 
         try {
-            Mail::to(config('company.careers.to'))->cc(array_filter([config('company.copy_to')]))->send(new JobApplicationReceived($application));
+            Mail::to(config('company.careers.to'))->cc(config('company.copy_to'))->send(new JobApplicationReceived($application));
         } catch (Throwable $exception) {
             report($exception);
         }

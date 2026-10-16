@@ -80,15 +80,7 @@
 
                             <div class="flex flex-col gap-6">
                                 <dl class="grid grid-cols-2 gap-4 border-t border-ink/15 pt-5">
-                                    <div class="flex flex-col gap-0.5">
-                                        <dt class="text-small text-muted">Amount</dt>
-                                        <dd class="text-body font-medium text-ink">
-                                            <x-ui.money :amount="$product['min']" />
-                                            <span class="text-muted">&ndash;</span>
-                                            <x-ui.money :amount="$product['max']" />
-                                        </dd>
-                                    </div>
-                                    <div class="flex flex-col gap-0.5">
+                                    <div class="col-span-2 flex flex-col gap-0.5">
                                         <dt class="text-small text-muted">Term</dt>
                                         <dd class="figure-nums text-body font-medium text-ink">{{ $product['term'] }}</dd>
                                     </div>

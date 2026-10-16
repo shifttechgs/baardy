@@ -42,15 +42,14 @@ registers of licensed microfinance institutions. Retrieved 22 September 2026.
 | Currently licensed | **Yes** — listed as a credit-only MFI as at 31 March 2026 | RBZ register, 31 Mar 2026 |
 | First appears on register | Between **30 June 2015** (absent) and **30 September 2015** (present) | RBZ registers, Jun & Sep 2015 |
 | CEO / MD | **Admire Madamombe** | RBZ register, 31 Dec 2018 |
-| Telephone (head office) | **+263 772 550 189** | Client-confirmed, Sep 2026; matches RBZ registers 2015 & 2018 |
+| Telephone (head office) | **+263 715 351 004** | Client-confirmed, Oct 2026 |
 | Telephone (Bulawayo) | **(0)29 2883 657**, **+263 775 399 113**, **+263 715 351 013** | Client-supplied material, Sep 2026 |
 | Email | **baardymicrocapital@gmail.com** | RBZ register, 31 Dec 2018 |
 
 ### Caveats on the above — read before publishing any of it
 
 - **The head office number is confirmed.** The client gave
-  **+263 772 550 189**, which is the same number the RBZ registers printed in
-  2015 and 2018 — two independent sources eight years apart. It is published.
+  **+263 715 351 004**. It is published.
 - **The CEO and email are still from the 31 December 2018 register**, roughly
   eight years old, and the 2026 register does not republish contact columns.
   **Reconfirm both with the client before they go on the site.**
@@ -150,7 +149,7 @@ still `[PLACEHOLDER]`.
 
 | Branch | Address | Contact |
 |---|---|---|
-| **Harare** — head office | Office 400, 4th Floor, Construction House, 108–110 Leopold Takawira Street | Cell +263 772 550 189 |
+| **Harare** — head office | Office 400, 4th Floor, Construction House, 108–110 Leopold Takawira Street | Cell +263 715 351 004 |
 | **Bulawayo** — branch | 3rd Floor, Mership House, Cnr 9th Avenue and J. Nkomo Street | Tel (0)29 2883 657 · Cell +263 775 399 113 · +263 715 351 013 |
 
 Still to confirm:

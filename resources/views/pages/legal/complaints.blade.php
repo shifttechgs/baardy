@@ -21,6 +21,7 @@
         position="50% 40%"
         :width="1600"
         :height="1067"
+        :management-phone="config('company.contact.management_phone')"
     >
         <p>
             You can complain about anything to do with our service: an application, a loan, a repayment, or how
@@ -29,7 +30,7 @@
 
         <h2>How to complain</h2>
         <ul>
-            <li>call or WhatsApp us, using the details on this page</li>
+            <li>call our management on the number on this page</li>
             <li>visit your branch and ask to speak to the branch manager</li>
             <li>send us a message through the enquiry form and choose &ldquo;Something else&rdquo;</li>
         </ul>

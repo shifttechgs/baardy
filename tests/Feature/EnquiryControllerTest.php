@@ -44,6 +44,7 @@ class EnquiryControllerTest extends TestCase
 
         Mail::assertSent(EnquiryReceived::class, function (EnquiryReceived $mail): bool {
             return $mail->hasTo('loans@baardy.test')
+                && $mail->hasCc('pmadamombe@baardymicrocapital.com')
                 && $mail->enquiry['name'] === 'Tendai Moyo'
                 && $mail->enquiry['interest'] === 'Agricultural Loans'
                 && $mail->enquiry['branch'] === 'Bulawayo';
@@ -56,7 +57,7 @@ class EnquiryControllerTest extends TestCase
 
         $response = $this->postJson(route('enquiries.store'), $this->validEnquiry())
             ->assertOk()
-            ->assertJson(['message' => 'Thank you. We have your details and will call or WhatsApp you shortly.']);
+            ->assertJson(['message' => 'Thank you. One of our team will call or WhatsApp you shortly.']);
 
         $this->assertSame(Lead::sole()->reference, $response->json('reference'));
         Mail::assertSent(EnquiryReceived::class);

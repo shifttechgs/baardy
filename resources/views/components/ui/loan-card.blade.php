@@ -1,11 +1,11 @@
 {{--
-    A loan as a card: photograph, name, who it is for, the range and term, and
+    A loan as a card: photograph, name, who it is for, the term, and
     a circled arrow, the whole card being the link to the loan's own page.
 
     Props
       loan   a loan from LoanController (marketing product + loans page copy)
       promo  a live Promotion on this loan, if any
-      range  show the amount and term on the photograph (default true)
+      range  show the term on the photograph (default true)
 --}}
 @props(['loan', 'promo' => null, 'range' => true])
 
@@ -31,7 +31,7 @@
         @endif
         @if ($range)
             <span class="figure-nums absolute right-2 bottom-2 left-2 rounded-lg bg-ink/45 px-3 py-2 text-micro text-paper backdrop-blur-xl backdrop-saturate-150">
-                <x-ui.money :amount="$loan['min']" /> &ndash; <x-ui.money :amount="$loan['max']" /> &middot; {{ $loan['term'] }}
+                {{ $loan['term'] }}
             </span>
         @endif
     </span>

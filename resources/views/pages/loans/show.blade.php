@@ -206,7 +206,7 @@
             <x-ui.section-heading
                 id="fit-heading"
                 eyebrow="Is it for you"
-                :title="'What '.Str::lower($loan['name']).' are for'"
+                :title="'Purpose of '.$loan['name']"
                 lead="The purposes this loan is meant for, and the people it is meant for."
             />
 

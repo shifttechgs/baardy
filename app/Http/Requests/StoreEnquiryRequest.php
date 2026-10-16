@@ -70,6 +70,7 @@ class StoreEnquiryRequest extends FormRequest
             'name.required' => 'Tell us your name so we know who to ask for.',
             'phone.required' => 'We need a number to call or WhatsApp you back on.',
             'phone.regex' => 'That does not look like a phone number.',
+            'email.email' => 'That email address looks incomplete. Check it, or leave it blank.',
             'interest.required' => 'Choose what you would like to talk about.',
             'branch.required' => 'Choose the branch nearest to you.',
         ];

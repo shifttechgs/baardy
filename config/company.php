@@ -44,7 +44,7 @@ return [
             .'and pursue opportunities that improve their livelihoods and economic well-being.',
         // Target market, per the client.
         'serves' => [
-            ['title' => 'Government employees', 'body' => 'Public Service Commission employees, pensioners and non-pensioners.'],
+            ['title' => 'Government employees', 'body' => 'Public Service Commission employees and Government Pensioners.'],
             ['title' => 'SMEs', 'body' => 'Small and medium-sized businesses that need capital to start, run and grow.'],
         ],
     ],
@@ -79,8 +79,7 @@ return [
     | 31 December 2018 and are roughly eight years old, so both are held back
     | until the client reconfirms them:
     |
-    |   phone  0772 550 189  (a second listed number, 777254, is printed
-    |                         incomplete by RBZ and must not be published)
+    |   phone  +263 715 351 004 (head office; client-supplied)
     |   email  baardymicrocapital@gmail.com  (recommend a domain mailbox
     |                         before launch — a Gmail address undercuts the
     |                         trust positioning on a lending site)
@@ -94,7 +93,9 @@ return [
     | its readable form here.
     */
     'contact' => [
-        'phone' => '+263 772 550 189',             // CONFIRMED by the client
+        'phone' => '+263 715 351 004',             // CONFIRMED by the client
+        // Where a complaint goes to management; shown only on the complaints page.
+        'management_phone' => '+263 71 532 2395',   // CONFIRMED by the client, Oct 2026
         'phone_label' => 'Mon–Fri 08:00–16:30, Sat 08:00–12:00',   // CONFIRMED by the client
         'hours' => [                            // CONFIRMED by the client
             ['days' => 'Monday to Friday', 'time' => '08:00–16:30'],
@@ -114,10 +115,14 @@ return [
     ],
 
     /*
-    | Extra recipient copied on every form notification (enquiries and job
-    | applications). Used for testing; leave MAIL_COPY_TO empty in production.
+    | Recipients copied on every form notification (enquiries and job
+    | applications): management's standing copy, plus an optional extra from
+    | MAIL_COPY_TO for testing (leave that empty in production).
     */
-    'copy_to' => env('MAIL_COPY_TO'),
+    'copy_to' => array_values(array_unique(array_filter([
+        'pmadamombe@baardymicrocapital.com',   // CONFIRMED by the client, Oct 2026
+        env('MAIL_COPY_TO'),
+    ]))),
 
     /*
     | Where job applications (with the CV attached) are delivered.
@@ -157,9 +162,7 @@ return [
             ],
             /*
             | Numbers exactly as listed in the client's final "BMC Website
-            | Design" document. It does not list +263 772 550 189 (the
-            | `contact.phone` shown in the footer, contact and FAQ); confirm
-            | with the client whether that number should stay or be replaced.
+            | Design" document.
             */
             // Per the client's "BMC Website Design" document (final).
             'phones' => [

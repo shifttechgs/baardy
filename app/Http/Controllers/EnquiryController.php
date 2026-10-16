@@ -45,7 +45,7 @@ class EnquiryController extends Controller
         );
 
         try {
-            Mail::to(config('company.enquiries.to'))->cc(array_filter([config('company.copy_to')]))->send(new EnquiryReceived($lead, $enquiry));
+            Mail::to(config('company.enquiries.to'))->cc(config('company.copy_to'))->send(new EnquiryReceived($lead, $enquiry));
         } catch (Throwable $exception) {
             report($exception);
         }
@@ -57,7 +57,7 @@ class EnquiryController extends Controller
     {
         // A bot gets a reference-shaped string too, so the two responses look alike.
         $reference ??= 'BMC-'.strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
-        $message = 'Thank you. We have your details and will call or WhatsApp you shortly.';
+        $message = 'Thank you. One of our team will call or WhatsApp you shortly.';
 
         if ($request->expectsJson()) {
             return response()->json(['message' => $message, 'reference' => $reference]);
